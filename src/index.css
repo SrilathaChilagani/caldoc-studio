@@ -2,59 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @layer base {
   :root {
-    --background: 220 20% 98%;
-    --foreground: 220 50% 12%;
+    --background: 30 25% 96%;
+    --foreground: 220 30% 15%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 220 50% 12%;
+    --card: 30 20% 98%;
+    --card-foreground: 220 30% 15%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 50% 12%;
+    --popover: 30 20% 98%;
+    --popover-foreground: 220 30% 15%;
 
-    --primary: 217 91% 40%;
+    --primary: 210 70% 45%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 25% 95%;
-    --secondary-foreground: 220 50% 12%;
+    --secondary: 30 20% 92%;
+    --secondary-foreground: 220 30% 15%;
 
-    --muted: 220 20% 94%;
-    --muted-foreground: 220 15% 45%;
+    --muted: 30 15% 90%;
+    --muted-foreground: 220 15% 40%;
 
-    --accent: 24 95% 55%;
+    --accent: 15 70% 55%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 20% 88%;
-    --input: 220 20% 88%;
-    --ring: 217 91% 40%;
+    --border: 30 15% 85%;
+    --input: 30 15% 85%;
+    --ring: 210 70% 45%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    /* Custom CalDoc tokens - Deep Blue */
-    --blue-50: 220 40% 97%;
-    --blue-100: 220 38% 92%;
-    --blue-500: 217 91% 40%;
-    --blue-600: 217 91% 35%;
-    --blue-700: 217 91% 28%;
-    
-    --coral: 24 95% 55%;
-    --coral-light: 24 95% 65%;
-    --coral-dark: 24 85% 45%;
-    
-    --warm-white: 40 40% 98%;
-    --soft-shadow: 220 30% 70%;
-    
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 40%), hsl(210 85% 50%));
-    --gradient-hero: linear-gradient(180deg, hsl(220 20% 98%) 0%, hsl(220 25% 95%) 100%);
-    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(220 20% 98%) 100%);
-    --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+    /* CalDoc Premium Tokens */
+    --warm-cream: 30 25% 96%;
+    --warm-beige: 25 30% 88%;
+    --terracotta: 15 55% 65%;
+    --terracotta-dark: 15 55% 50%;
+    --deep-blue: 210 70% 45%;
+    --deep-blue-dark: 210 75% 35%;
+    --soft-shadow: 220 20% 50%;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -67,33 +56,33 @@
   }
 
   .dark {
-    --background: 220 50% 8%;
-    --foreground: 220 20% 95%;
+    --background: 220 30% 8%;
+    --foreground: 30 20% 95%;
 
-    --card: 220 45% 12%;
-    --card-foreground: 220 20% 95%;
+    --card: 220 25% 12%;
+    --card-foreground: 30 20% 95%;
 
-    --popover: 220 45% 12%;
-    --popover-foreground: 220 20% 95%;
+    --popover: 220 25% 12%;
+    --popover-foreground: 30 20% 95%;
 
-    --primary: 217 85% 55%;
-    --primary-foreground: 220 50% 8%;
+    --primary: 210 65% 55%;
+    --primary-foreground: 220 30% 8%;
 
-    --secondary: 220 40% 18%;
-    --secondary-foreground: 220 20% 95%;
+    --secondary: 220 25% 18%;
+    --secondary-foreground: 30 20% 95%;
 
-    --muted: 220 35% 20%;
-    --muted-foreground: 220 15% 60%;
+    --muted: 220 20% 20%;
+    --muted-foreground: 30 15% 60%;
 
-    --accent: 24 85% 60%;
+    --accent: 15 65% 60%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 30% 22%;
-    --input: 220 30% 22%;
-    --ring: 217 85% 55%;
+    --border: 220 25% 22%;
+    --input: 220 25% 22%;
+    --ring: 210 65% 55%;
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -113,28 +102,55 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
   }
 }
 
 @layer utilities {
-  .glass {
-    @apply bg-white/80 backdrop-blur-xl border border-white/20;
+  .font-serif {
+    font-family: 'Playfair Display', serif;
   }
   
-  .glass-strong {
-    @apply bg-white/90 backdrop-blur-2xl border border-white/30 shadow-xl;
+  .font-sans {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  .glass {
+    @apply bg-white/70 backdrop-blur-xl border border-white/30;
+  }
+  
+  .glass-dark {
+    @apply bg-black/20 backdrop-blur-xl border border-white/10;
   }
   
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-teal-400;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent;
   }
   
   .shadow-soft {
-    box-shadow: 0 4px 30px -5px hsl(var(--soft-shadow) / 0.15);
+    box-shadow: 0 4px 30px -5px hsl(var(--soft-shadow) / 0.12);
   }
   
   .shadow-elevated {
-    box-shadow: 0 20px 50px -15px hsl(var(--soft-shadow) / 0.25);
+    box-shadow: 0 25px 60px -15px hsl(var(--soft-shadow) / 0.2);
+  }
+
+  .animate-fade-up {
+    animation: fadeUp 0.8s ease-out forwards;
+  }
+
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }
