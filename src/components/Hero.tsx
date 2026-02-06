@@ -15,7 +15,7 @@ export function Hero() {
       {/* Background Elements */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-teal-50/30 to-background" />
       <div className="absolute top-1/4 right-0 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-primary/10 to-coral/10 blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-gradient-to-tr from-teal-100/50 to-transparent blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-gradient-to-tr from-blue-100/50 to-transparent blur-3xl" />
       
       <div className="container relative mx-auto px-4 lg:px-8 py-12 lg:py-24">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -61,7 +61,7 @@ export function Hero() {
                     className="pl-12 h-12 border-0 bg-transparent text-foreground placeholder:text-muted-foreground focus-visible:ring-0"
                   />
                 </div>
-                <Button size="lg" className="h-12 px-8 bg-primary hover:bg-teal-600 text-primary-foreground shadow-soft">
+                <Button size="lg" className="h-12 px-8 bg-primary hover:bg-blue-600 text-primary-foreground shadow-soft">
                   Find a doctor
                 </Button>
               </div>

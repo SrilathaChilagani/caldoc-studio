@@ -80,7 +80,7 @@ export function HowItWorks() {
                   whileHover={{ scale: 1.1, rotate: 5 }}
                   className="relative inline-flex mb-6"
                 >
-                  <div className="w-32 h-32 rounded-3xl bg-gradient-to-br from-primary/10 to-teal-100/50 flex items-center justify-center">
+                  <div className={`w-32 h-32 rounded-3xl bg-gradient-to-br from-primary/10 to-blue-100/50 flex items-center justify-center`}>
                     <step.icon className="w-12 h-12 text-primary" />
                   </div>
                   <div className="absolute -top-2 -right-2 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg shadow-soft">
