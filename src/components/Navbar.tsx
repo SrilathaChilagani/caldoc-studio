@@ -1,130 +1,72 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Menu, X } from "lucide-react";
 
-const specialties = [
-  "Dermatology",
-  "Pediatrics", 
-  "Cardiology",
-  "ENT",
-  "Orthopedics",
-  "Psychiatry",
-  "General Medicine",
-];
-
-const services = [
-  { name: "Rx Delivery", href: "#" },
-  { name: "Labs at Home", href: "#" },
+const navLinks = [
+  { name: "Why CalDoc", href: "#why" },
+  { name: "Specialties", href: "#specialties" },
+  { name: "Doctors", href: "#doctors" },
+  { name: "Testimonials", href: "#testimonials" },
+  { name: "Contact", href: "#contact" },
 ];
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <motion.nav
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="fixed top-0 left-0 right-0 z-50 glass-strong"
+      transition={{ duration: 0.6 }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled ? "bg-background/90 backdrop-blur-lg shadow-soft" : "bg-transparent"
+      }`}
     >
-      <div className="container mx-auto px-4 lg:px-8">
-        <div className="flex items-center justify-between h-16 lg:h-20">
+      <div className="container mx-auto px-6 lg:px-12">
+        <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <a href="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">C</span>
+          <a href="/" className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+              <span className="text-primary-foreground font-serif text-xl">C</span>
             </div>
             <div className="flex flex-col">
-              <span className="font-bold text-xl tracking-tight text-foreground">
-                CAL<span className="text-primary">DOC</span>
+              <span className="font-serif text-xl tracking-wide text-foreground">
+                CalDoc
               </span>
-              <span className="text-[10px] text-muted-foreground -mt-1 tracking-wide">
-                TELEMEDICINE MADE SIMPLE
+              <span className="text-[10px] text-muted-foreground tracking-widest uppercase">
+                Telemedicine
               </span>
             </div>
           </a>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-8">
-            <a href="/" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-              Home
-            </a>
-            
-            {/* Specialties Dropdown */}
-            <div 
-              className="relative"
-              onMouseEnter={() => setActiveDropdown("specialties")}
-              onMouseLeave={() => setActiveDropdown(null)}
-            >
-              <button className="flex items-center gap-1 text-sm font-medium text-foreground hover:text-primary transition-colors">
-                Specialties
-                <ChevronDown className="w-4 h-4" />
-              </button>
-              <AnimatePresence>
-                {activeDropdown === "specialties" && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="absolute top-full left-0 mt-2 w-48 bg-card rounded-xl shadow-elevated border border-border p-2 z-50"
-                  >
-                    {specialties.map((specialty) => (
-                      <a
-                        key={specialty}
-                        href="#"
-                        className="block px-4 py-2 text-sm text-foreground hover:bg-muted rounded-lg transition-colors"
-                      >
-                        {specialty}
-                      </a>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {/* Services Dropdown */}
-            <div 
-              className="relative"
-              onMouseEnter={() => setActiveDropdown("services")}
-              onMouseLeave={() => setActiveDropdown(null)}
-            >
-              <button className="flex items-center gap-1 text-sm font-medium text-foreground hover:text-primary transition-colors">
-                Services
-                <ChevronDown className="w-4 h-4" />
-              </button>
-              <AnimatePresence>
-                {activeDropdown === "services" && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="absolute top-full left-0 mt-2 w-48 bg-card rounded-xl shadow-elevated border border-border p-2 z-50"
-                  >
-                    {services.map((service) => (
-                      <a
-                        key={service.name}
-                        href={service.href}
-                        className="block px-4 py-2 text-sm text-foreground hover:bg-muted rounded-lg transition-colors"
-                      >
-                        {service.name}
-                      </a>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+          <div className="hidden lg:flex items-center gap-10">
+            {navLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.href}
+                className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-300"
+              >
+                {link.name}
+              </a>
+            ))}
           </div>
 
-          {/* CTA Buttons */}
-          <div className="hidden lg:flex items-center gap-3">
-            <Button variant="ghost" size="sm">
-              Login
-            </Button>
-            <Button size="sm" className="bg-primary hover:bg-blue-600 text-primary-foreground shadow-soft">
-              Find a Doctor
-            </Button>
+          {/* CTA Button */}
+          <div className="hidden lg:block">
+            <a
+              href="#book"
+              className="px-6 py-3 bg-primary text-primary-foreground text-sm font-medium rounded-full hover:bg-primary/90 transition-all duration-300 shadow-soft"
+            >
+              Book Consultation
+            </a>
           </div>
 
           {/* Mobile Menu Button */}
@@ -143,26 +85,25 @@ export function Navbar() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="lg:hidden overflow-hidden border-t border-border"
+              className="lg:hidden overflow-hidden bg-background/95 backdrop-blur-lg rounded-2xl mb-4"
             >
-              <div className="py-4 space-y-4">
-                <a href="/" className="block text-sm font-medium text-foreground">
-                  Home
+              <div className="py-6 px-4 space-y-4">
+                {navLinks.map((link) => (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className="block text-lg font-medium text-foreground hover:text-primary transition-colors"
+                  >
+                    {link.name}
+                  </a>
+                ))}
+                <a
+                  href="#book"
+                  className="block w-full text-center py-3 bg-primary text-primary-foreground rounded-full font-medium mt-4"
+                >
+                  Book Consultation
                 </a>
-                <a href="#" className="block text-sm font-medium text-foreground">
-                  Specialties
-                </a>
-                <a href="#" className="block text-sm font-medium text-foreground">
-                  Services
-                </a>
-                <div className="flex flex-col gap-2 pt-4">
-                  <Button variant="outline" size="sm" className="w-full">
-                    Login
-                  </Button>
-                  <Button size="sm" className="w-full bg-primary text-primary-foreground">
-                    Find a Doctor
-                  </Button>
-                </div>
               </div>
             </motion.div>
           )}

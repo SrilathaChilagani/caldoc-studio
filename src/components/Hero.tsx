@@ -1,181 +1,145 @@
 import { motion } from "framer-motion";
-import { Search, Check, Video, CreditCard, MessageCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import heroImage from "@/assets/hero-doctor.jpg";
 
-const features = [
-  { icon: MessageCircle, text: "WhatsApp confirmations" },
-  { icon: CreditCard, text: "UPI / cards" },
-  { icon: Video, text: "Instant video links" },
+const specialties = [
+  "Dermatology",
+  "Pediatrics",
+  "Cardiology",
+  "ENT",
+  "Orthopedics",
+  "Psychiatry",
+  "General Medicine",
 ];
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-teal-50/30 to-background" />
-      <div className="absolute top-1/4 right-0 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-primary/10 to-coral/10 blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-gradient-to-tr from-blue-100/50 to-transparent blur-3xl" />
-      
-      <div className="container relative mx-auto px-4 lg:px-8 py-12 lg:py-24">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Content */}
+    <section className="relative min-h-screen flex items-center">
+      {/* Background Image */}
+      <div className="absolute inset-0">
+        <img
+          src={heroImage}
+          alt="Doctor consultation"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/40 to-transparent" />
+      </div>
+
+      <div className="container relative mx-auto px-6 lg:px-12 py-32">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Left Content */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center lg:text-left"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
           >
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6"
-            >
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse-soft" />
-              Trusted by 10,000+ patients
-            </motion.div>
-
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight mb-6">
-              Book your{" "}
-              <span className="text-primary">teleconsultations</span>{" "}
-              today.
+            <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl text-foreground leading-tight mb-6">
+              Care, made
+              <br />
+              <span className="text-primary">simple.</span>
             </h1>
-
-            <p className="text-lg text-muted-foreground mb-8 max-w-lg mx-auto lg:mx-0">
-              Search by specialty, doctor name, or diagnosis to find the right care from anywhere.
+            <p className="text-lg text-muted-foreground max-w-md mb-8 leading-relaxed">
+              Experience telemedicine the most authentic way with trusted doctors, 
+              from the comfort of your home.
             </p>
 
-            {/* Search Box */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="glass-strong rounded-2xl p-2 shadow-elevated max-w-xl mx-auto lg:mx-0"
-            >
-              <div className="flex flex-col sm:flex-row gap-2">
-                <div className="relative flex-1">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                  <Input
-                    placeholder="Search doctors, specialties..."
-                    className="pl-12 h-12 border-0 bg-transparent text-foreground placeholder:text-muted-foreground focus-visible:ring-0"
-                  />
-                </div>
-                <Button size="lg" className="h-12 px-8 bg-primary hover:bg-blue-600 text-primary-foreground shadow-soft">
-                  Find a doctor
-                </Button>
-              </div>
-            </motion.div>
-
-            {/* Features */}
-            <motion.div
+            {/* Desktop: Discover More */}
+            <motion.a
+              href="#why"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
-              className="flex flex-wrap justify-center lg:justify-start gap-4 mt-8"
+              className="hidden lg:inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors cursor-pointer"
             >
-              {features.map((feature, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-2 text-sm text-muted-foreground"
-                >
-                  <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Check className="w-3 h-3 text-primary" />
-                  </div>
-                  {feature.text}
-                </div>
-              ))}
-            </motion.div>
-
-            {/* Service Buttons */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
-              className="flex flex-wrap justify-center lg:justify-start gap-3 mt-8"
-            >
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-primary/30 text-primary hover:bg-primary/10"
+              Discover More
+              <motion.div
+                animate={{ y: [0, 8, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
               >
-                Pharmacy
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-coral/30 text-coral hover:bg-coral/10"
-              >
-                Labs
-              </Button>
-            </motion.div>
+                <ChevronDown className="w-5 h-5" />
+              </motion.div>
+            </motion.a>
           </motion.div>
 
-          {/* Hero Visual */}
+          {/* Right: Booking Form */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="relative hidden lg:block"
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="lg:ml-auto"
           >
-            <div className="relative w-full aspect-square max-w-lg mx-auto">
-              {/* Main Circle */}
-              <div className="absolute inset-8 rounded-full bg-gradient-to-br from-primary/20 to-teal-100 animate-pulse-soft" />
-              
-              {/* Floating Cards */}
-              <motion.div
-                animate={{ y: [0, -15, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute top-12 right-0 glass-strong rounded-xl p-4 shadow-elevated"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                    <Video className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Video Consultation</p>
-                    <p className="text-xs text-muted-foreground">Available 24/7</p>
-                  </div>
-                </div>
-              </motion.div>
+            <div className="glass rounded-3xl p-8 shadow-elevated max-w-md">
+              <h3 className="font-serif text-2xl text-foreground mb-2">
+                Begin Your Consultation
+              </h3>
+              <p className="text-sm text-muted-foreground mb-6">
+                Starting from ₹299 per session
+              </p>
 
-              <motion.div
-                animate={{ y: [0, 12, 0] }}
-                transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute bottom-24 left-0 glass-strong rounded-xl p-4 shadow-elevated"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-coral/20 flex items-center justify-center">
-                    <Check className="w-5 h-5 text-coral" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Instant Booking</p>
-                    <p className="text-xs text-muted-foreground">Get confirmed in minutes</p>
-                  </div>
-                </div>
-              </motion.div>
-
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                className="absolute top-1/2 right-4 glass-strong rounded-xl p-4 shadow-elevated"
-              >
-                <div className="flex items-center gap-2">
-                  <div className="flex -space-x-2">
-                    <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-medium border-2 border-background">
-                      Dr
-                    </div>
-                    <div className="w-8 h-8 rounded-full bg-coral flex items-center justify-center text-accent-foreground text-xs font-medium border-2 border-background">
-                      Dr
-                    </div>
-                  </div>
-                  <p className="text-xs text-muted-foreground">100+ doctors</p>
-                </div>
-              </motion.div>
+              <form className="space-y-4">
+                <Input
+                  placeholder="Full Name"
+                  className="h-12 bg-background/50 border-border/50 rounded-xl focus:bg-background"
+                />
+                <Input
+                  placeholder="Enter Phone Number"
+                  type="tel"
+                  className="h-12 bg-background/50 border-border/50 rounded-xl focus:bg-background"
+                />
+                <Select>
+                  <SelectTrigger className="h-12 bg-background/50 border-border/50 rounded-xl">
+                    <SelectValue placeholder="Choose Specialty *" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card border-border">
+                    {specialties.map((specialty) => (
+                      <SelectItem key={specialty} value={specialty.toLowerCase()}>
+                        {specialty}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <textarea
+                  placeholder="Describe your concern (Optional)"
+                  rows={3}
+                  className="w-full px-4 py-3 bg-background/50 border border-border/50 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-ring text-sm"
+                />
+                <Button
+                  type="submit"
+                  className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium"
+                >
+                  Request A Callback
+                </Button>
+              </form>
             </div>
           </motion.div>
         </div>
       </div>
+
+      {/* Bottom scroll indicator (mobile) */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 lg:hidden"
+      >
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+          className="flex flex-col items-center text-muted-foreground"
+        >
+          <span className="text-sm mb-2">Discover More</span>
+          <ChevronDown className="w-5 h-5" />
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

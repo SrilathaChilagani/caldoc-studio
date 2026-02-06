@@ -4,39 +4,39 @@ import { ArrowRight } from "lucide-react";
 const specialties = [
   {
     name: "Dermatology",
-    description: "Skin, hair & nail care",
-    color: "from-rose-400 to-rose-600",
-    icon: "🩹",
+    description: "Skin, hair & nail treatments",
+    image: "🩹",
+    doctors: 24,
   },
   {
     name: "Pediatrics",
-    description: "Child healthcare",
-    color: "from-sky-400 to-sky-600",
-    icon: "👶",
+    description: "Complete child healthcare",
+    image: "👶",
+    doctors: 18,
   },
   {
     name: "Cardiology",
-    description: "Heart & cardiovascular",
-    color: "from-red-400 to-red-600",
-    icon: "❤️",
-  },
-  {
-    name: "ENT",
-    description: "Ear, nose & throat",
-    color: "from-amber-400 to-amber-600",
-    icon: "👂",
-  },
-  {
-    name: "Orthopedics",
-    description: "Bones & joints",
-    color: "from-emerald-400 to-emerald-600",
-    icon: "🦴",
+    description: "Heart & cardiovascular care",
+    image: "❤️",
+    doctors: 12,
   },
   {
     name: "Psychiatry",
-    description: "Mental wellness",
-    color: "from-violet-400 to-violet-600",
-    icon: "🧠",
+    description: "Mental health & wellness",
+    image: "🧠",
+    doctors: 15,
+  },
+  {
+    name: "Orthopedics",
+    description: "Bone & joint specialists",
+    image: "🦴",
+    doctors: 20,
+  },
+  {
+    name: "ENT",
+    description: "Ear, nose & throat care",
+    image: "👂",
+    doctors: 16,
   },
 ];
 
@@ -50,22 +50,23 @@ const containerVariants = {
 
 const cardVariants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
 export function Specialties() {
   return (
-    <section className="py-24 bg-gradient-to-b from-background to-muted/30">
-      <div className="container mx-auto px-4 lg:px-8">
+    <section id="specialties" className="py-24 lg:py-32 bg-secondary/30">
+      <div className="container mx-auto px-6 lg:px-12">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12"
+          transition={{ duration: 0.6 }}
+          className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12"
         >
           <div>
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-2">
-              Browse by specialty
+            <h2 className="font-serif text-3xl lg:text-5xl text-foreground mb-3">
+              Browse Specialties
             </h2>
             <p className="text-muted-foreground">
               Find the right specialist for your health needs
@@ -75,7 +76,7 @@ export function Specialties() {
             href="#"
             className="inline-flex items-center gap-2 text-primary font-medium hover:gap-3 transition-all"
           >
-            See all doctors
+            View all specialties
             <ArrowRight className="w-4 h-4" />
           </a>
         </motion.div>
@@ -85,28 +86,26 @@ export function Specialties() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
+          className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6"
         >
           {specialties.map((specialty) => (
             <motion.a
               key={specialty.name}
               href="#"
               variants={cardVariants}
-              whileHover={{ y: -8, scale: 1.02 }}
-              className="group relative bg-card rounded-2xl p-6 shadow-soft hover:shadow-elevated transition-all duration-300 border border-border overflow-hidden"
+              whileHover={{ y: -8 }}
+              className="group bg-card rounded-2xl lg:rounded-3xl p-6 lg:p-8 shadow-soft hover:shadow-elevated transition-all duration-500"
             >
-              {/* Gradient overlay on hover */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${specialty.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`} />
-              
-              <div className="relative">
-                <span className="text-4xl mb-4 block">{specialty.icon}</span>
-                <h3 className="font-semibold text-foreground mb-1">
-                  {specialty.name}
-                </h3>
-                <p className="text-xs text-muted-foreground">
-                  {specialty.description}
-                </p>
-              </div>
+              <span className="text-4xl lg:text-5xl mb-4 block">{specialty.image}</span>
+              <h3 className="font-serif text-lg lg:text-xl text-foreground mb-1">
+                {specialty.name}
+              </h3>
+              <p className="text-sm text-muted-foreground mb-3">
+                {specialty.description}
+              </p>
+              <p className="text-xs text-primary font-medium">
+                {specialty.doctors}+ doctors
+              </p>
             </motion.a>
           ))}
         </motion.div>
