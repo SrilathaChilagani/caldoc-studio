@@ -33,7 +33,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
           <a href="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-teal-600 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center">
               <span className="text-primary-foreground font-bold text-lg">C</span>
             </div>
             <div className="flex flex-col">
@@ -122,7 +122,7 @@ export function Navbar() {
             <Button variant="ghost" size="sm">
               Login
             </Button>
-            <Button size="sm" className="bg-primary hover:bg-teal-600 text-primary-foreground shadow-soft">
+            <Button size="sm" className="bg-primary hover:bg-blue-600 text-primary-foreground shadow-soft">
               Find a Doctor
             </Button>
           </div>

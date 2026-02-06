@@ -11,7 +11,7 @@ const doctors = [
     languages: ["English", "Hindi", "Malayalam"],
     available: true,
     image: "AM",
-    color: "from-primary to-teal-600",
+    color: "from-primary to-blue-600",
   },
   {
     name: "Dr. RamaDevi",

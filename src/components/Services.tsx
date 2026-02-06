@@ -8,7 +8,7 @@ const services = [
     title: "Rx Delivery",
     description: "Get your prescriptions delivered to your doorstep. Fast, convenient, and hassle-free.",
     features: ["Same-day delivery", "Authentic medicines", "Easy refills"],
-    color: "from-primary to-teal-600",
+    color: "from-primary to-blue-600",
     accentColor: "bg-primary/10 text-primary",
     href: "#",
   },
