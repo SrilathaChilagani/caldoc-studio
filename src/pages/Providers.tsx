@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import heroImage from "@/assets/hero-doctor.jpg";
 
 const allDoctors = [
   {
@@ -200,12 +201,22 @@ const Providers = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      <div className="pt-24 pb-16">
-        <div className="container mx-auto px-6 lg:px-12">
+      {/* Hero-style header */}
+      <section className="relative pt-20 pb-16">
+        <div className="absolute inset-0 h-[340px]">
+          <img
+            src={heroImage}
+            alt="Find a doctor"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background" />
+        </div>
+
+        <div className="container relative mx-auto px-6 lg:px-12 pt-8">
           {/* Back link */}
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors mb-8 text-sm font-medium"
+            className="inline-flex items-center gap-2 text-foreground/80 hover:text-primary transition-colors mb-8 text-sm font-medium"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to home
@@ -221,14 +232,14 @@ const Providers = () => {
             <h1 className="font-serif text-4xl lg:text-5xl text-foreground mb-6">
               Find a doctor
             </h1>
-            <div className="flex gap-3 max-w-3xl">
+            <div className="glass rounded-2xl p-2 shadow-elevated flex gap-2 max-w-3xl">
               <div className="flex-1 relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   placeholder="Search specialties, doctor names, symptoms, or registration number"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="h-12 pl-11 bg-card border-border rounded-xl"
+                  className="h-12 pl-11 bg-background/50 border-0 rounded-xl focus-visible:ring-1"
                 />
               </div>
               <Button className="h-12 px-8 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium">
@@ -246,7 +257,7 @@ const Providers = () => {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="hidden lg:block w-64 shrink-0"
             >
-              <div className="sticky top-28 bg-card rounded-2xl p-6 border border-border">
+              <div className="sticky top-28 glass rounded-2xl p-6 shadow-soft">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="font-semibold text-foreground">Filters</h3>
                   <button
@@ -413,7 +424,7 @@ const Providers = () => {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       <Footer />
     </div>
