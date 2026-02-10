@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Star, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const doctors = [
   {
@@ -143,13 +144,13 @@ export function Doctors() {
           viewport={{ once: true }}
           className="text-center mt-12"
         >
-          <a
-            href="#"
+          <Link
+            to="/providers"
             className="inline-flex items-center gap-2 text-primary font-medium hover:gap-3 transition-all"
           >
             View all doctors
             <ArrowRight className="w-4 h-4" />
-          </a>
+          </Link>
         </motion.div>
       </div>
     </section>

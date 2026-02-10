@@ -2,9 +2,11 @@ import { motion } from "framer-motion";
 import { ChevronDown, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-doctor.jpg";
 
 export function Hero() {
+  const navigate = useNavigate();
   return (
     <section className="relative min-h-screen flex items-center">
       {/* Background Image */}
@@ -54,6 +56,7 @@ export function Hero() {
                 className="h-12 bg-background/50 border-0 rounded-xl sm:max-w-[180px] focus-visible:ring-1"
               />
               <Button
+                onClick={() => navigate("/providers")}
                 className="h-12 px-6 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium whitespace-nowrap"
               >
                 Find a doctor
