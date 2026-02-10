@@ -441,16 +441,20 @@ const Providers = () => {
                         No slots open
                       </p>
                     </div>
-                    <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-6 font-medium">
-                      Book doctor
-                    </Button>
+                    <Link to={`/book/${doctor.name.toLowerCase().replace(/[\s.]+/g, '-').replace(/^dr-/, 'dr-')}`}>
+                      <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-6 font-medium">
+                        Book doctor
+                      </Button>
+                    </Link>
                   </div>
 
                   {/* Mobile book button */}
                   <div className="sm:hidden">
-                    <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl">
-                      Book
-                    </Button>
+                    <Link to={`/book/${doctor.name.toLowerCase().replace(/[\s.]+/g, '-').replace(/^dr-/, 'dr-')}`}>
+                      <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl">
+                        Book
+                      </Button>
+                    </Link>
                   </div>
                 </motion.div>
               ))}
