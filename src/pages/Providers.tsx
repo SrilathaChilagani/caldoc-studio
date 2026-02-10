@@ -1,9 +1,10 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Search, ArrowLeft, Clock, Globe } from "lucide-react";
+import { Search, ArrowLeft, Clock, Globe, SlidersHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Link } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -152,6 +153,75 @@ const availabilityOptions = [
   { label: "Any time", value: "any" },
 ];
 
+const FilterContent = ({
+  selectedAvailability,
+  setSelectedAvailability,
+  selectedConsultation,
+  toggleConsultation,
+  selectedSpecialties,
+  toggleSpecialty,
+  clearAll,
+}: {
+  selectedAvailability: string;
+  setSelectedAvailability: (v: string) => void;
+  selectedConsultation: string[];
+  toggleConsultation: (c: string) => void;
+  selectedSpecialties: string[];
+  toggleSpecialty: (s: string) => void;
+  clearAll: () => void;
+}) => (
+  <>
+    <div className="flex items-center justify-between mb-6">
+      <h3 className="font-semibold text-foreground">Filters</h3>
+      <button onClick={clearAll} className="text-sm text-primary hover:underline">
+        Clear all
+      </button>
+    </div>
+
+    <div className="mb-6">
+      <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Availability</h4>
+      <div className="space-y-2.5">
+        {availabilityOptions.map((opt) => (
+          <label key={opt.value} className="flex items-center gap-2.5 cursor-pointer group">
+            <input
+              type="radio"
+              name="availability"
+              checked={selectedAvailability === opt.value}
+              onChange={() => setSelectedAvailability(opt.value)}
+              className="w-4 h-4 text-primary border-border accent-primary"
+            />
+            <span className="text-sm text-foreground group-hover:text-primary transition-colors">{opt.label}</span>
+          </label>
+        ))}
+      </div>
+    </div>
+
+    <div className="mb-6">
+      <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Consultation Type</h4>
+      <div className="space-y-2.5">
+        {["audio", "video"].map((type) => (
+          <label key={type} className="flex items-center gap-2.5 cursor-pointer group">
+            <Checkbox checked={selectedConsultation.includes(type)} onCheckedChange={() => toggleConsultation(type)} />
+            <span className="text-sm text-foreground group-hover:text-primary transition-colors capitalize">{type} call</span>
+          </label>
+        ))}
+      </div>
+    </div>
+
+    <div>
+      <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Specialty</h4>
+      <div className="space-y-2.5">
+        {specialties.map((s) => (
+          <label key={s} className="flex items-center gap-2.5 cursor-pointer group">
+            <Checkbox checked={selectedSpecialties.includes(s)} onCheckedChange={() => toggleSpecialty(s)} />
+            <span className="text-sm text-foreground group-hover:text-primary transition-colors">{s}</span>
+          </label>
+        ))}
+      </div>
+    </div>
+  </>
+);
+
 const Providers = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
@@ -196,6 +266,8 @@ const Providers = () => {
     setSelectedConsultation([]);
     setSearchQuery("");
   };
+
+  const activeFilterCount = selectedSpecialties.length + selectedConsultation.length + (selectedAvailability !== "any" ? 1 : 0);
 
   return (
     <div className="min-h-screen bg-background">
@@ -248,9 +320,42 @@ const Providers = () => {
             </div>
           </motion.div>
 
+          {/* Mobile Filter Button */}
+          <div className="lg:hidden mb-4">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" className="rounded-xl gap-2 bg-card border-border">
+                  <SlidersHorizontal className="w-4 h-4" />
+                  Filters
+                  {activeFilterCount > 0 && (
+                    <span className="ml-1 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                      {activeFilterCount}
+                    </span>
+                  )}
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-80 bg-background overflow-y-auto">
+                <SheetHeader>
+                  <SheetTitle className="font-serif">Filters</SheetTitle>
+                </SheetHeader>
+                <div className="mt-4">
+                  <FilterContent
+                    selectedAvailability={selectedAvailability}
+                    setSelectedAvailability={setSelectedAvailability}
+                    selectedConsultation={selectedConsultation}
+                    toggleConsultation={toggleConsultation}
+                    selectedSpecialties={selectedSpecialties}
+                    toggleSpecialty={toggleSpecialty}
+                    clearAll={clearAll}
+                  />
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+
           {/* Main Layout */}
           <div className="flex gap-8">
-            {/* Sidebar Filters */}
+            {/* Sidebar Filters - Desktop */}
             <motion.aside
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -258,87 +363,15 @@ const Providers = () => {
               className="hidden lg:block w-64 shrink-0"
             >
               <div className="sticky top-28 glass rounded-2xl p-6 shadow-soft">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="font-semibold text-foreground">Filters</h3>
-                  <button
-                    onClick={clearAll}
-                    className="text-sm text-primary hover:underline"
-                  >
-                    Clear all
-                  </button>
-                </div>
-
-                {/* Availability */}
-                <div className="mb-6">
-                  <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-                    Availability
-                  </h4>
-                  <div className="space-y-2.5">
-                    {availabilityOptions.map((opt) => (
-                      <label
-                        key={opt.value}
-                        className="flex items-center gap-2.5 cursor-pointer group"
-                      >
-                        <input
-                          type="radio"
-                          name="availability"
-                          checked={selectedAvailability === opt.value}
-                          onChange={() => setSelectedAvailability(opt.value)}
-                          className="w-4 h-4 text-primary border-border accent-primary"
-                        />
-                        <span className="text-sm text-foreground group-hover:text-primary transition-colors">
-                          {opt.label}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Consultation Type */}
-                <div className="mb-6">
-                  <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-                    Consultation Type
-                  </h4>
-                  <div className="space-y-2.5">
-                    {["audio", "video"].map((type) => (
-                      <label
-                        key={type}
-                        className="flex items-center gap-2.5 cursor-pointer group"
-                      >
-                        <Checkbox
-                          checked={selectedConsultation.includes(type)}
-                          onCheckedChange={() => toggleConsultation(type)}
-                        />
-                        <span className="text-sm text-foreground group-hover:text-primary transition-colors capitalize">
-                          {type} call
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Specialty */}
-                <div>
-                  <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-                    Specialty
-                  </h4>
-                  <div className="space-y-2.5">
-                    {specialties.map((s) => (
-                      <label
-                        key={s}
-                        className="flex items-center gap-2.5 cursor-pointer group"
-                      >
-                        <Checkbox
-                          checked={selectedSpecialties.includes(s)}
-                          onCheckedChange={() => toggleSpecialty(s)}
-                        />
-                        <span className="text-sm text-foreground group-hover:text-primary transition-colors">
-                          {s}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
+                <FilterContent
+                  selectedAvailability={selectedAvailability}
+                  setSelectedAvailability={setSelectedAvailability}
+                  selectedConsultation={selectedConsultation}
+                  toggleConsultation={toggleConsultation}
+                  selectedSpecialties={selectedSpecialties}
+                  toggleSpecialty={toggleSpecialty}
+                  clearAll={clearAll}
+                />
               </div>
             </motion.aside>
 
