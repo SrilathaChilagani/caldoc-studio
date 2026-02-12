@@ -84,7 +84,7 @@ export function Hero() {
               <Button onClick={() => navigate("/pharmacy")} variant="outline" className="rounded-xl h-11 px-8 border-border bg-background/60 hover:bg-background font-medium">
                 Pharmacy
               </Button>
-              <Button variant="outline" className="rounded-xl h-11 px-8 border-border bg-background/60 hover:bg-background font-medium">
+              <Button onClick={() => navigate("/labs")} variant="outline" className="rounded-xl h-11 px-8 border-border bg-background/60 hover:bg-background font-medium">
                 Labs
               </Button>
             </div>
