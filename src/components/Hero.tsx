@@ -3,10 +3,24 @@ import { ChevronDown, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import heroImage from "@/assets/hero-doctor.jpg";
+import heroImage1 from "@/assets/hero-doctor.jpg";
+import heroImage2 from "@/assets/hero-doctor-2.jpg";
+import heroImage3 from "@/assets/hero-doctor-3.jpg";
+import heroImage4 from "@/assets/hero-doctor-4.jpg";
+import heroImage5 from "@/assets/hero-doctor-5.jpg";
+
+const heroImages = [heroImage1, heroImage2, heroImage3, heroImage4, heroImage5];
+
+function getDailyImage() {
+  const dayOfYear = Math.floor(
+    (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000
+  );
+  return heroImages[dayOfYear % heroImages.length];
+}
 
 export function Hero() {
   const navigate = useNavigate();
+  const heroImage = getDailyImage();
   return (
     <section className="relative min-h-screen flex items-center">
       {/* Background Image */}
