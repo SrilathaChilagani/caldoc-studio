@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Video, Phone, ChevronLeft, ChevronRight } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -40,6 +40,7 @@ const symptoms = ["Fever", "Headache", "Dizziness", "Chest pain", "Sore throat",
 
 const BookDoctor = () => {
   const { doctorSlug } = useParams();
+  const navigate = useNavigate();
   const doctor = allDoctors.find((d) => d.slug === doctorSlug) || allDoctors[0];
   const slots = useMemo(() => generateSlots(), []);
 
@@ -310,7 +311,24 @@ const BookDoctor = () => {
                 {/* Continue Button */}
                 <Button
                   className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium shadow-soft"
-                  disabled={!selectedSlot && selectedSlot !== 0}
+                  disabled={selectedSlot === null || !consent}
+                  onClick={() => {
+                    const slot = slots.find((s) => s.id === selectedSlot);
+                    navigate("/booking-confirmed", {
+                      state: {
+                        doctorName: doctor.name,
+                        specialty: doctor.specialty,
+                        date: slot?.date || "",
+                        time: slot?.time || "",
+                        fee: doctor.fee,
+                        patientName,
+                        mobile,
+                        connectionPref,
+                        symptoms: selectedSymptoms,
+                        notes,
+                      },
+                    });
+                  }}
                 >
                   Continue
                 </Button>
