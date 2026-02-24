@@ -1,10 +1,12 @@
 import { motion } from "framer-motion";
 import { Star, Globe, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link, useNavigate } from "react-router-dom";
 
 const doctors = [
   {
     name: "Dr. Asha Menon",
+    slug: "dr-asha-menon",
     specialty: "Pediatrics",
     rating: 4.9,
     reviews: 128,
@@ -15,6 +17,7 @@ const doctors = [
   },
   {
     name: "Dr. RamaDevi",
+    slug: "dr-ramadevi",
     specialty: "General Medicine",
     qualification: "MBBS, MD",
     rating: 4.8,
@@ -26,6 +29,7 @@ const doctors = [
   },
   {
     name: "Dr. Rohan Iyer",
+    slug: "dr-rohan-iyer",
     specialty: "Dermatology",
     rating: 4.9,
     reviews: 189,
@@ -36,6 +40,7 @@ const doctors = [
   },
   {
     name: "Dr. Priya Sharma",
+    slug: "dr-priya-sharma",
     specialty: "Cardiology",
     qualification: "MBBS, DM",
     rating: 4.7,
@@ -137,12 +142,14 @@ export function FeaturedDoctors() {
                   {doctor.languages.join(", ")}
                 </div>
 
-                <Button
-                  className="w-full bg-primary hover:bg-teal-600 text-primary-foreground"
-                  size="sm"
-                >
-                  Book online
-                </Button>
+                <Link to={`/book/${doctor.slug}`}>
+                  <Button
+                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                    size="sm"
+                  >
+                    Book online
+                  </Button>
+                </Link>
               </div>
             </motion.div>
           ))}
@@ -154,14 +161,16 @@ export function FeaturedDoctors() {
           viewport={{ once: true }}
           className="text-center mt-12"
         >
-          <Button
-            variant="outline"
-            size="lg"
-            className="group border-primary text-primary hover:bg-primary hover:text-primary-foreground"
-          >
-            View all doctors
-            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-          </Button>
+          <Link to="/providers">
+            <Button
+              variant="outline"
+              size="lg"
+              className="group border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+            >
+              View all doctors
+              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </Link>
         </motion.div>
       </div>
     </section>
