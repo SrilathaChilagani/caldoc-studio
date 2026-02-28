@@ -15,6 +15,8 @@ import {
   Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import heroWebapp from "@/assets/hero-webapp.jpg";
 import appMockup1 from "@/assets/app-mockup-1.jpg";
 import appMockup2 from "@/assets/app-mockup-2.jpg";
 import appMockup3 from "@/assets/app-mockup-3.jpg";
@@ -76,114 +78,111 @@ const itemVariants = {
 };
 
 export default function AppDownload() {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <Navbar />
 
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
-        <div className="container relative mx-auto px-6 lg:px-12">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left: Copy */}
-            <motion.div
-              initial={{ opacity: 0, x: -40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7 }}
-            >
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
-                <Smartphone className="w-4 h-4" />
-                Now on Android & iOS
-              </span>
-              <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground leading-tight mb-6">
-                Your doctor,
-                <br />
-                <span className="text-primary">in your pocket.</span>
-              </h1>
-              <p className="text-lg text-muted-foreground max-w-md mb-8 leading-relaxed">
-                Book teleconsultations, manage prescriptions, and access your health records — all from the CalDoc app.
-              </p>
-
-              {/* Download Buttons */}
-              <div className="flex flex-wrap gap-4 mb-8">
-                <Button
-                  size="lg"
-                  className="h-14 px-8 bg-foreground hover:bg-foreground/90 text-background rounded-2xl font-medium gap-3"
-                >
-                  <Download className="w-5 h-5" />
-                  <div className="text-left">
-                    <span className="text-[10px] block opacity-70 leading-none">GET IT ON</span>
-                    <span className="text-sm font-semibold leading-tight">Google Play</span>
-                  </div>
-                </Button>
-                <Button
-                  size="lg"
-                  className="h-14 px-8 bg-foreground hover:bg-foreground/90 text-background rounded-2xl font-medium gap-3"
-                >
-                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
-                  </svg>
-                  <div className="text-left">
-                    <span className="text-[10px] block opacity-70 leading-none">Download on the</span>
-                    <span className="text-sm font-semibold leading-tight">App Store</span>
-                  </div>
-                </Button>
-              </div>
-
-              {/* Trust line */}
-              <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                <div className="flex -space-x-2">
-                  {["AM", "RD", "PS"].map((init) => (
-                    <div
-                      key={init}
-                      className="w-8 h-8 rounded-full bg-primary/10 border-2 border-background flex items-center justify-center text-xs font-medium text-primary"
-                    >
-                      {init}
-                    </div>
-                  ))}
-                </div>
-                <span>Trusted by 500K+ patients across India</span>
-              </div>
-            </motion.div>
-
-            {/* Right: Phone mockup */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative flex justify-center"
-            >
-              <div className="relative">
-                <img
-                  src={appMockup1}
-                  alt="CalDoc app appointment booking screen"
-                  className="w-64 md:w-72 rounded-[2rem] shadow-elevated"
-                />
-                {/* Floating badge */}
-                <motion.div
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                  className="absolute -right-8 top-20 glass rounded-2xl p-4 shadow-soft"
-                >
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-primary" />
-                    <span className="text-sm font-medium text-foreground">Appointment Booked!</span>
-                  </div>
-                </motion.div>
-                <motion.div
-                  animate={{ y: [0, 8, 0] }}
-                  transition={{ duration: 3.5, repeat: Infinity }}
-                  className="absolute -left-8 bottom-32 glass rounded-2xl p-4 shadow-soft"
-                >
-                  <div className="flex items-center gap-2">
-                    <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                    <span className="text-sm font-medium text-foreground">4.8 Rating</span>
-                  </div>
-                </motion.div>
-              </div>
-            </motion.div>
-          </div>
+      {/* Full-Screen Immersive Hero */}
+      <section className="relative min-h-screen flex items-center justify-center">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src={heroWebapp}
+            alt="Telemedicine consultation on laptop"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/40 to-foreground/20" />
         </div>
+
+        <div className="container relative mx-auto px-6 lg:px-12 text-center pt-20">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="max-w-3xl mx-auto"
+          >
+            <motion.span
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full glass-dark text-background text-sm font-medium mb-8"
+            >
+              <Smartphone className="w-4 h-4" />
+              CalDoc Web App — Available Now
+            </motion.span>
+
+            <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl text-background leading-tight mb-6">
+              Healthcare that
+              <br />
+              comes to <span className="text-primary">you.</span>
+            </h1>
+
+            <p className="text-lg md:text-xl text-background/70 max-w-xl mx-auto mb-10 leading-relaxed">
+              Book teleconsultations, manage prescriptions, and access your complete health records — right from your browser.
+            </p>
+
+            {/* CTAs */}
+            <div className="flex flex-wrap justify-center gap-4 mb-10">
+              <Button
+                size="lg"
+                onClick={() => navigate("/providers")}
+                className="h-14 px-10 bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-medium text-base"
+              >
+                Find a Doctor
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="h-14 px-10 rounded-2xl font-medium text-base border-2 border-background/50 text-background bg-background/10 hover:bg-background/20 hover:text-background"
+              >
+                Watch Demo
+                <Video className="w-5 h-5 ml-2" />
+              </Button>
+            </div>
+
+            {/* Trust badges */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="flex flex-wrap justify-center items-center gap-6 text-sm text-background/60"
+            >
+              <span className="flex items-center gap-2">
+                <Shield className="w-4 h-4" />
+                End-to-end encrypted
+              </span>
+              <span className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4" />
+                500K+ consultations
+              </span>
+              <span className="flex items-center gap-2">
+                <Star className="w-4 h-4 fill-current" />
+                4.8 average rating
+              </span>
+            </motion.div>
+          </motion.div>
+        </div>
+
+        {/* Bottom scroll indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        >
+          <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+            className="flex flex-col items-center text-background/50"
+          >
+            <span className="text-sm mb-2">Explore</span>
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* Stats Bar */}
