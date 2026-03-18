@@ -100,7 +100,7 @@ export default function AppDownload() {
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6"
               >
                 <Smartphone className="w-4 h-4" />
-                Healthcare · Anytime · Anywhere
+                Web App & Mobile App
               </motion.span>
 
               <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground leading-tight mb-6">
