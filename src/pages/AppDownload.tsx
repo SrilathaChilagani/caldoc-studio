@@ -164,13 +164,13 @@ export default function AppDownload() {
             >
               <div className="w-full max-w-sm rounded-[2rem] bg-primary p-8 shadow-elevated text-primary-foreground">
                 <span className="text-xs font-medium tracking-wider uppercase opacity-70">
-                  CalDoc Web App
+                  CalDoc · Web & Mobile
                 </span>
                 <h2 className="font-serif text-3xl mt-3 mb-4 leading-snug">
                   Healthcare that comes to you.
                 </h2>
                 <p className="text-sm opacity-70 mb-8 leading-relaxed">
-                  Book teleconsultations, manage prescriptions, and access your complete health records — right from your browser.
+                  Book teleconsultations, manage prescriptions, and access your health records — on any device.
                 </p>
 
                 {/* Stats row */}
