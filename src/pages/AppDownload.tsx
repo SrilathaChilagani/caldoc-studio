@@ -110,7 +110,7 @@ export default function AppDownload() {
               </h1>
 
               <p className="text-lg text-muted-foreground max-w-lg mb-8 leading-relaxed">
-                Consult certified doctors, order lab tests, and get medicines delivered — all from your phone.
+                Consult certified doctors, order lab tests, and get medicines delivered — from your browser or mobile app.
               </p>
 
               {/* CTAs */}
