@@ -120,7 +120,7 @@ export default function AppDownload() {
                   onClick={() => navigate("/providers")}
                   className="h-13 px-8 bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-medium text-base"
                 >
-                  Find a Doctor
+                  Use Web App
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
                 <Button
@@ -128,8 +128,8 @@ export default function AppDownload() {
                   variant="outline"
                   className="h-13 px-8 rounded-2xl font-medium text-base border-border"
                 >
-                  Watch Demo
-                  <Video className="w-5 h-5 ml-2" />
+                  <Download className="w-5 h-5 mr-2" />
+                  Download App
                 </Button>
               </div>
 
