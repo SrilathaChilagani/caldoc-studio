@@ -83,106 +83,120 @@ export default function AppDownload() {
     <div className="min-h-screen bg-background overflow-x-hidden">
       <Navbar />
 
-      {/* Full-Screen Immersive Hero */}
-      <section className="relative min-h-screen flex items-center justify-center">
-        {/* Background Image */}
-        <div className="absolute inset-0">
-          <img
-            src={heroWebapp}
-            alt="Telemedicine consultation on laptop"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/40 to-foreground/20" />
-        </div>
-
-        <div className="container relative mx-auto px-6 lg:px-12 text-center pt-20">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-3xl mx-auto"
-          >
-            <motion.span
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full glass-dark text-background text-sm font-medium mb-8"
-            >
-              <Smartphone className="w-4 h-4" />
-              CalDoc Web App — Available Now
-            </motion.span>
-
-            <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl text-background leading-tight mb-6">
-              Healthcare that
-              <br />
-              comes to <span className="text-primary">you.</span>
-            </h1>
-
-            <p className="text-lg md:text-xl text-background/70 max-w-xl mx-auto mb-10 leading-relaxed">
-              Book teleconsultations, manage prescriptions, and access your complete health records — right from your browser.
-            </p>
-
-            {/* CTAs */}
-            <div className="flex flex-wrap justify-center gap-4 mb-10">
-              <Button
-                size="lg"
-                onClick={() => navigate("/providers")}
-                className="h-14 px-10 bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-medium text-base"
-              >
-                Find a Doctor
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="h-14 px-10 rounded-2xl font-medium text-base border-2 border-background/50 text-background bg-background/10 hover:bg-background/20 hover:text-background"
-              >
-                Watch Demo
-                <Video className="w-5 h-5 ml-2" />
-              </Button>
-            </div>
-
-            {/* Trust badges */}
+      {/* Hero Section */}
+      <section className="relative pt-28 pb-20 lg:pt-36 lg:pb-28 bg-background">
+        <div className="container mx-auto px-6 lg:px-12">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left: Text Content */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="flex flex-wrap justify-center items-center gap-6 text-sm text-background/60"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
             >
-              <span className="flex items-center gap-2">
-                <Shield className="w-4 h-4" />
-                End-to-end encrypted
-              </span>
-              <span className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4" />
-                500K+ consultations
-              </span>
-              <span className="flex items-center gap-2">
-                <Star className="w-4 h-4 fill-current" />
-                4.8 average rating
-              </span>
-            </motion.div>
-          </motion.div>
-        </div>
+              <motion.span
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2 }}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6"
+              >
+                <Smartphone className="w-4 h-4" />
+                Healthcare · Anytime · Anywhere
+              </motion.span>
 
-        {/* Bottom scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
-        >
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-            className="flex flex-col items-center text-background/50"
-          >
-            <span className="text-sm mb-2">Explore</span>
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
-          </motion.div>
-        </motion.div>
+              <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground leading-tight mb-6">
+                A doctor in
+                <br />
+                your <span className="text-primary">pocket.</span>
+              </h1>
+
+              <p className="text-lg text-muted-foreground max-w-lg mb-8 leading-relaxed">
+                Consult certified doctors, order lab tests, and get medicines delivered — all from your phone.
+              </p>
+
+              {/* CTAs */}
+              <div className="flex flex-wrap gap-4 mb-8">
+                <Button
+                  size="lg"
+                  onClick={() => navigate("/providers")}
+                  className="h-13 px-8 bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-medium text-base"
+                >
+                  Find a Doctor
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="h-13 px-8 rounded-2xl font-medium text-base border-border"
+                >
+                  Watch Demo
+                  <Video className="w-5 h-5 ml-2" />
+                </Button>
+              </div>
+
+              {/* Trust badges */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground"
+              >
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-primary" />
+                  End-to-end encrypted
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-primary" />
+                  500K+ consultations
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-primary" />
+                  4.8 avg rating
+                </span>
+              </motion.div>
+            </motion.div>
+
+            {/* Right: App Card Preview */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="flex justify-center"
+            >
+              <div className="w-full max-w-sm rounded-[2rem] bg-primary p-8 shadow-elevated text-primary-foreground">
+                <span className="text-xs font-medium tracking-wider uppercase opacity-70">
+                  CalDoc Web App
+                </span>
+                <h2 className="font-serif text-3xl mt-3 mb-4 leading-snug">
+                  Healthcare that comes to you.
+                </h2>
+                <p className="text-sm opacity-70 mb-8 leading-relaxed">
+                  Book teleconsultations, manage prescriptions, and access your complete health records — right from your browser.
+                </p>
+
+                {/* Stats row */}
+                <div className="flex items-center gap-0">
+                  <div className="flex-1 text-center">
+                    <span className="text-2xl font-serif font-bold">500+</span>
+                    <span className="block text-xs opacity-60 mt-1">Consults</span>
+                  </div>
+                  <div className="w-px h-10 bg-primary-foreground/20" />
+                  <div className="flex-1 text-center">
+                    <span className="text-2xl font-serif font-bold">12+</span>
+                    <span className="block text-xs opacity-60 mt-1">Doctors</span>
+                  </div>
+                  <div className="w-px h-10 bg-primary-foreground/20" />
+                  <div className="flex-1 text-center">
+                    <div className="flex items-center justify-center gap-1">
+                      <span className="text-2xl font-serif font-bold">4.8</span>
+                      <Star className="w-4 h-4 fill-current" />
+                    </div>
+                    <span className="block text-xs opacity-60 mt-1">Rating</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
       </section>
 
       {/* Stats Bar */}
