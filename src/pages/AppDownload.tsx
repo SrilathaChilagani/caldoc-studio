@@ -100,7 +100,7 @@ export default function AppDownload() {
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6"
               >
                 <Smartphone className="w-4 h-4" />
-                Healthcare · Anytime · Anywhere
+                Web App & Mobile App
               </motion.span>
 
               <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground leading-tight mb-6">
@@ -110,7 +110,7 @@ export default function AppDownload() {
               </h1>
 
               <p className="text-lg text-muted-foreground max-w-lg mb-8 leading-relaxed">
-                Consult certified doctors, order lab tests, and get medicines delivered — all from your phone.
+                Consult certified doctors, order lab tests, and get medicines delivered — from your browser or mobile app.
               </p>
 
               {/* CTAs */}
@@ -120,7 +120,7 @@ export default function AppDownload() {
                   onClick={() => navigate("/providers")}
                   className="h-13 px-8 bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-medium text-base"
                 >
-                  Find a Doctor
+                  Use Web App
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
                 <Button
@@ -128,8 +128,8 @@ export default function AppDownload() {
                   variant="outline"
                   className="h-13 px-8 rounded-2xl font-medium text-base border-border"
                 >
-                  Watch Demo
-                  <Video className="w-5 h-5 ml-2" />
+                  <Download className="w-5 h-5 mr-2" />
+                  Download App
                 </Button>
               </div>
 
@@ -164,13 +164,13 @@ export default function AppDownload() {
             >
               <div className="w-full max-w-sm rounded-[2rem] bg-primary p-8 shadow-elevated text-primary-foreground">
                 <span className="text-xs font-medium tracking-wider uppercase opacity-70">
-                  CalDoc Web App
+                  CalDoc · Web & Mobile
                 </span>
                 <h2 className="font-serif text-3xl mt-3 mb-4 leading-snug">
                   Healthcare that comes to you.
                 </h2>
                 <p className="text-sm opacity-70 mb-8 leading-relaxed">
-                  Book teleconsultations, manage prescriptions, and access your complete health records — right from your browser.
+                  Book teleconsultations, manage prescriptions, and access your health records — on any device.
                 </p>
 
                 {/* Stats row */}
