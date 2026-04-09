@@ -14,13 +14,242 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      campaigns: {
+        Row: {
+          beneficiaries_served: number
+          created_at: string
+          districts: string[]
+          end_date: string
+          id: string
+          name: string
+          ngo_id: string
+          start_date: string
+          status: string
+          target_beneficiaries: number
+          updated_at: string
+          volunteer_count: number
+        }
+        Insert: {
+          beneficiaries_served?: number
+          created_at?: string
+          districts?: string[]
+          end_date: string
+          id?: string
+          name: string
+          ngo_id: string
+          start_date: string
+          status?: string
+          target_beneficiaries?: number
+          updated_at?: string
+          volunteer_count?: number
+        }
+        Update: {
+          beneficiaries_served?: number
+          created_at?: string
+          districts?: string[]
+          end_date?: string
+          id?: string
+          name?: string
+          ngo_id?: string
+          start_date?: string
+          status?: string
+          target_beneficiaries?: number
+          updated_at?: string
+          volunteer_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaigns_ngo_id_fkey"
+            columns: ["ngo_id"]
+            isOneToOne: false
+            referencedRelation: "ngos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ngo_members: {
+        Row: {
+          created_at: string
+          id: string
+          ngo_id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          ngo_id: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          ngo_id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ngo_members_ngo_id_fkey"
+            columns: ["ngo_id"]
+            isOneToOne: false
+            referencedRelation: "ngos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ngo_reservations: {
+        Row: {
+          amount_paise: number
+          created_at: string
+          fee_paise: number | null
+          friendly_id: string
+          has_prescription: boolean
+          has_receipt: boolean
+          id: string
+          ngo_id: string
+          notes: string | null
+          patient_email: string | null
+          patient_name: string | null
+          patient_phone: string | null
+          provider_name: string
+          slot_time: string | null
+          speciality: string | null
+          status: string
+          updated_at: string
+          visit_mode: string | null
+        }
+        Insert: {
+          amount_paise?: number
+          created_at?: string
+          fee_paise?: number | null
+          friendly_id: string
+          has_prescription?: boolean
+          has_receipt?: boolean
+          id?: string
+          ngo_id: string
+          notes?: string | null
+          patient_email?: string | null
+          patient_name?: string | null
+          patient_phone?: string | null
+          provider_name: string
+          slot_time?: string | null
+          speciality?: string | null
+          status?: string
+          updated_at?: string
+          visit_mode?: string | null
+        }
+        Update: {
+          amount_paise?: number
+          created_at?: string
+          fee_paise?: number | null
+          friendly_id?: string
+          has_prescription?: boolean
+          has_receipt?: boolean
+          id?: string
+          ngo_id?: string
+          notes?: string | null
+          patient_email?: string | null
+          patient_name?: string | null
+          patient_phone?: string | null
+          provider_name?: string
+          slot_time?: string | null
+          speciality?: string | null
+          status?: string
+          updated_at?: string
+          visit_mode?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ngo_reservations_ngo_id_fkey"
+            columns: ["ngo_id"]
+            isOneToOne: false
+            referencedRelation: "ngos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ngos: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      volunteers: {
+        Row: {
+          campaign_count: number
+          created_at: string
+          district: string | null
+          email: string | null
+          id: string
+          name: string
+          ngo_id: string
+          phone: string | null
+          role: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          campaign_count?: number
+          created_at?: string
+          district?: string | null
+          email?: string | null
+          id?: string
+          name: string
+          ngo_id: string
+          phone?: string | null
+          role?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          campaign_count?: number
+          created_at?: string
+          district?: string | null
+          email?: string | null
+          id?: string
+          name?: string
+          ngo_id?: string
+          phone?: string | null
+          role?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "volunteers_ngo_id_fkey"
+            columns: ["ngo_id"]
+            isOneToOne: false
+            referencedRelation: "ngos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_ngo_id: { Args: never; Returns: string }
     }
     Enums: {
       [_ in never]: never
