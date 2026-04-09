@@ -5,12 +5,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/Layout";
-import { LayoutDashboard, Grid3X3, HeartHandshake, Phone, Settings } from "lucide-react";
+import { LayoutDashboard, Grid3X3, HeartHandshake, Phone, Settings, Users } from "lucide-react";
+import { UserRolesTab } from "@/components/admin/UserRolesTab";
 import { useAppAuth } from "@/contexts/AppAuthContext";
 
 const portalTabs = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "sections", label: "Sections", icon: Grid3X3 },
+  { id: "users", label: "Users", icon: Users },
   { id: "ngo", label: "NGO Bookings", icon: HeartHandshake },
   { id: "queue", label: "Telephonic Queue", icon: Phone },
   { id: "settings", label: "Settings", icon: Settings },
@@ -150,6 +152,9 @@ const AdminPortal = () => {
                 </CardContent>
               </Card>
             )}
+
+            {/* Users tab */}
+            {activeTab === "users" && <UserRolesTab />}
 
             {/* NGO Bookings tab */}
             {activeTab === "ngo" && (
