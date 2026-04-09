@@ -21,7 +21,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Layout } from "@/components/Layout";
 import { format, addDays } from "date-fns";
-import { useDoctors, type Doctor } from "@/hooks/useDoctors";
+import { useDoctors } from "@/hooks/useDoctors";
+import type { Doctor } from "@/hooks/useDoctors";
 
 // ── Data ──────────────────────────────────────────────
 const specialties = [
