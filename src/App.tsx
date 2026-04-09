@@ -48,6 +48,7 @@ const App = () => (
               <Route path="/labs" element={<Labs />} />
               <Route path="/app" element={<AppDownload />} />
               <Route path="/schedule" element={<Schedule />} />
+              <Route path="/enroll/provider" element={<ProviderEnrollment />} />
               <Route path="/login" element={<PortalLogin />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
