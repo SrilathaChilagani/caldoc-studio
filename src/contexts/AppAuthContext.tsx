@@ -9,7 +9,7 @@ type AppAuthContextType = {
   roles: string[];
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
-  signUp: (email: string, password: string, displayName: string) => Promise<{ error: string | null }>;
+  signUp: (email: string, password: string, displayName: string, portal?: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
   hasRole: (role: string) => boolean;
 };
@@ -68,13 +68,13 @@ export function AppAuthProvider({ children }: { children: ReactNode }) {
     return { error: error?.message || null };
   }
 
-  async function signUp(email: string, password: string, displayName: string) {
+  async function signUp(email: string, password: string, displayName: string, portal?: string) {
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         emailRedirectTo: window.location.origin,
-        data: { display_name: displayName },
+        data: { display_name: displayName, ...(portal ? { portal } : {}) },
       },
     });
     return { error: error?.message || null };
