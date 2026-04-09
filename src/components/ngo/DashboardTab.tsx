@@ -54,13 +54,14 @@ const thCls = "px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide
 const tdCls = "px-3 py-3 align-middle";
 
 type Props = {
+  ngoId: string;
   startDate: string;
   endDate: string;
   setStartDate: (v: string) => void;
   setEndDate: (v: string) => void;
 };
 
-export function DashboardTab({ startDate, endDate, setStartDate, setEndDate }: Props) {
+export function DashboardTab({ ngoId, startDate, endDate, setStartDate, setEndDate }: Props) {
   return (
     <div className="space-y-6">
       {/* KPI cards */}
