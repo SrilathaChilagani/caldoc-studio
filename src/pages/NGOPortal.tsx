@@ -4,6 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Layout } from "@/components/Layout";
+import { AssignPatientDialog } from "@/components/ngo/AssignPatientDialog";
+import { EditReservationDialog } from "@/components/ngo/EditReservationDialog";
+import { ReleaseSlotButton } from "@/components/ngo/ReleaseSlotButton";
+import { ChangePasswordDialog } from "@/components/ngo/ChangePasswordDialog";
 
 function formatCurrency(paise: number) {
   return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", minimumFractionDigits: 2 }).format(paise / 100);
@@ -14,6 +18,13 @@ function formatSlot(date: Date | null) {
   return new Intl.DateTimeFormat("en-IN", {
     timeZone: "Asia/Kolkata", weekday: "short", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit",
   }).format(date);
+}
+
+function formatRangeLabel(start: string, end: string) {
+  const s = new Date(start);
+  const e = new Date(end);
+  const fmt = (d: Date) => d.toLocaleDateString("en-IN", { day: "2-digit", month: "short" });
+  return `${fmt(s)} – ${fmt(e)}`;
 }
 
 const mockNgo = { name: "Health For All Foundation" };
@@ -34,9 +45,9 @@ const specialityBreakdown = [
 ];
 
 const heldReservations = [
-  { id: "hr1", friendlyId: "NGO-101", providerName: "Dr. Rajesh Kumar", speciality: "General Medicine", slotTime: new Date("2026-04-12T10:00:00"), amountPaise: 50000 },
-  { id: "hr2", friendlyId: "NGO-102", providerName: "Dr. Sunitha Reddy", speciality: "Dermatology", slotTime: new Date("2026-04-12T14:30:00"), amountPaise: 80000 },
-  { id: "hr3", friendlyId: "NGO-103", providerName: "Dr. Venkat Rao", speciality: "Cardiology", slotTime: new Date("2026-04-13T11:00:00"), amountPaise: 100000 },
+  { id: "hr1", friendlyId: "NGO-101", providerName: "Dr. Rajesh Kumar", speciality: "General Medicine", slotTime: new Date("2026-04-12T10:00:00"), amountPaise: 50000, notes: "" },
+  { id: "hr2", friendlyId: "NGO-102", providerName: "Dr. Sunitha Reddy", speciality: "Dermatology", slotTime: new Date("2026-04-12T14:30:00"), amountPaise: 80000, notes: "" },
+  { id: "hr3", friendlyId: "NGO-103", providerName: "Dr. Venkat Rao", speciality: "Cardiology", slotTime: new Date("2026-04-13T11:00:00"), amountPaise: 100000, notes: "Priority case" },
 ];
 
 const confirmedAppointments = [
@@ -58,6 +69,8 @@ const NGOPortal = () => {
   const [startDate, setStartDate] = useState("2026-04-09");
   const [endDate, setEndDate] = useState("2026-04-16");
 
+  const rangeLabel = formatRangeLabel(startDate, endDate);
+
   return (
     <Layout>
       <section className="pt-24 pb-10">
@@ -69,11 +82,12 @@ const NGOPortal = () => {
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">NGO dashboard</p>
                 <h1 className="mt-0.5 text-2xl sm:text-3xl font-semibold text-foreground">{mockNgo.name}</h1>
                 <p className="mt-1 text-sm text-muted-foreground">Track every appointment booked under your programmes.</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">Showing reservations between {rangeLabel}</p>
               </div>
               <div className="flex flex-wrap items-center gap-3">
                 <Button variant="outline" className="rounded-full text-primary border-primary/40">+ New booking</Button>
                 <Button variant="outline" className="rounded-full text-primary border-primary/40">Download invoice</Button>
-                <Button variant="outline" className="rounded-full">Change password</Button>
+                <ChangePasswordDialog />
                 <Button className="rounded-full">Sign out</Button>
               </div>
             </div>
@@ -98,13 +112,13 @@ const NGOPortal = () => {
               <CardContent className="p-5">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
                   <div className="flex-1">
-                    <label className="text-xs font-semibold text-muted-foreground">From</label>
-                    <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)}
+                    <label className="text-xs font-semibold text-muted-foreground" htmlFor="ngo-start-date">From</label>
+                    <input id="ngo-start-date" type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)}
                       className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/30" />
                   </div>
                   <div className="flex-1">
-                    <label className="text-xs font-semibold text-muted-foreground">To</label>
-                    <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)}
+                    <label className="text-xs font-semibold text-muted-foreground" htmlFor="ngo-end-date">To</label>
+                    <input id="ngo-end-date" type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)}
                       className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/30" />
                   </div>
                   <Button className="rounded-full">Update range</Button>
@@ -126,6 +140,9 @@ const NGOPortal = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
+                      {specialityBreakdown.length === 0 && (
+                        <tr><td colSpan={2} className="px-3 py-4 text-center text-sm text-muted-foreground">No reservations within this date range.</td></tr>
+                      )}
                       {specialityBreakdown.map((row) => (
                         <tr key={row.speciality}>
                           <td className={tdCls}>{row.speciality}</td>
@@ -163,6 +180,9 @@ const NGOPortal = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
+                      {heldReservations.length === 0 && (
+                        <tr><td colSpan={6} className="px-3 py-6 text-center text-sm text-muted-foreground">No held reservations at the moment.</td></tr>
+                      )}
                       {heldReservations.map((r) => (
                         <tr key={r.id}>
                           <td className={`${tdCls} font-mono text-xs text-muted-foreground`}>{r.friendlyId}</td>
@@ -173,10 +193,19 @@ const NGOPortal = () => {
                           <td className={`${tdCls} whitespace-nowrap text-xs`}>{formatSlot(r.slotTime)}</td>
                           <td className={`${tdCls} text-right font-semibold`}>{formatCurrency(r.amountPaise)}</td>
                           <td className={`${tdCls} space-y-1.5`}>
-                            <Button size="sm" className="rounded-full text-xs w-full">Assign patient</Button>
+                            <AssignPatientDialog
+                              reservationId={r.id}
+                              friendlyId={r.friendlyId}
+                              providerName={r.providerName}
+                              slotTime={formatSlot(r.slotTime)}
+                            />
                             <div className="flex gap-1.5">
-                              <Button size="sm" variant="outline" className="rounded-full text-xs flex-1">Edit</Button>
-                              <Button size="sm" variant="outline" className="rounded-full text-xs flex-1 text-destructive border-destructive/30">Release</Button>
+                              <EditReservationDialog
+                                reservationId={r.id}
+                                initialAmountPaise={r.amountPaise}
+                                initialNotes={r.notes}
+                              />
+                              <ReleaseSlotButton reservationId={r.id} />
                             </div>
                           </td>
                         </tr>
@@ -214,6 +243,9 @@ const NGOPortal = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
+                      {confirmedAppointments.length === 0 && (
+                        <tr><td colSpan={8} className="px-3 py-6 text-center text-sm text-muted-foreground">No confirmed bookings yet. Assign patients to your held slots above.</td></tr>
+                      )}
                       {confirmedAppointments.map((appt) => (
                         <tr key={appt.id}>
                           <td className={`${tdCls} font-mono text-xs text-muted-foreground`}>{appt.friendlyId}</td>
