@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Search, ArrowLeft, Clock, Globe, SlidersHorizontal } from "lucide-react";
+import { Search, ArrowLeft, Clock, Globe, SlidersHorizontal, Loader2, Video, Phone } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -8,128 +8,13 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Link } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import heroImage from "@/assets/hero-doctor.jpg";
+import { useDoctors } from "@/hooks/useDoctors";
 
-const allDoctors = [
-  {
-    name: "Dr. Asha Menon",
-    specialty: "Pediatrics",
-    gender: "Female",
-    experience: "12+ years",
-    languages: ["English", "Hindi", "Malayalam"],
-    fee: 499,
-    available24x7: true,
-    consultationType: ["video"],
-    initials: "AM",
-    gradient: "from-primary to-blue-400",
-  },
-  {
-    name: "Dr. Farhan Siddiqui",
-    specialty: "Gastroenterology",
-    gender: "Male",
-    experience: "10+ years",
-    languages: ["English", "Hindi", "Urdu"],
-    fee: 499,
-    available24x7: false,
-    consultationType: ["video", "audio"],
-    initials: "FS",
-    gradient: "from-emerald-500 to-teal-400",
-  },
-  {
-    name: "Dr. Geeta Balakrishnan",
-    specialty: "Neurology",
-    gender: "Female",
-    experience: "15+ years",
-    languages: ["English", "Malayalam"],
-    fee: 499,
-    available24x7: false,
-    consultationType: ["video"],
-    initials: "GB",
-    gradient: "from-violet-500 to-purple-400",
-  },
-  {
-    name: "Dr. Kavya Rao",
-    specialty: "Cardiology",
-    gender: "Female",
-    experience: "18+ years",
-    languages: ["English", "Hindi", "Telugu"],
-    fee: 499,
-    available24x7: true,
-    consultationType: ["video", "audio"],
-    initials: "KR",
-    gradient: "from-rose-500 to-pink-400",
-  },
-  {
-    name: "Dr. Lidiya Thomas",
-    specialty: "Endocrinology",
-    gender: "Female",
-    experience: "8+ years",
-    languages: ["English", "Malayalam", "Tamil"],
-    fee: 499,
-    available24x7: true,
-    consultationType: ["video"],
-    initials: "LT",
-    gradient: "from-amber-500 to-orange-400",
-  },
-  {
-    name: "Dr. RamaDevi",
-    specialty: "General Medicine",
-    gender: "Female",
-    experience: "20+ years",
-    languages: ["English", "Telugu"],
-    fee: 499,
-    available24x7: false,
-    consultationType: ["video", "audio"],
-    initials: "RD",
-    gradient: "from-accent to-orange-400",
-  },
-  {
-    name: "Dr. Rohan Iyer",
-    specialty: "Dermatology",
-    gender: "Male",
-    experience: "12+ years",
-    languages: ["English", "Marathi"],
-    fee: 499,
-    available24x7: false,
-    consultationType: ["video"],
-    initials: "RI",
-    gradient: "from-sky-500 to-cyan-400",
-  },
-  {
-    name: "Dr. Priya Sharma",
-    specialty: "Psychiatry",
-    gender: "Female",
-    experience: "14+ years",
-    languages: ["English", "Hindi"],
-    fee: 599,
-    available24x7: true,
-    consultationType: ["video", "audio"],
-    initials: "PS",
-    gradient: "from-indigo-500 to-blue-400",
-  },
-  {
-    name: "Dr. Suresh Nair",
-    specialty: "Orthopedics",
-    gender: "Male",
-    experience: "22+ years",
-    languages: ["English", "Hindi", "Malayalam"],
-    fee: 599,
-    available24x7: false,
-    consultationType: ["video"],
-    initials: "SN",
-    gradient: "from-lime-600 to-green-400",
-  },
-  {
-    name: "Dr. Meena Krishnan",
-    specialty: "ENT",
-    gender: "Female",
-    experience: "16+ years",
-    languages: ["English", "Tamil"],
-    fee: 499,
-    available24x7: false,
-    consultationType: ["audio"],
-    initials: "MK",
-    gradient: "from-fuchsia-500 to-pink-400",
-  },
+const gradients = [
+  "from-primary to-blue-400", "from-emerald-500 to-teal-400", "from-violet-500 to-purple-400",
+  "from-rose-500 to-pink-400", "from-amber-500 to-orange-400", "from-accent to-orange-400",
+  "from-sky-500 to-cyan-400", "from-indigo-500 to-blue-400", "from-lime-600 to-green-400",
+  "from-fuchsia-500 to-pink-400",
 ];
 
 const specialties = [
