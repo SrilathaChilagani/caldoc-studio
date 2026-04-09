@@ -19,6 +19,8 @@ import AdminPortal from "./pages/AdminPortal";
 import NGOPortal from "./pages/NGOPortal";
 import NgoLogin from "./pages/NgoLogin";
 import PortalLogin from "./pages/PortalLogin";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import PharmacyPortal from "./pages/PharmacyPortal";
 import LabsPortal from "./pages/LabsPortal";
 import NotFound from "./pages/NotFound";
@@ -43,6 +45,8 @@ const App = () => (
               <Route path="/app" element={<AppDownload />} />
               <Route path="/schedule" element={<Schedule />} />
               <Route path="/login" element={<PortalLogin />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/patient-portal" element={<PatientPortal />} />
               <Route path="/provider-portal" element={<ProviderPortal />} />
               <Route path="/admin-portal" element={<AdminPortal />} />
