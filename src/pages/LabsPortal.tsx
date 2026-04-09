@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Layout } from "@/components/Layout";
-import { LayoutDashboard, Users, FileText, Settings } from "lucide-react";
+import { LayoutDashboard, Users, FileText, Settings, Loader2 } from "lucide-react";
 import { useAppAuth } from "@/contexts/AppAuthContext";
+import { useLabOrders, useLabAgents } from "@/hooks/useLabs";
 
 const portalTabs = [
   { id: "orders", label: "Lab Orders", icon: LayoutDashboard },
@@ -66,6 +67,8 @@ const LabsPortal = () => {
   const { signOut } = useAppAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("orders");
+  const { data: dbLabOrders = [] } = useLabOrders();
+  const { data: dbAgents = [] } = useLabAgents();
 
   return (
     <Layout>
