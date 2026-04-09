@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ChevronDown, Search } from "lucide-react";
+import { Search, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -27,105 +27,83 @@ function getDailyImage() {
 export function Hero() {
   const navigate = useNavigate();
   const heroImage = getDailyImage();
+
   return (
-    <section className="relative min-h-screen flex items-center">
-      {/* Background Image */}
+    <section className="relative min-h-[90vh] flex items-center">
       <div className="absolute inset-0">
         <img
           src={heroImage}
           alt="Doctor consultation"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/70 to-background/20" />
       </div>
 
-      <div className="container relative mx-auto px-6 lg:px-12 py-32">
+      <div className="container relative mx-auto px-6 lg:px-16 pt-24 pb-16">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="max-w-2xl"
+          transition={{ duration: 0.6 }}
+          className="max-w-xl"
         >
-          <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl text-foreground leading-tight mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 rounded-full mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+            <span className="text-xs font-medium text-primary">Telemedicine platform</span>
+          </div>
+
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground leading-[1.1] mb-5 tracking-tight">
             Book your
             <br />
             <span className="text-primary">teleconsultations</span>
             <br />
             today.
           </h1>
-          <p className="text-lg text-muted-foreground max-w-lg mb-10 leading-relaxed">
-            Search by specialty, doctor name, or diagnosis to find the right care.
+          <p className="text-base text-muted-foreground max-w-md mb-8">
+            Search by specialty, doctor name, or diagnosis to find the right care — anytime, anywhere.
           </p>
 
           {/* Search Bar */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            <div className="glass rounded-2xl p-2 shadow-elevated flex flex-col sm:flex-row gap-2 max-w-xl">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search doctors, specialties, symptoms..."
-                  className="h-12 pl-10 bg-background/50 border-0 rounded-xl focus-visible:ring-1"
-                />
-              </div>
+          <div className="bg-background rounded-xl border border-border p-1.5 flex flex-col sm:flex-row gap-1.5 max-w-lg">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
-                placeholder="Specialty (optional)"
-                className="h-12 bg-background/50 border-0 rounded-xl sm:max-w-[180px] focus-visible:ring-1"
+                placeholder="Search doctors, specialties..."
+                className="h-11 pl-10 border-0 bg-transparent focus-visible:ring-0"
               />
-              <Button
-                onClick={() => navigate("/providers")}
-                className="h-12 px-6 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium whitespace-nowrap"
-              >
-                Find a doctor
-              </Button>
             </div>
-
-            {/* Trust badges */}
-            <div className="flex flex-wrap items-center gap-4 mt-5 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-primary" />
-                WhatsApp confirmations
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-primary" />
-                UPI / cards
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-primary" />
-                Instant video links
-              </span>
-            </div>
-
-            {/* Quick action buttons */}
-            <div className="flex gap-3 mt-6">
-              <Button onClick={() => navigate("/pharmacy")} variant="outline" className="rounded-xl h-11 px-8 border-border bg-background/60 hover:bg-background font-medium">
-                Pharmacy
-              </Button>
-              <Button onClick={() => navigate("/labs")} variant="outline" className="rounded-xl h-11 px-8 border-border bg-background/60 hover:bg-background font-medium">
-                Labs
-              </Button>
-            </div>
-          </motion.div>
-
-          {/* Desktop: Discover More */}
-          <motion.a
-            href="#why"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="hidden lg:inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors cursor-pointer mt-10"
-          >
-            Discover More
-            <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
+            <Button
+              onClick={() => navigate("/providers")}
+              className="h-11 px-5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg text-sm font-medium"
             >
-              <ChevronDown className="w-5 h-5" />
-            </motion.div>
-          </motion.a>
+              Find a doctor
+            </Button>
+          </div>
+
+          {/* Trust badges */}
+          <div className="flex flex-wrap items-center gap-4 mt-5 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary/60" />
+              WhatsApp confirmations
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary/60" />
+              UPI / cards
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary/60" />
+              Instant video links
+            </span>
+          </div>
+
+          {/* Quick action buttons */}
+          <div className="flex gap-2 mt-6">
+            <Button onClick={() => navigate("/pharmacy")} variant="outline" className="rounded-lg h-9 px-4 text-sm">
+              Pharmacy
+            </Button>
+            <Button onClick={() => navigate("/labs")} variant="outline" className="rounded-lg h-9 px-4 text-sm">
+              Labs
+            </Button>
+          </div>
         </motion.div>
       </div>
 
@@ -134,15 +112,15 @@ export function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 lg:hidden"
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 lg:hidden"
       >
         <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
           className="flex flex-col items-center text-muted-foreground"
         >
-          <span className="text-sm mb-2">Discover More</span>
-          <ChevronDown className="w-5 h-5" />
+          <span className="text-xs">Scroll down</span>
+          <ArrowRight className="w-4 h-4 rotate-90 mt-1" />
         </motion.div>
       </motion.div>
     </section>

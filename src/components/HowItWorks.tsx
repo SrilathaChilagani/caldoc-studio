@@ -28,76 +28,49 @@ const steps = [
   },
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.2 },
-  },
-};
-
-const stepVariants = {
-  hidden: { opacity: 0, x: -30 },
-  visible: { opacity: 1, x: 0, transition: { duration: 0.6 } },
-};
-
 export function HowItWorks() {
   return (
-    <section className="py-24 lg:py-32 bg-secondary/30">
-      <div className="container mx-auto px-6 lg:px-12">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Left: Title */}
+    <section className="py-20 lg:py-28 bg-muted/50">
+      <div className="container mx-auto px-6 lg:px-16">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.5 }}
           >
-            <h2 className="font-serif text-3xl lg:text-5xl text-foreground mb-6 leading-tight">
+            <h2 className="text-3xl lg:text-4xl font-semibold text-foreground tracking-tight mb-4">
               Your journey to better health,{" "}
               <span className="text-primary">simplified.</span>
             </h2>
-            <p className="text-muted-foreground text-lg leading-relaxed">
-              From booking to follow-up, we've designed every step to be seamless 
-              and stress-free. Here's how it works.
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              From booking to follow-up, we've designed every step to be seamless and stress-free.
             </p>
           </motion.div>
 
-          {/* Right: Steps */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="space-y-6"
-          >
-            {steps.map((step, index) => (
+          <div className="space-y-4">
+            {steps.map((step, i) => (
               <motion.div
                 key={step.number}
-                variants={stepVariants}
-                className="flex gap-6 items-start group"
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.1 }}
+                className="flex gap-4 items-start p-4 rounded-xl bg-background border border-border hover:border-primary/20 transition-colors"
               >
-                <div className="flex-shrink-0">
-                  <div className="w-16 h-16 rounded-2xl bg-card shadow-soft flex items-center justify-center group-hover:bg-primary group-hover:shadow-elevated transition-all duration-500">
-                    <step.icon className="w-7 h-7 text-primary group-hover:text-primary-foreground transition-colors duration-500" />
-                  </div>
+                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <step.icon className="w-5 h-5 text-primary" />
                 </div>
-                <div className="flex-1 pt-2">
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-xs font-medium text-primary/60">
-                      {step.number}
-                    </span>
-                    <h3 className="font-serif text-xl text-foreground">
-                      {step.title}
-                    </h3>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[10px] font-medium text-muted-foreground">{step.number}</span>
+                    <h3 className="text-sm font-semibold text-foreground">{step.title}</h3>
                   </div>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {step.description}
-                  </p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{step.description}</p>
                 </div>
               </motion.div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

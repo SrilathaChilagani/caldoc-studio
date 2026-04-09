@@ -2,105 +2,55 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
 const specialties = [
-  {
-    name: "Dermatology",
-    description: "Skin, hair & nail treatments",
-    image: "🩹",
-    doctors: 24,
-  },
-  {
-    name: "Pediatrics",
-    description: "Complete child healthcare",
-    image: "👶",
-    doctors: 18,
-  },
-  {
-    name: "Cardiology",
-    description: "Heart & cardiovascular care",
-    image: "❤️",
-    doctors: 12,
-  },
-  {
-    name: "Psychiatry",
-    description: "Mental health & wellness",
-    image: "🧠",
-    doctors: 15,
-  },
-  {
-    name: "Orthopedics",
-    description: "Bone & joint specialists",
-    image: "🦴",
-    doctors: 20,
-  },
-  {
-    name: "ENT",
-    description: "Ear, nose & throat care",
-    image: "👂",
-    doctors: 16,
-  },
+  { name: "Dermatology", description: "Skin, hair & nail treatments", image: "🩹", doctors: 24 },
+  { name: "Pediatrics", description: "Complete child healthcare", image: "👶", doctors: 18 },
+  { name: "Cardiology", description: "Heart & cardiovascular care", image: "❤️", doctors: 12 },
+  { name: "Psychiatry", description: "Mental health & wellness", image: "🧠", doctors: 15 },
+  { name: "Orthopedics", description: "Bone & joint specialists", image: "🦴", doctors: 20 },
+  { name: "ENT", description: "Ear, nose & throat care", image: "👂", doctors: 16 },
 ];
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 },
-  },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-};
 
 export function Specialties() {
   return (
-    <section id="specialties" className="py-24 lg:py-32 bg-secondary/30">
-      <div className="container mx-auto px-6 lg:px-12">
+    <section id="specialties" className="py-20 lg:py-28 bg-muted/50">
+      <div className="container mx-auto px-6 lg:px-16">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12"
+          transition={{ duration: 0.5 }}
+          className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10"
         >
           <div>
-            <h2 className="font-serif text-3xl lg:text-5xl text-foreground mb-3">
+            <h2 className="text-3xl lg:text-4xl font-semibold text-foreground tracking-tight mb-1">
               Browse Specialties
             </h2>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Find the right specialist for your health needs
             </p>
           </div>
-          <a
-            href="#"
-            className="inline-flex items-center gap-2 text-primary font-medium hover:gap-3 transition-all"
-          >
+          <a href="#" className="inline-flex items-center gap-1.5 text-sm text-primary font-medium hover:gap-2.5 transition-all">
             View all specialties
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-3.5 h-3.5" />
           </a>
         </motion.div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6"
-        >
-          {specialties.map((specialty) => (
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4">
+          {specialties.map((specialty, i) => (
             <motion.a
               key={specialty.name}
               href="#"
-              variants={cardVariants}
-              whileHover={{ y: -8 }}
-              className="group bg-card rounded-2xl lg:rounded-3xl p-6 lg:p-8 shadow-soft hover:shadow-elevated transition-all duration-500"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.05 }}
+              className="group bg-background rounded-xl p-5 lg:p-6 border border-border hover:border-primary/30 transition-all"
             >
-              <span className="text-4xl lg:text-5xl mb-4 block">{specialty.image}</span>
-              <h3 className="font-serif text-lg lg:text-xl text-foreground mb-1">
+              <span className="text-3xl mb-3 block">{specialty.image}</span>
+              <h3 className="text-base font-semibold text-foreground mb-0.5">
                 {specialty.name}
               </h3>
-              <p className="text-sm text-muted-foreground mb-3">
+              <p className="text-xs text-muted-foreground mb-2">
                 {specialty.description}
               </p>
               <p className="text-xs text-primary font-medium">
@@ -108,7 +58,7 @@ export function Specialties() {
               </p>
             </motion.a>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
