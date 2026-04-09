@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { User, Calendar, FileText, CreditCard, Video, ArrowRight, LayoutDashboard, FolderOpen, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Layout } from "@/components/Layout";
 import { useNavigate } from "react-router-dom";
+import { useAppAuth } from "@/contexts/AppAuthContext";
 
 type FilterKey = "ALL" | "CONFIRMED" | "PENDING" | "CANCELED" | "NO_SHOW" | "UPCOMING";
 
@@ -51,9 +52,17 @@ const mockDocuments = [
 ];
 
 const PatientPortal = () => {
+  const { user, loading, signOut, profile } = useAppAuth();
   const [activeTab, setActiveTab] = useState("appointments");
   const [activeFilter, setActiveFilter] = useState<FilterKey>("ALL");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && !user) navigate("/login?portal=patient");
+  }, [loading, user, navigate]);
+
+  if (loading) return <Layout><div className="pt-24 text-center text-muted-foreground">Loading…</div></Layout>;
+  if (!user) return null;
 
   const filtered = mockAppointments.filter((appt) => {
     if (activeFilter === "ALL") return true;
@@ -76,17 +85,17 @@ const PatientPortal = () => {
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div className="flex items-center gap-4">
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-2xl font-semibold text-primary-foreground">
-                  {mockPatient.name.charAt(0)}
+                  {(profile?.display_name || user.email || "P").charAt(0).toUpperCase()}
                 </div>
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Patient portal</p>
-                  <h1 className="text-2xl sm:text-3xl font-semibold text-foreground">{mockPatient.name}</h1>
-                  <p className="text-sm font-mono text-muted-foreground">{mockPatient.phone}</p>
+                  <h1 className="text-2xl sm:text-3xl font-semibold text-foreground">{profile?.display_name || user.email}</h1>
+                  <p className="text-sm font-mono text-muted-foreground">{profile?.phone || user.email}</p>
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-3">
                 <Button onClick={() => navigate("/providers")} className="rounded-full">Book appointment</Button>
-                <Button variant="outline" className="rounded-full">Sign out</Button>
+                <Button variant="outline" className="rounded-full" onClick={() => signOut().then(() => navigate("/login?portal=patient"))}>Sign out</Button>
               </div>
             </div>
 
