@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { LayoutDashboard, Calendar, Users, FileText, Heart, MapPin, HandHelping } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { AssignPatientDialog } from "@/components/ngo/AssignPatientDialog";
 import { EditReservationDialog } from "@/components/ngo/EditReservationDialog";
