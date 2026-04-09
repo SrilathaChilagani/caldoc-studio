@@ -83,13 +83,13 @@ const DoctorCard = ({ doctor, dateTabs }: { doctor: Doctor; dateTabs: ReturnType
         {/* Doctor Info */}
         <div className="flex gap-4 lg:w-[340px] shrink-0">
           <img
-            src={doctor.image}
+            src={doctor.image_url || "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=face"}
             alt={doctor.name}
             className="w-20 h-20 rounded-2xl object-cover border-2 border-border"
           />
           <div className="min-w-0">
             <h3 className="font-serif text-lg text-foreground font-semibold truncate">{doctor.name}</h3>
-            <p className="text-sm text-muted-foreground">{doctor.specialty} · {doctor.experience} exp</p>
+            <p className="text-sm text-muted-foreground">{doctor.specialty} · {doctor.experience_years} yrs exp</p>
             <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
               <MapPin className="w-3 h-3" /> {doctor.location}
             </p>
@@ -98,7 +98,7 @@ const DoctorCard = ({ doctor, dateTabs }: { doctor: Doctor; dateTabs: ReturnType
                 <Star className="w-3.5 h-3.5 fill-primary" />
                 <span className="text-xs font-semibold">{doctor.rating}</span>
               </div>
-              <span className="text-xs text-muted-foreground">({doctor.reviews} reviews)</span>
+              <span className="text-xs text-muted-foreground">({doctor.review_count} reviews)</span>
             </div>
             <div className="flex gap-1.5 mt-2 flex-wrap">
               {doctor.tags.map((tag) => (
@@ -112,17 +112,17 @@ const DoctorCard = ({ doctor, dateTabs }: { doctor: Doctor; dateTabs: ReturnType
               ))}
             </div>
             <div className="flex items-center gap-3 mt-2">
-              {doctor.videoConsult && (
+              {doctor.video_consult && (
                 <span className="flex items-center gap-1 text-xs text-muted-foreground">
                   <Video className="w-3.5 h-3.5" /> Video
                 </span>
               )}
-              {doctor.audioConsult && (
+              {doctor.audio_consult && (
                 <span className="flex items-center gap-1 text-xs text-muted-foreground">
                   <Phone className="w-3.5 h-3.5" /> Audio
                 </span>
               )}
-              <span className="text-xs font-semibold text-foreground">₹{doctor.fee}</span>
+              <span className="text-xs font-semibold text-foreground">₹{(doctor.fee_paise / 100).toFixed(0)}</span>
             </div>
           </div>
         </div>
@@ -196,6 +196,7 @@ const Schedule = () => {
   const [consultType, setConsultType] = useState<"all" | "video" | "audio">("all");
   const [showFilters, setShowFilters] = useState(false);
 
+  const { data: doctors = [], isLoading } = useDoctors();
   const dateTabs = useMemo(() => generateDateTabs(), []);
 
   const filteredDoctors = useMemo(() => {
@@ -207,11 +208,11 @@ const Schedule = () => {
       const matchesSpecialty = selectedSpecialty === "All" || doc.specialty === selectedSpecialty;
       const matchesConsult =
         consultType === "all" ||
-        (consultType === "video" && doc.videoConsult) ||
-        (consultType === "audio" && doc.audioConsult);
+        (consultType === "video" && doc.video_consult) ||
+        (consultType === "audio" && doc.audio_consult);
       return matchesSearch && matchesSpecialty && matchesConsult;
     });
-  }, [searchQuery, selectedSpecialty, consultType]);
+  }, [doctors, searchQuery, selectedSpecialty, consultType]);
 
   const activeFilterCount = [
     selectedSpecialty !== "All",
