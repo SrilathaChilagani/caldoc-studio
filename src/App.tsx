@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Providers from "./pages/Providers";
 import BookDoctor from "./pages/BookDoctor";
 import BookingConfirmation from "./pages/BookingConfirmation";
+import EmergencyBooking from "./pages/EmergencyBooking";
 import Pharmacy from "./pages/Pharmacy";
 import Labs from "./pages/Labs";
 import AppDownload from "./pages/AppDownload";
@@ -41,6 +42,7 @@ const App = () => (
               <Route path="/providers" element={<Providers />} />
               <Route path="/book/:doctorSlug" element={<BookDoctor />} />
               <Route path="/booking-confirmed" element={<BookingConfirmation />} />
+              <Route path="/emergency-booking" element={<EmergencyBooking />} />
               <Route path="/pharmacy" element={<Pharmacy />} />
               <Route path="/labs" element={<Labs />} />
               <Route path="/app" element={<AppDownload />} />
