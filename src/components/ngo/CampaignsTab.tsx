@@ -18,7 +18,7 @@ const statusClasses: Record<string, string> = {
   COMPLETED: "bg-primary/10 text-primary",
 };
 
-export function CampaignsTab() {
+export function CampaignsTab({ ngoId }: { ngoId: string }) {
   const [filter, setFilter] = useState("ALL");
   const filtered = filter === "ALL" ? campaigns : campaigns.filter((c) => c.status === filter);
 

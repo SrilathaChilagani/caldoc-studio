@@ -17,7 +17,7 @@ const volunteers = [
 const thCls = "px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground";
 const tdCls = "px-3 py-3 align-middle";
 
-export function VolunteersTab() {
+export function VolunteersTab({ ngoId }: { ngoId: string }) {
   const [search, setSearch] = useState("");
   const filtered = volunteers.filter((v) =>
     v.name.toLowerCase().includes(search.toLowerCase()) || v.district.toLowerCase().includes(search.toLowerCase())

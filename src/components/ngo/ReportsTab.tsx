@@ -25,7 +25,7 @@ const districtReach = [
 const thCls = "px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground";
 const tdCls = "px-3 py-3 align-middle";
 
-export function ReportsTab() {
+export function ReportsTab({ ngoId }: { ngoId: string }) {
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
