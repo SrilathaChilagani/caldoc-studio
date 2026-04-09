@@ -11,8 +11,11 @@ import heroImage5 from "@/assets/hero-doctor-5.jpg";
 import heroImage6 from "@/assets/hero-doctor-6.jpg";
 import heroImage7 from "@/assets/hero-doctor-7.jpg";
 import heroImage8 from "@/assets/hero-doctor-8.jpg";
+import heroImage9 from "@/assets/hero-doctor-9.jpg";
+import heroImage10 from "@/assets/hero-doctor-10.jpg";
+import heroImage11 from "@/assets/hero-doctor-11.jpg";
 
-const heroImages = [heroImage1, heroImage2, heroImage3, heroImage4, heroImage5, heroImage6, heroImage7, heroImage8];
+const heroImages = [heroImage1, heroImage2, heroImage3, heroImage4, heroImage5, heroImage6, heroImage7, heroImage8, heroImage9, heroImage10, heroImage11];
 
 function getDailyImage() {
   const dayOfYear = Math.floor(
