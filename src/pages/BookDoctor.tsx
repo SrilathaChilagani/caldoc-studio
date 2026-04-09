@@ -63,8 +63,7 @@ const BookDoctor = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
+    <Layout>
 
       <section className="pt-20 pb-10">
         <div className="container mx-auto px-6 lg:px-12">
@@ -337,8 +336,7 @@ const BookDoctor = () => {
         </div>
       </section>
 
-      <Footer />
-    </div>
+    </Layout>
   );
 };
 

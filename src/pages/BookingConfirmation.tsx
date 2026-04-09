@@ -44,8 +44,7 @@ const BookingConfirmation = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
+    <Layout>
 
       <section className="pt-24 pb-16">
         <div className="container mx-auto px-6 lg:px-12 max-w-2xl">
@@ -231,8 +230,7 @@ const BookingConfirmation = () => {
         </div>
       </section>
 
-      <Footer />
-    </div>
+    </Layout>
   );
 };
 

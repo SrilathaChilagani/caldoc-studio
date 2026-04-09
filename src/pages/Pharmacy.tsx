@@ -34,8 +34,7 @@ const popularMeds = [
 
 export default function Pharmacy() {
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
-      <Navbar />
+    <Layout>
 
       {/* Hero */}
       <section className="relative min-h-screen flex items-center">
@@ -236,7 +235,6 @@ export default function Pharmacy() {
         </div>
       </section>
 
-      <Footer />
-    </div>
+    </Layout>
   );
 }
