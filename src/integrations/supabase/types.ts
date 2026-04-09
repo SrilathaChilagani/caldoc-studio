@@ -14,56 +14,146 @@ export type Database = {
   }
   public: {
     Tables: {
+      appointment_status_history: {
+        Row: {
+          actor_id: string | null
+          actor_type: string
+          appointment_id: string
+          created_at: string
+          from_status: string
+          id: string
+          reason: string | null
+          to_status: string
+        }
+        Insert: {
+          actor_id?: string | null
+          actor_type: string
+          appointment_id: string
+          created_at?: string
+          from_status: string
+          id?: string
+          reason?: string | null
+          to_status: string
+        }
+        Update: {
+          actor_id?: string | null
+          actor_type?: string
+          appointment_id?: string
+          created_at?: string
+          from_status?: string
+          id?: string
+          reason?: string | null
+          to_status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointment_status_history_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       appointments: {
         Row: {
+          booker_phone: string | null
+          consent_at: string | null
+          consent_mode: string | null
+          consent_text: string | null
+          consent_type: string | null
           consultation_type: string
           created_at: string
+          delivery_address_id: string | null
+          delivery_opt: string | null
           doctor_id: string
+          fee_currency: string | null
           fee_paise: number
           id: string
           notes: string | null
           patient_id: string
           patient_name: string
           patient_phone: string | null
+          recording_key: string | null
+          slot_id: string | null
           slot_time: string
           status: string
           symptoms: string[]
           updated_at: string
+          upload_link_sent_at: string | null
           video_room_url: string | null
+          visit_mode: string | null
+          wa_error: string | null
+          wa_status: string | null
         }
         Insert: {
+          booker_phone?: string | null
+          consent_at?: string | null
+          consent_mode?: string | null
+          consent_text?: string | null
+          consent_type?: string | null
           consultation_type?: string
           created_at?: string
+          delivery_address_id?: string | null
+          delivery_opt?: string | null
           doctor_id: string
+          fee_currency?: string | null
           fee_paise?: number
           id?: string
           notes?: string | null
           patient_id: string
           patient_name: string
           patient_phone?: string | null
+          recording_key?: string | null
+          slot_id?: string | null
           slot_time: string
           status?: string
           symptoms?: string[]
           updated_at?: string
+          upload_link_sent_at?: string | null
           video_room_url?: string | null
+          visit_mode?: string | null
+          wa_error?: string | null
+          wa_status?: string | null
         }
         Update: {
+          booker_phone?: string | null
+          consent_at?: string | null
+          consent_mode?: string | null
+          consent_text?: string | null
+          consent_type?: string | null
           consultation_type?: string
           created_at?: string
+          delivery_address_id?: string | null
+          delivery_opt?: string | null
           doctor_id?: string
+          fee_currency?: string | null
           fee_paise?: number
           id?: string
           notes?: string | null
           patient_id?: string
           patient_name?: string
           patient_phone?: string | null
+          recording_key?: string | null
+          slot_id?: string | null
           slot_time?: string
           status?: string
           symptoms?: string[]
           updated_at?: string
+          upload_link_sent_at?: string | null
           video_room_url?: string | null
+          visit_mode?: string | null
+          wa_error?: string | null
+          wa_status?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "appointments_delivery_address_id_fkey"
+            columns: ["delivery_address_id"]
+            isOneToOne: false
+            referencedRelation: "patient_addresses"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "appointments_doctor_id_fkey"
             columns: ["doctor_id"]
@@ -71,7 +161,41 @@ export type Database = {
             referencedRelation: "doctors"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "appointments_slot_id_fkey"
+            columns: ["slot_id"]
+            isOneToOne: false
+            referencedRelation: "slots"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      audit_logs: {
+        Row: {
+          action: string
+          actor_id: string | null
+          actor_type: string
+          at: string
+          id: string
+          meta: Json
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          actor_type: string
+          at?: string
+          id?: string
+          meta?: Json
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          actor_type?: string
+          at?: string
+          id?: string
+          meta?: Json
+        }
+        Relationships: []
       }
       campaigns: {
         Row: {
@@ -126,63 +250,134 @@ export type Database = {
           },
         ]
       }
+      check_in_forms: {
+        Row: {
+          appointment_id: string
+          chief_complaint: string | null
+          completed_at: string | null
+          created_at: string
+          id: string
+          s3_key: string | null
+          updated_at: string
+        }
+        Insert: {
+          appointment_id: string
+          chief_complaint?: string | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          s3_key?: string | null
+          updated_at?: string
+        }
+        Update: {
+          appointment_id?: string
+          chief_complaint?: string | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          s3_key?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "check_in_forms_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: true
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       doctors: {
         Row: {
           audio_consult: boolean
           bio: string | null
+          council_name: string | null
           created_at: string
           experience_years: number
           fee_paise: number
           id: string
           image_url: string | null
+          is_24x7: boolean
           is_active: boolean
+          languages: string[]
+          license_doc_key: string | null
+          license_no: string | null
           location: string | null
           name: string
+          phone: string | null
+          profile_photo_key: string | null
+          qualification: string | null
           rating: number
+          registration_doc_key: string | null
+          registration_number: string | null
           review_count: number
           slug: string
           specialty: string
           tags: string[]
           updated_at: string
           video_consult: boolean
+          visit_modes: string[]
         }
         Insert: {
           audio_consult?: boolean
           bio?: string | null
+          council_name?: string | null
           created_at?: string
           experience_years?: number
           fee_paise?: number
           id?: string
           image_url?: string | null
+          is_24x7?: boolean
           is_active?: boolean
+          languages?: string[]
+          license_doc_key?: string | null
+          license_no?: string | null
           location?: string | null
           name: string
+          phone?: string | null
+          profile_photo_key?: string | null
+          qualification?: string | null
           rating?: number
+          registration_doc_key?: string | null
+          registration_number?: string | null
           review_count?: number
           slug: string
           specialty: string
           tags?: string[]
           updated_at?: string
           video_consult?: boolean
+          visit_modes?: string[]
         }
         Update: {
           audio_consult?: boolean
           bio?: string | null
+          council_name?: string | null
           created_at?: string
           experience_years?: number
           fee_paise?: number
           id?: string
           image_url?: string | null
+          is_24x7?: boolean
           is_active?: boolean
+          languages?: string[]
+          license_doc_key?: string | null
+          license_no?: string | null
           location?: string | null
           name?: string
+          phone?: string | null
+          profile_photo_key?: string | null
+          qualification?: string | null
           rating?: number
+          registration_doc_key?: string | null
+          registration_number?: string | null
           review_count?: number
           slug?: string
           specialty?: string
           tags?: string[]
           updated_at?: string
           video_consult?: boolean
+          visit_modes?: string[]
         }
         Relationships: []
       }
@@ -354,8 +549,131 @@ export type Database = {
         }
         Relationships: []
       }
+      lab_enrollments: {
+        Row: {
+          address_line1: string
+          address_line2: string | null
+          admin_notified_at: string | null
+          city: string
+          contact_name: string
+          created_at: string
+          email: string
+          home_collection: boolean
+          id: string
+          lab_name: string
+          lab_partner_id: string | null
+          nabl_cert_number: string | null
+          nabl_certified: boolean
+          notes: string | null
+          phone: string
+          pincode: string
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by_email: string | null
+          state: string
+          status: string
+          test_categories: string[]
+          updated_at: string
+        }
+        Insert: {
+          address_line1: string
+          address_line2?: string | null
+          admin_notified_at?: string | null
+          city: string
+          contact_name: string
+          created_at?: string
+          email: string
+          home_collection?: boolean
+          id?: string
+          lab_name: string
+          lab_partner_id?: string | null
+          nabl_cert_number?: string | null
+          nabl_certified?: boolean
+          notes?: string | null
+          phone: string
+          pincode: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by_email?: string | null
+          state: string
+          status?: string
+          test_categories?: string[]
+          updated_at?: string
+        }
+        Update: {
+          address_line1?: string
+          address_line2?: string | null
+          admin_notified_at?: string | null
+          city?: string
+          contact_name?: string
+          created_at?: string
+          email?: string
+          home_collection?: boolean
+          id?: string
+          lab_name?: string
+          lab_partner_id?: string | null
+          nabl_cert_number?: string | null
+          nabl_certified?: boolean
+          notes?: string | null
+          phone?: string
+          pincode?: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by_email?: string | null
+          state?: string
+          status?: string
+          test_categories?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      lab_order_events: {
+        Row: {
+          actor_email: string | null
+          collection_agent_name: string | null
+          collection_agent_phone: string | null
+          created_at: string
+          from_status: string | null
+          id: string
+          lab_order_id: string
+          note: string | null
+          to_status: string
+        }
+        Insert: {
+          actor_email?: string | null
+          collection_agent_name?: string | null
+          collection_agent_phone?: string | null
+          created_at?: string
+          from_status?: string | null
+          id?: string
+          lab_order_id: string
+          note?: string | null
+          to_status: string
+        }
+        Update: {
+          actor_email?: string | null
+          collection_agent_name?: string | null
+          collection_agent_phone?: string | null
+          created_at?: string
+          from_status?: string | null
+          id?: string
+          lab_order_id?: string
+          note?: string | null
+          to_status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lab_order_events_lab_order_id_fkey"
+            columns: ["lab_order_id"]
+            isOneToOne: false
+            referencedRelation: "lab_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lab_orders: {
         Row: {
+          address: Json | null
           amount_paise: number
           collection_agent_name: string | null
           collection_agent_phone: string | null
@@ -363,6 +681,7 @@ export type Database = {
           delivery_address: string | null
           delivery_mode: string
           id: string
+          lab_partner_id: string | null
           notes: string | null
           patient_email: string | null
           patient_id: string
@@ -370,11 +689,13 @@ export type Database = {
           patient_phone: string | null
           provider_name: string | null
           provider_speciality: string | null
+          source: string
           status: string
           tests: Json
           updated_at: string
         }
         Insert: {
+          address?: Json | null
           amount_paise?: number
           collection_agent_name?: string | null
           collection_agent_phone?: string | null
@@ -382,6 +703,7 @@ export type Database = {
           delivery_address?: string | null
           delivery_mode?: string
           id?: string
+          lab_partner_id?: string | null
           notes?: string | null
           patient_email?: string | null
           patient_id: string
@@ -389,11 +711,13 @@ export type Database = {
           patient_phone?: string | null
           provider_name?: string | null
           provider_speciality?: string | null
+          source?: string
           status?: string
           tests?: Json
           updated_at?: string
         }
         Update: {
+          address?: Json | null
           amount_paise?: number
           collection_agent_name?: string | null
           collection_agent_phone?: string | null
@@ -401,6 +725,7 @@ export type Database = {
           delivery_address?: string | null
           delivery_mode?: string
           id?: string
+          lab_partner_id?: string | null
           notes?: string | null
           patient_email?: string | null
           patient_id?: string
@@ -408,9 +733,111 @@ export type Database = {
           patient_phone?: string | null
           provider_name?: string | null
           provider_speciality?: string | null
+          source?: string
           status?: string
           tests?: Json
           updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lab_orders_lab_partner_id_fkey"
+            columns: ["lab_partner_id"]
+            isOneToOne: false
+            referencedRelation: "lab_partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lab_partners: {
+        Row: {
+          address_line1: string
+          address_line2: string | null
+          city: string
+          contact_name: string
+          created_at: string
+          email: string
+          home_collection: boolean
+          id: string
+          is_active: boolean
+          nabl_cert_number: string | null
+          nabl_certified: boolean
+          name: string
+          notes: string | null
+          phone: string
+          pincode: string
+          state: string
+          test_categories: string[]
+          updated_at: string
+        }
+        Insert: {
+          address_line1: string
+          address_line2?: string | null
+          city: string
+          contact_name: string
+          created_at?: string
+          email: string
+          home_collection?: boolean
+          id?: string
+          is_active?: boolean
+          nabl_cert_number?: string | null
+          nabl_certified?: boolean
+          name: string
+          notes?: string | null
+          phone: string
+          pincode: string
+          state: string
+          test_categories?: string[]
+          updated_at?: string
+        }
+        Update: {
+          address_line1?: string
+          address_line2?: string | null
+          city?: string
+          contact_name?: string
+          created_at?: string
+          email?: string
+          home_collection?: boolean
+          id?: string
+          is_active?: boolean
+          nabl_cert_number?: string | null
+          nabl_certified?: boolean
+          name?: string
+          notes?: string | null
+          phone?: string
+          pincode?: string
+          state?: string
+          test_categories?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      medications: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          form: string | null
+          generic: string | null
+          id: string
+          name: string
+          strength: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          form?: string | null
+          generic?: string | null
+          id?: string
+          name: string
+          strength?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          form?: string | null
+          generic?: string | null
+          id?: string
+          name?: string
+          strength?: string | null
         }
         Relationships: []
       }
@@ -449,6 +876,8 @@ export type Database = {
       ngo_reservations: {
         Row: {
           amount_paise: number
+          appointment_id: string | null
+          confirmed_at: string | null
           created_at: string
           fee_paise: number | null
           friendly_id: string
@@ -460,7 +889,9 @@ export type Database = {
           patient_email: string | null
           patient_name: string | null
           patient_phone: string | null
+          provider_id: string | null
           provider_name: string
+          slot_id: string | null
           slot_time: string | null
           speciality: string | null
           status: string
@@ -469,6 +900,8 @@ export type Database = {
         }
         Insert: {
           amount_paise?: number
+          appointment_id?: string | null
+          confirmed_at?: string | null
           created_at?: string
           fee_paise?: number | null
           friendly_id: string
@@ -480,7 +913,9 @@ export type Database = {
           patient_email?: string | null
           patient_name?: string | null
           patient_phone?: string | null
+          provider_id?: string | null
           provider_name: string
+          slot_id?: string | null
           slot_time?: string | null
           speciality?: string | null
           status?: string
@@ -489,6 +924,8 @@ export type Database = {
         }
         Update: {
           amount_paise?: number
+          appointment_id?: string | null
+          confirmed_at?: string | null
           created_at?: string
           fee_paise?: number | null
           friendly_id?: string
@@ -500,7 +937,9 @@ export type Database = {
           patient_email?: string | null
           patient_name?: string | null
           patient_phone?: string | null
+          provider_id?: string | null
           provider_name?: string
+          slot_id?: string | null
           slot_time?: string | null
           speciality?: string | null
           status?: string
@@ -509,34 +948,207 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "ngo_reservations_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: true
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "ngo_reservations_ngo_id_fkey"
             columns: ["ngo_id"]
             isOneToOne: false
             referencedRelation: "ngos"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "ngo_reservations_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ngo_reservations_slot_id_fkey"
+            columns: ["slot_id"]
+            isOneToOne: false
+            referencedRelation: "slots"
+            referencedColumns: ["id"]
+          },
         ]
       }
       ngos: {
         Row: {
+          billing_notes: string | null
+          contact_email: string | null
+          contact_phone: string | null
           created_at: string
+          description: string | null
           id: string
+          is_active: boolean
           name: string
           slug: string
           updated_at: string
         }
         Insert: {
+          billing_notes?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
           created_at?: string
+          description?: string | null
           id?: string
+          is_active?: boolean
           name: string
           slug: string
           updated_at?: string
         }
         Update: {
+          billing_notes?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      offline_requests: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          notes: string | null
+          phone: string
+          resolved_at: string | null
+          speciality: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          notes?: string | null
+          phone: string
+          resolved_at?: string | null
+          speciality?: string | null
+          status?: string
+        }
+        Update: {
           created_at?: string
           id?: string
           name?: string
-          slug?: string
+          notes?: string | null
+          phone?: string
+          resolved_at?: string | null
+          speciality?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
+      outbound_messages: {
+        Row: {
+          appointment_id: string | null
+          body: string | null
+          channel: string
+          created_at: string
+          error: string | null
+          id: string
+          kind: string | null
+          message_id: string | null
+          status: string
+          template: string | null
+          to_email: string | null
+          to_phone: string | null
+        }
+        Insert: {
+          appointment_id?: string | null
+          body?: string | null
+          channel: string
+          created_at?: string
+          error?: string | null
+          id?: string
+          kind?: string | null
+          message_id?: string | null
+          status: string
+          template?: string | null
+          to_email?: string | null
+          to_phone?: string | null
+        }
+        Update: {
+          appointment_id?: string | null
+          body?: string | null
+          channel?: string
+          created_at?: string
+          error?: string | null
+          id?: string
+          kind?: string | null
+          message_id?: string | null
+          status?: string
+          template?: string | null
+          to_email?: string | null
+          to_phone?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "outbound_messages_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      patient_addresses: {
+        Row: {
+          city: string
+          contact_name: string | null
+          contact_phone: string | null
+          id: string
+          instructions: string | null
+          label: string | null
+          last_used_at: string | null
+          line1: string
+          line2: string | null
+          patient_id: string
+          postal_code: string
+          saved_at: string
+          state: string
+          updated_at: string
+        }
+        Insert: {
+          city: string
+          contact_name?: string | null
+          contact_phone?: string | null
+          id?: string
+          instructions?: string | null
+          label?: string | null
+          last_used_at?: string | null
+          line1: string
+          line2?: string | null
+          patient_id: string
+          postal_code: string
+          saved_at?: string
+          state: string
+          updated_at?: string
+        }
+        Update: {
+          city?: string
+          contact_name?: string | null
+          contact_phone?: string | null
+          id?: string
+          instructions?: string | null
+          label?: string | null
+          last_used_at?: string | null
+          line1?: string
+          line2?: string | null
+          patient_id?: string
+          postal_code?: string
+          saved_at?: string
+          state?: string
           updated_at?: string
         }
         Relationships: []
@@ -544,30 +1156,39 @@ export type Database = {
       patient_documents: {
         Row: {
           appointment_id: string | null
+          content_type: string | null
           created_at: string
           document_type: string
+          file_name: string | null
           file_url: string | null
           id: string
+          key: string | null
           name: string
           patient_id: string
           provider_name: string | null
         }
         Insert: {
           appointment_id?: string | null
+          content_type?: string | null
           created_at?: string
           document_type?: string
+          file_name?: string | null
           file_url?: string | null
           id?: string
+          key?: string | null
           name: string
           patient_id: string
           provider_name?: string | null
         }
         Update: {
           appointment_id?: string | null
+          content_type?: string | null
           created_at?: string
           document_type?: string
+          file_name?: string | null
           file_url?: string | null
           id?: string
+          key?: string | null
           name?: string
           patient_id?: string
           provider_name?: string | null
@@ -577,6 +1198,212 @@ export type Database = {
             foreignKeyName: "patient_documents_appointment_id_fkey"
             columns: ["appointment_id"]
             isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_receipts: {
+        Row: {
+          appointment_id: string
+          created_at: string
+          key: string
+        }
+        Insert: {
+          appointment_id: string
+          created_at?: string
+          key: string
+        }
+        Update: {
+          appointment_id?: string
+          created_at?: string
+          key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_receipts_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: true
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payments: {
+        Row: {
+          amount: number
+          appointment_id: string | null
+          created_at: string
+          currency: string
+          gateway: string
+          id: string
+          lab_order_id: string | null
+          order_id: string
+          payment_ref: string | null
+          receipt_url: string | null
+          rx_order_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          appointment_id?: string | null
+          created_at?: string
+          currency?: string
+          gateway: string
+          id?: string
+          lab_order_id?: string | null
+          order_id: string
+          payment_ref?: string | null
+          receipt_url?: string | null
+          rx_order_id?: string | null
+          status: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          appointment_id?: string | null
+          created_at?: string
+          currency?: string
+          gateway?: string
+          id?: string
+          lab_order_id?: string | null
+          order_id?: string
+          payment_ref?: string | null
+          receipt_url?: string | null
+          rx_order_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: true
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_lab_order_id_fkey"
+            columns: ["lab_order_id"]
+            isOneToOne: true
+            referencedRelation: "lab_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_rx_order_id_fkey"
+            columns: ["rx_order_id"]
+            isOneToOne: true
+            referencedRelation: "pharmacy_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pharmacy_enrollments: {
+        Row: {
+          address_line1: string
+          address_line2: string | null
+          admin_notified_at: string | null
+          city: string
+          contact_name: string
+          created_at: string
+          drug_license_number: string
+          email: string
+          gst_number: string | null
+          id: string
+          notes: string | null
+          pharmacy_name: string
+          pharmacy_partner_id: string | null
+          phone: string
+          pincode: string
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by_email: string | null
+          service_areas: string[]
+          state: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          address_line1: string
+          address_line2?: string | null
+          admin_notified_at?: string | null
+          city: string
+          contact_name: string
+          created_at?: string
+          drug_license_number: string
+          email: string
+          gst_number?: string | null
+          id?: string
+          notes?: string | null
+          pharmacy_name: string
+          pharmacy_partner_id?: string | null
+          phone: string
+          pincode: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by_email?: string | null
+          service_areas?: string[]
+          state: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          address_line1?: string
+          address_line2?: string | null
+          admin_notified_at?: string | null
+          city?: string
+          contact_name?: string
+          created_at?: string
+          drug_license_number?: string
+          email?: string
+          gst_number?: string | null
+          id?: string
+          notes?: string | null
+          pharmacy_name?: string
+          pharmacy_partner_id?: string | null
+          phone?: string
+          pincode?: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by_email?: string | null
+          service_areas?: string[]
+          state?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      pharmacy_fulfillments: {
+        Row: {
+          appointment_id: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          appointment_id?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          appointment_id?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pharmacy_fulfillments_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: true
             referencedRelation: "appointments"
             referencedColumns: ["id"]
           },
@@ -686,32 +1513,388 @@ export type Database = {
           },
         ]
       }
+      pharmacy_partners: {
+        Row: {
+          address_line1: string
+          address_line2: string | null
+          city: string
+          contact_name: string
+          created_at: string
+          drug_license_number: string
+          email: string
+          gst_number: string | null
+          id: string
+          is_active: boolean
+          name: string
+          notes: string | null
+          phone: string
+          pincode: string
+          service_areas: string[]
+          state: string
+          updated_at: string
+        }
+        Insert: {
+          address_line1: string
+          address_line2?: string | null
+          city: string
+          contact_name: string
+          created_at?: string
+          drug_license_number: string
+          email: string
+          gst_number?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          notes?: string | null
+          phone: string
+          pincode: string
+          service_areas?: string[]
+          state: string
+          updated_at?: string
+        }
+        Update: {
+          address_line1?: string
+          address_line2?: string | null
+          city?: string
+          contact_name?: string
+          created_at?: string
+          drug_license_number?: string
+          email?: string
+          gst_number?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          notes?: string | null
+          phone?: string
+          pincode?: string
+          service_areas?: string[]
+          state?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      prescriptions: {
+        Row: {
+          appointment_id: string
+          created_at: string
+          id: string
+          meds: Json
+          pdf_key: string
+        }
+        Insert: {
+          appointment_id: string
+          created_at?: string
+          id?: string
+          meds?: Json
+          pdf_key: string
+        }
+        Update: {
+          appointment_id?: string
+          created_at?: string
+          id?: string
+          meds?: Json
+          pdf_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prescriptions_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: true
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
+          consent_at: string | null
           created_at: string
           display_name: string | null
+          dob: string | null
           id: string
           phone: string | null
+          profile_photo_key: string | null
+          sex: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          consent_at?: string | null
           created_at?: string
           display_name?: string | null
+          dob?: string | null
           id?: string
           phone?: string | null
+          profile_photo_key?: string | null
+          sex?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          consent_at?: string | null
           created_at?: string
           display_name?: string | null
+          dob?: string | null
           id?: string
           phone?: string | null
+          profile_photo_key?: string | null
+          sex?: string | null
           updated_at?: string
           user_id?: string
         }
         Relationships: []
+      }
+      provider_clinics: {
+        Row: {
+          address_line1: string
+          address_line2: string | null
+          city: string
+          clinic_name: string
+          created_at: string
+          id: string
+          is_active: boolean
+          lat: number | null
+          lng: number | null
+          phone: string | null
+          pincode: string
+          provider_id: string
+          state: string
+          updated_at: string
+        }
+        Insert: {
+          address_line1: string
+          address_line2?: string | null
+          city: string
+          clinic_name: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          lat?: number | null
+          lng?: number | null
+          phone?: string | null
+          pincode: string
+          provider_id: string
+          state: string
+          updated_at?: string
+        }
+        Update: {
+          address_line1?: string
+          address_line2?: string | null
+          city?: string
+          clinic_name?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          lat?: number | null
+          lng?: number | null
+          phone?: string | null
+          pincode?: string
+          provider_id?: string
+          state?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_clinics_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      provider_enrollments: {
+        Row: {
+          admin_notified_at: string | null
+          bio: string | null
+          city: string
+          consent_telemedicine: boolean
+          created_at: string
+          current_hospital: string | null
+          dob: string | null
+          email: string
+          experience_years: number | null
+          fee_paise: number | null
+          full_name: string
+          gender: string | null
+          id: string
+          languages: string[]
+          phone: string
+          profile_photo_key: string | null
+          provider_id: string | null
+          qualification: string
+          qualification_doc_key: string | null
+          qualification_year: number | null
+          registration_council: string
+          registration_doc_key: string | null
+          registration_number: string
+          registration_year: number | null
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by_email: string | null
+          speciality: string
+          state: string
+          status: string
+          sub_speciality: string | null
+          university: string | null
+          visit_modes: string[]
+        }
+        Insert: {
+          admin_notified_at?: string | null
+          bio?: string | null
+          city: string
+          consent_telemedicine?: boolean
+          created_at?: string
+          current_hospital?: string | null
+          dob?: string | null
+          email: string
+          experience_years?: number | null
+          fee_paise?: number | null
+          full_name: string
+          gender?: string | null
+          id?: string
+          languages?: string[]
+          phone: string
+          profile_photo_key?: string | null
+          provider_id?: string | null
+          qualification: string
+          qualification_doc_key?: string | null
+          qualification_year?: number | null
+          registration_council: string
+          registration_doc_key?: string | null
+          registration_number: string
+          registration_year?: number | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by_email?: string | null
+          speciality: string
+          state: string
+          status?: string
+          sub_speciality?: string | null
+          university?: string | null
+          visit_modes?: string[]
+        }
+        Update: {
+          admin_notified_at?: string | null
+          bio?: string | null
+          city?: string
+          consent_telemedicine?: boolean
+          created_at?: string
+          current_hospital?: string | null
+          dob?: string | null
+          email?: string
+          experience_years?: number | null
+          fee_paise?: number | null
+          full_name?: string
+          gender?: string | null
+          id?: string
+          languages?: string[]
+          phone?: string
+          profile_photo_key?: string | null
+          provider_id?: string | null
+          qualification?: string
+          qualification_doc_key?: string | null
+          qualification_year?: number | null
+          registration_council?: string
+          registration_doc_key?: string | null
+          registration_number?: string
+          registration_year?: number | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by_email?: string | null
+          speciality?: string
+          state?: string
+          status?: string
+          sub_speciality?: string | null
+          university?: string | null
+          visit_modes?: string[]
+        }
+        Relationships: []
+      }
+      rx_order_events: {
+        Row: {
+          actor_email: string | null
+          courier_name: string | null
+          created_at: string
+          from_status: string | null
+          id: string
+          note: string | null
+          rx_order_id: string
+          to_status: string
+          tracking_number: string | null
+        }
+        Insert: {
+          actor_email?: string | null
+          courier_name?: string | null
+          created_at?: string
+          from_status?: string | null
+          id?: string
+          note?: string | null
+          rx_order_id: string
+          to_status: string
+          tracking_number?: string | null
+        }
+        Update: {
+          actor_email?: string | null
+          courier_name?: string | null
+          created_at?: string
+          from_status?: string | null
+          id?: string
+          note?: string | null
+          rx_order_id?: string
+          to_status?: string
+          tracking_number?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rx_order_events_rx_order_id_fkey"
+            columns: ["rx_order_id"]
+            isOneToOne: false
+            referencedRelation: "pharmacy_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      slots: {
+        Row: {
+          created_at: string
+          ends_at: string
+          fee_paise: number | null
+          id: string
+          is_booked: boolean
+          provider_id: string
+          starts_at: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at: string
+          fee_paise?: number | null
+          id?: string
+          is_booked?: boolean
+          provider_id: string
+          starts_at: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string
+          fee_paise?: number | null
+          id?: string
+          is_booked?: boolean
+          provider_id?: string
+          starts_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "slots_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       suppressed_emails: {
         Row: {
@@ -757,6 +1940,38 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      visit_notes: {
+        Row: {
+          appointment_id: string
+          created_at: string
+          id: string
+          text: string
+          updated_at: string
+        }
+        Insert: {
+          appointment_id: string
+          created_at?: string
+          id?: string
+          text: string
+          updated_at?: string
+        }
+        Update: {
+          appointment_id?: string
+          created_at?: string
+          id?: string
+          text?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "visit_notes_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: true
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       volunteers: {
         Row: {
