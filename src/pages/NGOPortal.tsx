@@ -67,7 +67,22 @@ const thCls = "px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide
 const tdCls = "px-3 py-3 align-middle";
 
 const NGOPortal = () => {
-  const [startDate, setStartDate] = useState("2026-04-09");
+  const [activeTab, setActiveTab] = useState("dashboard");
+
+  const tabs = [
+    { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { id: "campaigns", label: "Campaigns", icon: Calendar },
+    { id: "volunteers", label: "Volunteers", icon: Users },
+    { id: "reports", label: "Reports", icon: FileText },
+  ];
+
+  const impactCards = [
+    { icon: Users, label: "Beneficiaries Served", value: "8,420", growth: "+22%" },
+    { icon: Heart, label: "Health Camps", value: "56", growth: "+15%" },
+    { icon: HandHelping, label: "Volunteers", value: "124", growth: "+8%" },
+    { icon: MapPin, label: "Districts Covered", value: "18", growth: "+3" },
+  ];
+
   const [endDate, setEndDate] = useState("2026-04-16");
 
   const rangeLabel = formatRangeLabel(startDate, endDate);
