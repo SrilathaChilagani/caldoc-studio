@@ -29,13 +29,6 @@ export function UserRolesTab() {
   async function fetchUsers(p = 0) {
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("manage-roles", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-        body: undefined,
-      });
-
-      // Since functions.invoke doesn't support query params well for GET, use fetch directly
       const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/manage-roles?action=list&search=${encodeURIComponent(search)}&page=${p}`;
       const session = (await supabase.auth.getSession()).data.session;
       const res = await fetch(url, {
