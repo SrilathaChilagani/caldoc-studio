@@ -56,10 +56,17 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json();
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, appointment_id } = body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, appointment_id, rx_order_id, lab_order_id } = body;
 
-    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !appointment_id) {
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
       return new Response(JSON.stringify({ error: "Missing payment verification fields" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (!appointment_id && !rx_order_id && !lab_order_id) {
+      return new Response(JSON.stringify({ error: "One of appointment_id, rx_order_id, or lab_order_id is required" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -75,7 +82,6 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Update payment and appointment using service role
     const adminClient = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
@@ -84,19 +90,32 @@ Deno.serve(async (req) => {
     // Update payment record
     await adminClient
       .from("payments")
-      .update({
-        status: "PAID",
-        payment_ref: razorpay_payment_id,
-      })
+      .update({ status: "PAID", payment_ref: razorpay_payment_id })
       .eq("order_id", razorpay_order_id);
 
-    // Confirm the appointment
-    await adminClient
-      .from("appointments")
-      .update({ status: "CONFIRMED" })
-      .eq("id", appointment_id);
+    // Update the relevant order based on type
+    if (appointment_id) {
+      await adminClient
+        .from("appointments")
+        .update({ status: "CONFIRMED" })
+        .eq("id", appointment_id);
+    }
 
-    return new Response(JSON.stringify({ success: true, status: "CONFIRMED" }), {
+    if (rx_order_id) {
+      await adminClient
+        .from("pharmacy_orders")
+        .update({ status: "PAID" })
+        .eq("id", rx_order_id);
+    }
+
+    if (lab_order_id) {
+      await adminClient
+        .from("lab_orders")
+        .update({ status: "PAID" })
+        .eq("id", lab_order_id);
+    }
+
+    return new Response(JSON.stringify({ success: true, status: "PAID" }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {
