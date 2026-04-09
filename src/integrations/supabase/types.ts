@@ -453,7 +453,77 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      ngo_reservations_safe: {
+        Row: {
+          amount_paise: number | null
+          created_at: string | null
+          fee_paise: number | null
+          friendly_id: string | null
+          has_prescription: boolean | null
+          has_receipt: boolean | null
+          id: string | null
+          ngo_id: string | null
+          notes: string | null
+          patient_email: string | null
+          patient_name: string | null
+          patient_phone: string | null
+          provider_name: string | null
+          slot_time: string | null
+          speciality: string | null
+          status: string | null
+          updated_at: string | null
+          visit_mode: string | null
+        }
+        Insert: {
+          amount_paise?: number | null
+          created_at?: string | null
+          fee_paise?: number | null
+          friendly_id?: string | null
+          has_prescription?: boolean | null
+          has_receipt?: boolean | null
+          id?: string | null
+          ngo_id?: string | null
+          notes?: string | null
+          patient_email?: never
+          patient_name?: never
+          patient_phone?: never
+          provider_name?: string | null
+          slot_time?: string | null
+          speciality?: string | null
+          status?: string | null
+          updated_at?: string | null
+          visit_mode?: string | null
+        }
+        Update: {
+          amount_paise?: number | null
+          created_at?: string | null
+          fee_paise?: number | null
+          friendly_id?: string | null
+          has_prescription?: boolean | null
+          has_receipt?: boolean | null
+          id?: string | null
+          ngo_id?: string | null
+          notes?: string | null
+          patient_email?: never
+          patient_name?: never
+          patient_phone?: never
+          provider_name?: string | null
+          slot_time?: string | null
+          speciality?: string | null
+          status?: string | null
+          updated_at?: string | null
+          visit_mode?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ngo_reservations_ngo_id_fkey"
+            columns: ["ngo_id"]
+            isOneToOne: false
+            referencedRelation: "ngos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       delete_email: {
@@ -472,6 +542,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_ngo_admin: { Args: never; Returns: boolean }
       move_to_dlq: {
         Args: {
           dlq_name: string
