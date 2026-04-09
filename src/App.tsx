@@ -25,6 +25,8 @@ import ResetPassword from "./pages/ResetPassword";
 import PharmacyPortal from "./pages/PharmacyPortal";
 import LabsPortal from "./pages/LabsPortal";
 import ProviderEnrollment from "./pages/ProviderEnrollment";
+import PharmacyEnrollment from "./pages/PharmacyEnrollment";
+import LabEnrollment from "./pages/LabEnrollment";
 import NotFound from "./pages/NotFound";
 import { RoleGuard } from "./components/RoleGuard";
 
@@ -49,6 +51,8 @@ const App = () => (
               <Route path="/app" element={<AppDownload />} />
               <Route path="/schedule" element={<Schedule />} />
               <Route path="/enroll/provider" element={<ProviderEnrollment />} />
+              <Route path="/enroll/pharmacy" element={<PharmacyEnrollment />} />
+              <Route path="/enroll/labs" element={<LabEnrollment />} />
               <Route path="/login" element={<PortalLogin />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
