@@ -1,254 +1,155 @@
 import { motion } from "framer-motion";
-import {
-  LayoutDashboard, Users, Building2, BarChart3,
-  TrendingUp, Activity, Shield, Settings
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Link } from "react-router-dom";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/Layout";
 
-const platformStats = [
-  { label: "Total Users", value: "12,450", icon: Users, trend: "+8.2%" },
-  { label: "Active Providers", value: "342", icon: Activity, trend: "+12%" },
-  { label: "Appointments Today", value: "1,247", icon: BarChart3, trend: "+5.1%" },
-  { label: "Revenue (MTD)", value: "₹48.5L", icon: TrendingUp, trend: "+15.3%" },
+const portalCards = [
+  { label: "Teleconsultations", desc: "Manage & reassign appointments", href: "/admin-portal", bar: "bg-primary" },
+  { label: "Rx Delivery", desc: "Track and fulfil prescription orders", href: "/pharmacy-portal", bar: "bg-emerald-600" },
+  { label: "Labs", desc: "Lab orders and status updates", href: "/labs-portal", bar: "bg-violet-600" },
+  { label: "NGO Bookings", desc: "Confirm or release NGO reservations", href: "/ngo-portal", bar: "bg-amber-600" },
+  { label: "Providers", desc: "Onboard, off-board, manage doctors", href: "/providers", bar: "bg-foreground/70" },
+  { label: "Enrollments", desc: "Review & approve provider applications", href: "/admin-portal", bar: "bg-orange-500" },
+  { label: "Pharmacy Team", desc: "Add or remove pharmacy users", href: "/pharmacy-portal", bar: "bg-teal-600" },
+  { label: "Lab Team", desc: "Add or remove lab users", href: "/labs-portal", bar: "bg-rose-600" },
+  { label: "Schedule Slots", desc: "Generate availability for providers", href: "/schedule", bar: "bg-indigo-600" },
+  { label: "WhatsApp", desc: "Diagnostics, message log & test sends", href: "/admin-portal", bar: "bg-green-600" },
+  { label: "Check-in Form", desc: "Preview the patient pre-visit form", href: "/admin-portal", bar: "bg-cyan-600" },
+  { label: "Patients", desc: "Search and review registered patients", href: "/patient-portal", bar: "bg-pink-600" },
+  { label: "Audit log", desc: "System-wide action trail", href: "/admin-portal", bar: "bg-muted-foreground" },
 ];
 
-const recentProviders = [
-  { id: 1, name: "Dr. Meena Krishnan", specialty: "Dermatology", status: "Active", patients: 89, joined: "2026-03-01" },
-  { id: 2, name: "Dr. Arun Verma", specialty: "Orthopedics", status: "Pending", patients: 0, joined: "2026-04-05" },
-  { id: 3, name: "Dr. Lakshmi Nair", specialty: "Pediatrics", status: "Active", patients: 156, joined: "2026-01-15" },
-  { id: 4, name: "Dr. Sanjay Gupta", specialty: "Cardiology", status: "Active", patients: 234, joined: "2025-11-20" },
-  { id: 5, name: "Dr. Fatima Sheikh", specialty: "Psychiatry", status: "Suspended", patients: 45, joined: "2025-09-10" },
+const kpis = [
+  { label: "Revenue captured", value: "₹4,85,000", sub: "across all portals" },
+  { label: "Appointments", value: "342", sub: "218 confirmed · 67 pending" },
+  { label: "Cancelled", value: "57", sub: "appointments" },
+  { label: "Active providers", value: "24", sub: "on marketplace" },
+  { label: "Rx orders", value: "89", sub: "52 paid · 18 awaiting" },
+  { label: "Lab orders", value: "156", sub: "98 confirmed · 31 pending" },
 ];
 
-const recentUsers = [
-  { id: 1, name: "Ravi Kumar", email: "ravi@email.com", appointments: 4, joined: "2026-03-10" },
-  { id: 2, name: "Priya Sharma", email: "priya@email.com", appointments: 2, joined: "2026-03-22" },
-  { id: 3, name: "Suresh Reddy", email: "suresh@email.com", appointments: 8, joined: "2026-01-05" },
-  { id: 4, name: "Anitha Devi", email: "anitha@email.com", appointments: 6, joined: "2026-02-14" },
+const ngoReservations = [
+  { id: "NGO-001", friendlyId: "NGO-001", ngoName: "Health For All Foundation", providerName: "Dr. Rajesh Kumar", speciality: "General Medicine", slotTime: new Date("2026-04-12T10:00:00"), status: "HELD" },
+  { id: "NGO-002", friendlyId: "NGO-002", ngoName: "Rural Care Trust", providerName: "Dr. Sunitha Reddy", speciality: "Dermatology", slotTime: new Date("2026-04-13T14:00:00"), status: "CONFIRMED" },
+  { id: "NGO-003", friendlyId: "NGO-003", ngoName: "Health For All Foundation", providerName: "Dr. Venkat Rao", speciality: "Cardiology", slotTime: new Date("2026-04-14T11:30:00"), status: "HELD" },
 ];
+
+const offlineRequests = [
+  { id: "req-1", createdAt: new Date("2026-04-09T08:45:00"), name: "Lakshmi Amma", phone: "+91 94401 23456", speciality: "General Medicine", status: "NEW" },
+  { id: "req-2", createdAt: new Date("2026-04-08T17:20:00"), name: "Ramesh Kumar", phone: "+91 93305 67890", speciality: "Orthopedics", status: "IN_PROGRESS" },
+];
+
+function formatIST(date: Date) {
+  return date.toLocaleString("en-IN", { timeZone: "Asia/Kolkata", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+}
 
 const AdminPortal = () => {
-  const { toast } = useToast();
-
   return (
     <Layout>
-      {/* Portal Header */}
-      <section className="pt-24 pb-6 bg-gradient-to-b from-primary/5 to-background">
-        <div className="container mx-auto px-6 lg:px-16">
-          <div className="flex items-center justify-between">
+      <section className="pt-24 pb-10">
+        <div className="container mx-auto max-w-6xl px-4 sm:px-6 space-y-8">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="space-y-8">
             <div>
-              <h1 className="text-2xl lg:text-3xl font-semibold text-foreground tracking-tight">Admin Portal</h1>
-              <p className="text-sm text-muted-foreground mt-1">Platform management & analytics</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-primary">Admin portal</p>
+              <h1 className="text-2xl sm:text-3xl font-semibold text-foreground">Dashboard</h1>
+              <p className="mt-1 text-sm text-muted-foreground">Unified operations view — teleconsultations, pharmacy, labs, NGO, and providers.</p>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Shield className="w-5 h-5 text-primary" />
+
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
+              {kpis.map((k) => (
+                <Card key={k.label} className="rounded-2xl">
+                  <CardContent className="p-4">
+                    <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{k.label}</p>
+                    <p className="mt-1 text-2xl font-semibold text-foreground">{k.value}</p>
+                    <p className="text-[11px] text-muted-foreground">{k.sub}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            <div>
+              <h2 className="text-lg font-semibold text-foreground">Portal sections</h2>
+              <p className="text-sm text-muted-foreground">Jump to any operational area.</p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {portalCards.map((card) => (
+                  <Link key={card.label} to={card.href} className="group relative overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md">
+                    <div className={`mb-3 h-1.5 w-8 rounded-full ${card.bar}`} />
+                    <p className="font-semibold text-foreground">{card.label}</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">{card.desc}</p>
+                    <span className="absolute right-4 top-4 text-muted-foreground/30 transition-colors group-hover:text-primary">→</span>
+                  </Link>
+                ))}
               </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Content */}
-      <section className="py-8">
-        <div className="container mx-auto px-6 lg:px-16">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <Tabs defaultValue="dashboard" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 h-auto gap-1 bg-muted p-1 rounded-xl">
-                <TabsTrigger value="dashboard" className="flex items-center gap-2 py-2.5 text-xs sm:text-sm rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm">
-                  <LayoutDashboard className="w-4 h-4" />
-                  Dashboard
-                </TabsTrigger>
-                <TabsTrigger value="providers" className="flex items-center gap-2 py-2.5 text-xs sm:text-sm rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm">
-                  <Building2 className="w-4 h-4" />
-                  Providers
-                </TabsTrigger>
-                <TabsTrigger value="users" className="flex items-center gap-2 py-2.5 text-xs sm:text-sm rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm">
-                  <Users className="w-4 h-4" />
-                  Users
-                </TabsTrigger>
-                <TabsTrigger value="settings" className="flex items-center gap-2 py-2.5 text-xs sm:text-sm rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm">
-                  <Settings className="w-4 h-4" />
-                  Settings
-                </TabsTrigger>
-              </TabsList>
-
-              {/* Dashboard */}
-              <TabsContent value="dashboard" className="space-y-6">
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                  {platformStats.map((stat) => (
-                    <Card key={stat.label} className="rounded-xl">
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <stat.icon className="w-5 h-5 text-primary" />
-                          <span className="text-xs text-primary font-medium">{stat.trend}</span>
-                        </div>
-                        <p className="text-2xl font-semibold text-foreground">{stat.value}</p>
-                        <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-
-                <div className="grid lg:grid-cols-2 gap-6">
-                  <Card className="rounded-xl">
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-lg">Recent Provider Signups</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      {recentProviders.slice(0, 3).map((p) => (
-                        <div key={p.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
-                          <div>
-                            <p className="font-medium text-foreground text-sm">{p.name}</p>
-                            <p className="text-xs text-muted-foreground">{p.specialty}</p>
-                          </div>
-                          <Badge variant={p.status === "Active" ? "default" : p.status === "Pending" ? "outline" : "destructive"}>
-                            {p.status}
-                          </Badge>
-                        </div>
-                      ))}
-                    </CardContent>
-                  </Card>
-
-                  <Card className="rounded-xl">
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-lg">Recent Patient Registrations</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      {recentUsers.map((u) => (
-                        <div key={u.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
-                          <div>
-                            <p className="font-medium text-foreground text-sm">{u.name}</p>
-                            <p className="text-xs text-muted-foreground">{u.email}</p>
-                          </div>
-                          <span className="text-xs text-muted-foreground">{u.appointments} appts</span>
-                        </div>
-                      ))}
-                    </CardContent>
-                  </Card>
-                </div>
-              </TabsContent>
-
-              {/* Providers */}
-              <TabsContent value="providers" className="space-y-6">
-                <div className="flex items-center justify-between">
+            <Card className="rounded-3xl">
+              <CardContent className="p-6">
+                <div className="mb-4 flex items-center justify-between">
                   <div>
-                    <h2 className="text-xl font-semibold text-foreground">Provider Management</h2>
-                    <p className="text-sm text-muted-foreground mt-1">Manage doctors and healthcare providers</p>
+                    <h2 className="text-lg font-semibold text-foreground">Recent NGO bookings</h2>
+                    <p className="text-xs text-muted-foreground">Latest 10 · <Link to="/ngo-portal" className="text-primary hover:underline">View all</Link></p>
                   </div>
-                  <Button className="rounded-xl gap-2">
-                    <Users className="w-4 h-4" /> Add Provider
-                  </Button>
                 </div>
-
-                <Card className="rounded-xl">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Provider</TableHead>
-                        <TableHead className="hidden sm:table-cell">Specialty</TableHead>
-                        <TableHead className="hidden md:table-cell">Patients</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {recentProviders.map((p) => (
-                        <TableRow key={p.id}>
-                          <TableCell className="font-medium">{p.name}</TableCell>
-                          <TableCell className="hidden sm:table-cell text-muted-foreground">{p.specialty}</TableCell>
-                          <TableCell className="hidden md:table-cell text-muted-foreground">{p.patients}</TableCell>
-                          <TableCell>
-                            <Badge variant={p.status === "Active" ? "default" : p.status === "Pending" ? "outline" : "destructive"}>
-                              {p.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <Button size="sm" variant="ghost" onClick={() => toast({ title: "Manage", description: `Managing ${p.name}` })}>
-                              Manage
-                            </Button>
-                          </TableCell>
-                        </TableRow>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        {["ID", "NGO", "Doctor", "Slot", "Status", "Actions"].map((h) => <th key={h} className="pb-2 pr-4 font-semibold">{h}</th>)}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {ngoReservations.map((r) => (
+                        <tr key={r.id} className="border-b border-border/50 last:border-0">
+                          <td className="py-2.5 pr-4 font-mono text-xs font-semibold text-muted-foreground">{r.friendlyId}</td>
+                          <td className="py-2.5 pr-4 font-medium text-foreground">{r.ngoName}</td>
+                          <td className="py-2.5 pr-4">
+                            <div className="font-medium text-foreground">{r.providerName}</div>
+                            <div className="text-xs text-muted-foreground">{r.speciality}</div>
+                          </td>
+                          <td className="py-2.5 pr-4 text-xs text-muted-foreground">{formatIST(r.slotTime)}</td>
+                          <td className="py-2.5 pr-4"><Badge variant={r.status === "CONFIRMED" ? "default" : "secondary"} className="rounded-full text-xs uppercase">{r.status}</Badge></td>
+                          <td className="py-2.5"><Button size="sm" variant="outline" className="rounded-full text-xs">Manage</Button></td>
+                        </tr>
                       ))}
-                    </TableBody>
-                  </Table>
-                </Card>
-              </TabsContent>
-
-              {/* Users */}
-              <TabsContent value="users" className="space-y-6">
-                <div>
-                  <h2 className="text-xl font-semibold text-foreground">User Management</h2>
-                  <p className="text-sm text-muted-foreground mt-1">Manage patient accounts and access</p>
+                    </tbody>
+                  </table>
                 </div>
+              </CardContent>
+            </Card>
 
-                <Card className="rounded-xl">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead className="hidden sm:table-cell">Email</TableHead>
-                        <TableHead>Appointments</TableHead>
-                        <TableHead className="hidden md:table-cell">Joined</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {recentUsers.map((u) => (
-                        <TableRow key={u.id}>
-                          <TableCell className="font-medium">{u.name}</TableCell>
-                          <TableCell className="hidden sm:table-cell text-muted-foreground">{u.email}</TableCell>
-                          <TableCell>{u.appointments}</TableCell>
-                          <TableCell className="hidden md:table-cell text-muted-foreground">
-                            {new Date(u.joined).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <Button size="sm" variant="ghost" onClick={() => toast({ title: "View", description: `Viewing ${u.name}` })}>
-                              View
-                            </Button>
-                          </TableCell>
-                        </TableRow>
+            <Card className="rounded-3xl">
+              <CardContent className="p-6">
+                <div className="mb-4">
+                  <h2 className="text-lg font-semibold text-foreground">Telephonic queue</h2>
+                  <p className="text-xs text-muted-foreground">Unresolved offline requests from low-bandwidth patients.</p>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        {["Created", "Patient", "Speciality", "Status", "Actions"].map((h) => <th key={h} className="pb-2 pr-4 font-semibold">{h}</th>)}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {offlineRequests.map((req) => (
+                        <tr key={req.id} className="border-b border-border/50 last:border-0">
+                          <td className="py-2.5 pr-4 text-xs text-muted-foreground">{formatIST(req.createdAt)}</td>
+                          <td className="py-2.5 pr-4">
+                            <div className="font-semibold text-foreground">{req.name}</div>
+                            <div className="text-xs text-muted-foreground">{req.phone}</div>
+                          </td>
+                          <td className="py-2.5 pr-4 text-xs text-muted-foreground">{req.speciality}</td>
+                          <td className="py-2.5 pr-4"><Badge variant="secondary" className="rounded-full text-xs uppercase">{req.status.replace("_", " ")}</Badge></td>
+                          <td className="py-2.5"><Button size="sm" variant="outline" className="rounded-full text-xs">Resolve</Button></td>
+                        </tr>
                       ))}
-                    </TableBody>
-                  </Table>
-                </Card>
-              </TabsContent>
-
-              {/* Settings */}
-              <TabsContent value="settings" className="space-y-6">
-                <div>
-                  <h2 className="text-xl font-semibold text-foreground">Platform Settings</h2>
-                  <p className="text-sm text-muted-foreground mt-1">Configure system-wide settings</p>
+                    </tbody>
+                  </table>
                 </div>
-
-                <div className="grid sm:grid-cols-2 gap-4">
-                  {[
-                    { title: "Payment Gateway", desc: "Configure UPI, cards, and wallet settings", icon: BarChart3 },
-                    { title: "Notifications", desc: "WhatsApp, SMS, and email templates", icon: Activity },
-                    { title: "Security", desc: "Access controls and audit logs", icon: Shield },
-                    { title: "Integrations", desc: "Third-party service connections", icon: Settings },
-                  ].map((item) => (
-                    <Card key={item.title} className="rounded-xl hover:shadow-sm transition-shadow cursor-pointer" onClick={() => toast({ title: item.title, description: "Settings panel coming soon" })}>
-                      <CardContent className="p-5 flex items-start gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                          <item.icon className="w-5 h-5 text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="font-medium text-foreground">{item.title}</h3>
-                          <p className="text-sm text-muted-foreground mt-0.5">{item.desc}</p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </TabsContent>
-            </Tabs>
+              </CardContent>
+            </Card>
           </motion.div>
         </div>
       </section>
