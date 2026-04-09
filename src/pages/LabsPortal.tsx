@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Layout } from "@/components/Layout";
 import { LayoutDashboard, Users, FileText, Settings } from "lucide-react";
+import { useAppAuth } from "@/contexts/AppAuthContext";
 
 const portalTabs = [
   { id: "orders", label: "Lab Orders", icon: LayoutDashboard },
@@ -61,7 +63,16 @@ const mockAgents = [
 ];
 
 const LabsPortal = () => {
+  const { user, loading, signOut } = useAppAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("orders");
+
+  useEffect(() => {
+    if (!loading && !user) navigate("/login?portal=labs");
+  }, [loading, user, navigate]);
+
+  if (loading) return <Layout><div className="pt-24 text-center text-muted-foreground">Loading…</div></Layout>;
+  if (!user) return null;
 
   return (
     <Layout>
@@ -75,7 +86,7 @@ const LabsPortal = () => {
                 <h1 className="text-2xl sm:text-3xl font-semibold text-foreground">Labs queue</h1>
                 <p className="mt-1 text-sm text-muted-foreground">Track lab orders, assign collection agents, and manage results.</p>
               </div>
-              <Button variant="outline" className="rounded-full">Log out</Button>
+              <Button variant="outline" className="rounded-full" onClick={() => signOut().then(() => navigate("/login?portal=labs"))}>Log out</Button>
             </div>
 
             {/* Tab navigation */}
