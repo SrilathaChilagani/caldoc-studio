@@ -5,7 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/Layout";
-import { LayoutDashboard, Grid3X3, HeartHandshake, Phone, Settings } from "lucide-react";
+import { LayoutDashboard, Grid3X3, HeartHandshake, Phone, Settings, Users } from "lucide-react";
+import { UserRolesTab } from "@/components/admin/UserRolesTab";
 import { useAppAuth } from "@/contexts/AppAuthContext";
 
 const portalTabs = [
