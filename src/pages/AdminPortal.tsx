@@ -153,6 +153,9 @@ const AdminPortal = () => {
               </Card>
             )}
 
+            {/* Users tab */}
+            {activeTab === "users" && <UserRolesTab />}
+
             {/* NGO Bookings tab */}
             {activeTab === "ngo" && (
               <Card className="rounded-3xl">
