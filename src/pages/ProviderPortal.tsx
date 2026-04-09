@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Video, ExternalLink, LayoutDashboard, Calendar, IndianRupee, Settings } from "lucide-react";
+import { Video, ExternalLink, LayoutDashboard, Calendar, IndianRupee, Settings, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Layout } from "@/components/Layout";
 import { useAppAuth } from "@/contexts/AppAuthContext";
+import { useProviderAppointments } from "@/hooks/useAppointments";
 
 type StatusFilter = "ALL" | "CONFIRMED" | "PENDING" | "CANCELLED" | "NO_SHOW" | "RESCHEDULED";
 type TimeFilter = "ALLTIME" | "LAST24" | "FUTURE";
@@ -23,25 +24,6 @@ const timeframeTabs: { value: TimeFilter; label: string }[] = [
   { value: "FUTURE", label: "Future" },
 ];
 
-const mockAppointments = [
-  { id: "a1", createdAt: new Date("2026-04-09T08:30:00"), speciality: "General Medicine", patientName: "Priya Sharma", patientPhone: "+91 98765 43210", status: "CONFIRMED", slotTime: new Date("2026-04-12T10:00:00"), videoRoom: "https://meet.caldoc.in/r1", waStatus: "DELIVERED" },
-  { id: "a2", createdAt: new Date("2026-04-09T09:15:00"), speciality: "General Medicine", patientName: "Ramesh Babu", patientPhone: "+91 87654 32109", status: "PENDING", slotTime: new Date("2026-04-12T11:00:00"), videoRoom: null, waStatus: "SENT" },
-  { id: "a3", createdAt: new Date("2026-04-08T14:00:00"), speciality: "General Medicine", patientName: "Sunitha Devi", patientPhone: "+91 76543 21098", status: "CONFIRMED", slotTime: new Date("2026-04-10T15:00:00"), videoRoom: "https://meet.caldoc.in/r3", waStatus: "READ" },
-  { id: "a4", createdAt: new Date("2026-04-07T10:00:00"), speciality: "General Medicine", patientName: "Venkat Rao", patientPhone: "+91 65432 10987", status: "CANCELLED", slotTime: new Date("2026-04-09T09:00:00"), videoRoom: null, waStatus: "—" },
-  { id: "a5", createdAt: new Date("2026-04-06T16:00:00"), speciality: "General Medicine", patientName: "Lakshmi K", patientPhone: "+91 54321 09876", status: "NO_SHOW", slotTime: new Date("2026-04-07T14:00:00"), videoRoom: null, waStatus: "FAILED" },
-];
-
-const statusClasses: Record<string, string> = {
-  CONFIRMED: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400",
-  PENDING: "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-400",
-  CANCELLED: "bg-muted text-muted-foreground",
-  NO_SHOW: "bg-muted text-muted-foreground",
-  RESCHEDULED: "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-400",
-};
-
-const slotFormatter = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kolkata", weekday: "short", day: "numeric", month: "short", hour: "numeric", minute: "2-digit", hour12: true });
-const createdFormatter = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kolkata", year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", hour12: true });
-
 const mockSchedule = [
   { day: "Mon, 12 Apr", slots: ["10:00 AM", "11:00 AM", "02:00 PM", "03:00 PM"] },
   { day: "Tue, 13 Apr", slots: ["09:00 AM", "10:00 AM", "11:00 AM"] },
@@ -54,12 +36,37 @@ const mockEarnings = [
   { month: "February 2026", consultations: 38, amount: "₹57,000", status: "Paid" },
 ];
 
+const statusClasses: Record<string, string> = {
+  CONFIRMED: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400",
+  PENDING: "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-400",
+  CANCELLED: "bg-muted text-muted-foreground",
+  CANCELED: "bg-muted text-muted-foreground",
+  NO_SHOW: "bg-muted text-muted-foreground",
+  RESCHEDULED: "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-400",
+};
+
+const slotFormatter = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kolkata", weekday: "short", day: "numeric", month: "short", hour: "numeric", minute: "2-digit", hour12: true });
+const createdFormatter = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kolkata", year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", hour12: true });
+
 const ProviderPortal = () => {
   const { user, signOut, profile } = useAppAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("appointments");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("ALLTIME");
+  const { data: rawAppointments = [], isLoading } = useProviderAppointments();
+
+  const mockAppointments = rawAppointments.map((a: any) => ({
+    id: a.id,
+    createdAt: new Date(a.created_at),
+    speciality: a.doctors?.specialty || "General Medicine",
+    patientName: a.patient_name,
+    patientPhone: a.patient_phone || "",
+    status: a.status,
+    slotTime: new Date(a.slot_time),
+    videoRoom: a.video_room_url,
+    waStatus: "—",
+  }));
 
   const now = new Date();
   const filtered = mockAppointments.filter((appt) => {
