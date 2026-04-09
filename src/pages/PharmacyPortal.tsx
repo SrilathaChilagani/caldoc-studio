@@ -213,6 +213,98 @@ const PharmacyPortal = () => {
               </Card>
             )}
 
+            {/* Medications Catalog tab */}
+            {activeTab === "catalog" && (() => {
+              const categories = Array.from(new Set(medications.map((m) => m.category || "Uncategorized"))).sort();
+              const filtered = medications.filter((m) => {
+                const matchesSearch = !medSearch || m.name.toLowerCase().includes(medSearch.toLowerCase()) || (m.generic?.toLowerCase().includes(medSearch.toLowerCase()));
+                const matchesCat = medCategory === "all" || (m.category || "Uncategorized") === medCategory;
+                return matchesSearch && matchesCat;
+              });
+              return (
+                <Card className="rounded-3xl">
+                  <CardContent className="p-6 space-y-4">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <h2 className="text-lg font-semibold text-foreground">Medications catalog</h2>
+                        <p className="text-sm text-muted-foreground">{medications.length} medications in database</p>
+                      </div>
+                    </div>
+
+                    {/* Filters */}
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                      <div className="relative flex-1 max-w-xs">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          value={medSearch}
+                          onChange={(e) => setMedSearch(e.target.value)}
+                          placeholder="Search by name or generic…"
+                          className="pl-9 rounded-xl"
+                        />
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          onClick={() => setMedCategory("all")}
+                          className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                            medCategory === "all"
+                              ? "bg-primary text-primary-foreground border-primary"
+                              : "bg-background border-border text-muted-foreground hover:border-primary/50"
+                          }`}
+                        >All</button>
+                        {categories.map((cat) => (
+                          <button
+                            key={cat}
+                            onClick={() => setMedCategory(cat)}
+                            className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                              medCategory === cat
+                                ? "bg-primary text-primary-foreground border-primary"
+                                : "bg-background border-border text-muted-foreground hover:border-primary/50"
+                            }`}
+                          >{cat}</button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {medsLoading ? (
+                      <div className="flex items-center justify-center py-12">
+                        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                      </div>
+                    ) : filtered.length === 0 ? (
+                      <div className="py-12 text-center text-muted-foreground text-sm">
+                        {medications.length === 0 ? "No medications in the catalog yet." : "No medications match your search."}
+                      </div>
+                    ) : (
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                          <thead>
+                            <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                              <th className="pb-2 pr-4">Name</th>
+                              <th className="pb-2 pr-4">Generic</th>
+                              <th className="pb-2 pr-4">Form</th>
+                              <th className="pb-2 pr-4">Strength</th>
+                              <th className="pb-2">Category</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {filtered.map((med) => (
+                              <tr key={med.id} className="border-b border-border/50 last:border-0">
+                                <td className="py-3 pr-4 font-medium text-foreground">{med.name}</td>
+                                <td className="py-3 pr-4 text-muted-foreground">{med.generic || "—"}</td>
+                                <td className="py-3 pr-4 text-muted-foreground">{med.form || "—"}</td>
+                                <td className="py-3 pr-4 text-muted-foreground">{med.strength || "—"}</td>
+                                <td className="py-3"><Badge variant="secondary" className="rounded-full text-xs">{med.category || "Uncategorized"}</Badge></td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                    <p className="text-xs text-muted-foreground">Showing {filtered.length} of {medications.length} medications</p>
+                  </CardContent>
+                </Card>
+              );
+            })()}
+
             {/* Inventory tab */}
             {activeTab === "inventory" && (
               <Card className="rounded-3xl">
