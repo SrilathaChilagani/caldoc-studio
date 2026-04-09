@@ -171,7 +171,8 @@ export function Navbar() {
                   Book Consultation
                 </button>
               </div>
-            </motion.div>
+              </motion.div>
+            </>
           )}
         </AnimatePresence>
       </div>
