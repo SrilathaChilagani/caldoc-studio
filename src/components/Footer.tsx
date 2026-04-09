@@ -27,9 +27,7 @@ export function Footer() {
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-10 mb-10">
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2.5 mb-3">
-              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                <span className="font-semibold text-sm text-primary-foreground">C</span>
-              </div>
+              <img src="/logo-mark.png" alt="CalDoc logo" className="w-8 h-8 rounded-lg object-cover" />
               <span className="text-lg font-semibold">CalDoc</span>
             </div>
             <p className="text-background/50 text-sm mb-5 max-w-xs leading-relaxed">

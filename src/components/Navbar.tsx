@@ -49,9 +49,7 @@ export function Navbar() {
       <div className="container mx-auto px-6 lg:px-16">
         <div className="flex items-center justify-between h-16">
           <button onClick={() => navigate("/")} className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-semibold text-sm">C</span>
-            </div>
+            <img src="/logo-mark.png" alt="CalDoc logo" className="w-8 h-8 rounded-lg object-cover" />
             <span className="text-lg font-semibold text-foreground tracking-tight">
               CalDoc
             </span>
