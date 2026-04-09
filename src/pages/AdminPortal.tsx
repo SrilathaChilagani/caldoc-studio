@@ -12,6 +12,7 @@ import { useAppAuth } from "@/contexts/AppAuthContext";
 const portalTabs = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "sections", label: "Sections", icon: Grid3X3 },
+  { id: "users", label: "Users", icon: Users },
   { id: "ngo", label: "NGO Bookings", icon: HeartHandshake },
   { id: "queue", label: "Telephonic Queue", icon: Phone },
   { id: "settings", label: "Settings", icon: Settings },
