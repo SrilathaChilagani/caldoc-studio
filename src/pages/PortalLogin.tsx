@@ -65,7 +65,7 @@ export default function PortalLogin() {
         setLoading(false);
         return;
       }
-      const { error } = await signUp(email, password, displayName);
+      const { error } = await signUp(email, password, displayName, portalKey);
       if (error) {
         setError(error);
       } else {
