@@ -210,9 +210,9 @@ const PatientPortal = () => {
                   <h2 className="text-lg font-semibold text-foreground">Profile settings</h2>
                   <div className="grid gap-4 sm:grid-cols-2">
                     {[
-                      { label: "Full name", value: mockPatient.name },
-                      { label: "Phone", value: mockPatient.phone },
-                      { label: "Email", value: "priya.sharma@email.com" },
+                      { label: "Full name", value: profile?.display_name || user.email || "" },
+                      { label: "Phone", value: profile?.phone || "Not set" },
+                      { label: "Email", value: user.email || "" },
                       { label: "Date of birth", value: "15 Mar 1990" },
                       { label: "Gender", value: "Female" },
                       { label: "Blood group", value: "B+" },
