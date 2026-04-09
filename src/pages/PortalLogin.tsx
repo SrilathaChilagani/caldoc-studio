@@ -29,8 +29,29 @@ export default function PortalLogin() {
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  async function handleGoogleSignIn() {
+    setError(null);
+    setGoogleLoading(true);
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
+      });
+      if (result.error) {
+        setError(result.error instanceof Error ? result.error.message : String(result.error));
+        setGoogleLoading(false);
+        return;
+      }
+      if (result.redirected) return;
+      navigate(config.redirect);
+    } catch (err: any) {
+      setError(err?.message || "Google sign-in failed");
+    }
+    setGoogleLoading(false);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
