@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { LayoutDashboard, Calendar, Users, FileText, Heart, MapPin, HandHelping } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { AssignPatientDialog } from "@/components/ngo/AssignPatientDialog";
 import { EditReservationDialog } from "@/components/ngo/EditReservationDialog";
@@ -66,6 +67,22 @@ const thCls = "px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide
 const tdCls = "px-3 py-3 align-middle";
 
 const NGOPortal = () => {
+  const [activeTab, setActiveTab] = useState("dashboard");
+
+  const tabs = [
+    { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { id: "campaigns", label: "Campaigns", icon: Calendar },
+    { id: "volunteers", label: "Volunteers", icon: Users },
+    { id: "reports", label: "Reports", icon: FileText },
+  ];
+
+  const impactCards = [
+    { icon: Users, label: "Beneficiaries Served", value: "8,420", growth: "+22%" },
+    { icon: Heart, label: "Health Camps", value: "56", growth: "+15%" },
+    { icon: HandHelping, label: "Volunteers", value: "124", growth: "+8%" },
+    { icon: MapPin, label: "Districts Covered", value: "18", growth: "+3" },
+  ];
+
   const [startDate, setStartDate] = useState("2026-04-09");
   const [endDate, setEndDate] = useState("2026-04-16");
 
@@ -92,7 +109,44 @@ const NGOPortal = () => {
               </div>
             </div>
 
-            {/* KPI cards */}
+            {/* Tab navigation */}
+            <Card className="rounded-2xl">
+              <CardContent className="p-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {tabs.map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
+                        activeTab === tab.id
+                          ? "bg-primary/10 text-primary"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      }`}
+                    >
+                      <tab.icon className="w-4 h-4" />
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Community impact cards */}
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {impactCards.map((card) => (
+                <Card key={card.label} className="rounded-2xl">
+                  <CardContent className="p-5">
+                    <div className="flex items-start justify-between">
+                      <card.icon className="w-5 h-5 text-primary" />
+                      <span className="text-xs font-semibold text-primary">{card.growth}</span>
+                    </div>
+                    <p className="mt-3 text-2xl font-semibold text-foreground">{card.value}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{card.label}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {kpiCards.map((card) => (
                 <Card key={card.label} className="rounded-2xl">
