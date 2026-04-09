@@ -335,29 +335,123 @@ const BookDoctor = () => {
                   />
                 </div>
 
-                {/* Continue Button */}
+                {/* Pay & Book Button */}
                 <Button
                   className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium shadow-soft"
-                  disabled={selectedSlot === null || !consent}
-                  onClick={() => {
+                  disabled={selectedSlot === null || !consent || isProcessing}
+                  onClick={async () => {
                     const slot = slots.find((s) => s.id === selectedSlot);
-                    navigate("/booking-confirmed", {
-                      state: {
-                        doctorName: doctor.name,
-                        specialty: doctor.specialty,
-                        date: slot?.date || "",
-                        time: slot?.time || "",
-                        fee: fee,
-                        patientName,
-                        mobile,
-                        connectionPref,
+                    if (!slot || !doctor) return;
+
+                    setIsProcessing(true);
+                    try {
+                      // 1. Create appointment with PENDING status
+                      const appointment = await createAppointment.mutateAsync({
+                        doctor_id: doctor.id,
+                        patient_name: patientName || "Self",
+                        patient_phone: mobile,
+                        slot_time: new Date(Date.now() + (slot.id + 1) * 30 * 60 * 1000).toISOString(),
+                        consultation_type: connectionPref.toUpperCase(),
                         symptoms: selectedSymptoms,
                         notes,
-                      },
-                    });
+                        fee_paise: doctor.fee_paise,
+                      });
+
+                      // 2. Create Razorpay order via edge function
+                      const { data: orderData, error: orderError } = await supabase.functions.invoke(
+                        "create-razorpay-order",
+                        {
+                          body: {
+                            appointment_id: appointment.id,
+                            amount_paise: doctor.fee_paise,
+                          },
+                        }
+                      );
+
+                      if (orderError || !orderData?.order_id) {
+                        throw new Error(orderError?.message || "Failed to create payment order");
+                      }
+
+                      // 3. Open Razorpay checkout
+                      const options = {
+                        key: orderData.key_id,
+                        amount: orderData.amount,
+                        currency: orderData.currency,
+                        name: "CalDoc",
+                        description: `Consultation with ${doctor.name}`,
+                        order_id: orderData.order_id,
+                        handler: async (response: any) => {
+                          try {
+                            // 4. Verify payment
+                            const { data: verifyData, error: verifyError } = await supabase.functions.invoke(
+                              "verify-razorpay-payment",
+                              {
+                                body: {
+                                  razorpay_order_id: response.razorpay_order_id,
+                                  razorpay_payment_id: response.razorpay_payment_id,
+                                  razorpay_signature: response.razorpay_signature,
+                                  appointment_id: appointment.id,
+                                },
+                              }
+                            );
+
+                            if (verifyError) throw new Error("Payment verification failed");
+
+                            // 5. Navigate to confirmation
+                            navigate("/booking-confirmed", {
+                              state: {
+                                doctorName: doctor.name,
+                                specialty: doctor.specialty,
+                                date: slot.date,
+                                time: slot.time,
+                                fee,
+                                patientName: patientName || "Self",
+                                mobile,
+                                connectionPref,
+                                symptoms: selectedSymptoms,
+                                notes,
+                              },
+                            });
+                          } catch (err) {
+                            toast({
+                              title: "Payment verification failed",
+                              description: "Please contact support with your payment reference.",
+                              variant: "destructive",
+                            });
+                          }
+                          setIsProcessing(false);
+                        },
+                        modal: {
+                          ondismiss: () => setIsProcessing(false),
+                        },
+                        prefill: {
+                          name: patientName,
+                          contact: mobile,
+                        },
+                        theme: { color: "#16a34a" },
+                      };
+
+                      const rzp = new window.Razorpay(options);
+                      rzp.open();
+                    } catch (err: any) {
+                      console.error("Booking error:", err);
+                      toast({
+                        title: "Booking failed",
+                        description: err.message || "Something went wrong. Please try again.",
+                        variant: "destructive",
+                      });
+                      setIsProcessing(false);
+                    }
                   }}
                 >
-                  Continue
+                  {isProcessing ? (
+                    <span className="flex items-center gap-2">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Processing…
+                    </span>
+                  ) : (
+                    `Pay ₹${fee.toFixed(2)} & Book`
+                  )}
                 </Button>
               </motion.aside>
             </div>
