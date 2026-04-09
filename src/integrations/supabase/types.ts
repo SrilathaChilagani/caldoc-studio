@@ -67,6 +67,54 @@ export type Database = {
           },
         ]
       }
+      emergency_bookings: {
+        Row: {
+          assigned_doctor_id: string | null
+          assigned_doctor_name: string | null
+          booking_id: string
+          consultation_type: string
+          created_at: string
+          id: string
+          notes: string | null
+          patient_name: string
+          patient_phone: string
+          status: string
+          symptoms: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assigned_doctor_id?: string | null
+          assigned_doctor_name?: string | null
+          booking_id: string
+          consultation_type?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          patient_name: string
+          patient_phone: string
+          status?: string
+          symptoms?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assigned_doctor_id?: string | null
+          assigned_doctor_name?: string | null
+          booking_id?: string
+          consultation_type?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          patient_name?: string
+          patient_phone?: string
+          status?: string
+          symptoms?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       ngo_members: {
         Row: {
           created_at: string
