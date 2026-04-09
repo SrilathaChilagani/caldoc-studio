@@ -9,7 +9,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Layout } from "@/components/Layout";
 import { useDoctorBySlug } from "@/hooks/useDoctors";
 import { useCreateAppointment } from "@/hooks/useAppointments";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
 
 const generateSlots = () => {
   const slots = [];
