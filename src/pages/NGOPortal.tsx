@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,6 +10,9 @@ import { DashboardTab } from "@/components/ngo/DashboardTab";
 import { CampaignsTab } from "@/components/ngo/CampaignsTab";
 import { VolunteersTab } from "@/components/ngo/VolunteersTab";
 import { ReportsTab } from "@/components/ngo/ReportsTab";
+import { useNgoAuth } from "@/contexts/NgoAuthContext";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 function formatRangeLabel(start: string, end: string) {
   const s = new Date(start);
@@ -17,8 +21,6 @@ function formatRangeLabel(start: string, end: string) {
   return `${fmt(s)} – ${fmt(e)}`;
 }
 
-const mockNgo = { name: "Health For All Foundation" };
-
 const tabs = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "campaigns", label: "Campaigns", icon: Calendar },
@@ -26,17 +28,56 @@ const tabs = [
   { id: "reports", label: "Reports", icon: FileText },
 ];
 
-const impactCards = [
-  { icon: Users, label: "Beneficiaries Served", value: "8,420", growth: "+22%" },
-  { icon: Heart, label: "Health Camps", value: "56", growth: "+15%" },
-  { icon: HandHelping, label: "Volunteers", value: "124", growth: "+8%" },
-  { icon: MapPin, label: "Districts Covered", value: "18", growth: "+3" },
-];
-
 const NGOPortal = () => {
+  const { user, ngoId, ngoName, loading, signOut } = useNgoAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [startDate, setStartDate] = useState("2026-04-09");
   const [endDate, setEndDate] = useState("2026-04-16");
+
+  // Impact stats
+  const { data: impactStats } = useQuery({
+    queryKey: ["ngo-impact", ngoId],
+    enabled: !!ngoId,
+    queryFn: async () => {
+      const [campaignsRes, volunteersRes] = await Promise.all([
+        supabase.from("campaigns").select("beneficiaries_served, districts, status").eq("ngo_id", ngoId!),
+        supabase.from("volunteers").select("id").eq("ngo_id", ngoId!),
+      ]);
+      const campaigns = campaignsRes.data || [];
+      const allDistricts = new Set(campaigns.flatMap((c) => c.districts || []));
+      const activeCamps = campaigns.filter((c) => c.status === "ACTIVE" || c.status === "COMPLETED").length;
+      const totalBeneficiaries = campaigns.reduce((s, c) => s + (c.beneficiaries_served || 0), 0);
+      return {
+        beneficiaries: totalBeneficiaries,
+        camps: activeCamps,
+        volunteers: volunteersRes.data?.length || 0,
+        districts: allDistricts.size,
+      };
+    },
+  });
+
+  const impactCards = [
+    { icon: Users, label: "Beneficiaries Served", value: impactStats?.beneficiaries?.toLocaleString("en-IN") || "0", growth: "" },
+    { icon: Heart, label: "Health Camps", value: String(impactStats?.camps || 0), growth: "" },
+    { icon: HandHelping, label: "Volunteers", value: String(impactStats?.volunteers || 0), growth: "" },
+    { icon: MapPin, label: "Districts Covered", value: String(impactStats?.districts || 0), growth: "" },
+  ];
+
+  if (loading) {
+    return (
+      <Layout>
+        <section className="pt-24 pb-10 flex items-center justify-center min-h-[60vh]">
+          <p className="text-muted-foreground">Loading…</p>
+        </section>
+      </Layout>
+    );
+  }
+
+  if (!user || !ngoId) {
+    navigate("/ngo-login");
+    return null;
+  }
 
   const rangeLabel = formatRangeLabel(startDate, endDate);
 
@@ -49,7 +90,7 @@ const NGOPortal = () => {
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">NGO dashboard</p>
-                <h1 className="mt-0.5 text-2xl sm:text-3xl font-semibold text-foreground">{mockNgo.name}</h1>
+                <h1 className="mt-0.5 text-2xl sm:text-3xl font-semibold text-foreground">{ngoName || "Your NGO"}</h1>
                 <p className="mt-1 text-sm text-muted-foreground">Community health impact management</p>
                 <p className="mt-0.5 text-xs text-muted-foreground">Showing reservations between {rangeLabel}</p>
               </div>
@@ -57,7 +98,7 @@ const NGOPortal = () => {
                 <Button variant="outline" className="rounded-full text-primary border-primary/40">+ New booking</Button>
                 <Button variant="outline" className="rounded-full text-primary border-primary/40">Download invoice</Button>
                 <ChangePasswordDialog />
-                <Button className="rounded-full">Sign out</Button>
+                <Button className="rounded-full" onClick={signOut}>Sign out</Button>
               </div>
             </div>
 
@@ -90,7 +131,7 @@ const NGOPortal = () => {
                   <CardContent className="p-5">
                     <div className="flex items-start justify-between">
                       <card.icon className="w-5 h-5 text-primary" />
-                      <span className="text-xs font-semibold text-primary">{card.growth}</span>
+                      {card.growth && <span className="text-xs font-semibold text-primary">{card.growth}</span>}
                     </div>
                     <p className="mt-3 text-2xl font-semibold text-foreground">{card.value}</p>
                     <p className="mt-1 text-xs text-muted-foreground">{card.label}</p>
@@ -101,11 +142,11 @@ const NGOPortal = () => {
 
             {/* Tab content */}
             {activeTab === "dashboard" && (
-              <DashboardTab startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />
+              <DashboardTab ngoId={ngoId} startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />
             )}
-            {activeTab === "campaigns" && <CampaignsTab />}
-            {activeTab === "volunteers" && <VolunteersTab />}
-            {activeTab === "reports" && <ReportsTab />}
+            {activeTab === "campaigns" && <CampaignsTab ngoId={ngoId} />}
+            {activeTab === "volunteers" && <VolunteersTab ngoId={ngoId} />}
+            {activeTab === "reports" && <ReportsTab ngoId={ngoId} />}
           </motion.div>
         </div>
       </section>
