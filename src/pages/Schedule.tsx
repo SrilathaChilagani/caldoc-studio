@@ -291,8 +291,7 @@ const Schedule = () => {
   ].filter(Boolean).length;
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
+    <Layout>
 
       {/* Hero Search Bar */}
       <section className="pt-20 pb-4 bg-gradient-to-b from-primary/5 to-background">
@@ -455,8 +454,7 @@ const Schedule = () => {
         </div>
       </section>
 
-      <Footer />
-    </div>
+    </Layout>
   );
 };
 
