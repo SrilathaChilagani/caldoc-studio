@@ -24,6 +24,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import PharmacyPortal from "./pages/PharmacyPortal";
 import LabsPortal from "./pages/LabsPortal";
+import ProviderEnrollment from "./pages/ProviderEnrollment";
 import NotFound from "./pages/NotFound";
 import { RoleGuard } from "./components/RoleGuard";
 
