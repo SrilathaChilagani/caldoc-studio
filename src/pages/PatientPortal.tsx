@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { User, Calendar, FileText, CreditCard, Video, ArrowRight, LayoutDashboard, FolderOpen, Settings } from "lucide-react";
+import { User, Calendar, FileText, CreditCard, Video, ArrowRight, LayoutDashboard, FolderOpen, Settings, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Layout } from "@/components/Layout";
 import { useNavigate } from "react-router-dom";
 import { useAppAuth } from "@/contexts/AppAuthContext";
+import { useMyAppointments } from "@/hooks/useAppointments";
 
 type FilterKey = "ALL" | "CONFIRMED" | "PENDING" | "CANCELED" | "NO_SHOW" | "UPCOMING";
 
@@ -24,15 +25,6 @@ const tabs = [
   { id: "profile", label: "Profile", icon: Settings },
 ];
 
-const mockPatient = { name: "Priya Sharma", phone: "+91 98765 43210" };
-
-const mockAppointments = [
-  { id: "appt-001", providerName: "Dr. Rajesh Kumar", speciality: "General Physician", patientName: "Priya Sharma", status: "CONFIRMED" as const, slotTime: new Date("2026-04-12T10:00:00"), videoRoom: "https://meet.caldoc.in/room-001", hasPrescription: true, hasReceipt: true },
-  { id: "appt-002", providerName: "Dr. Sunitha Reddy", speciality: "Dermatology", patientName: "Priya Sharma", status: "PENDING" as const, slotTime: new Date("2026-04-15T14:30:00"), videoRoom: null, hasPrescription: false, hasReceipt: false },
-  { id: "appt-003", providerName: "Dr. Venkat Rao", speciality: "Cardiology", patientName: "Priya Sharma", status: "CONFIRMED" as const, slotTime: new Date("2026-04-08T11:00:00"), videoRoom: "https://meet.caldoc.in/room-003", hasPrescription: true, hasReceipt: true },
-  { id: "appt-004", providerName: "Dr. Lakshmi Devi", speciality: "Pediatrics", patientName: "Priya Sharma", status: "CANCELED" as const, slotTime: new Date("2026-03-28T09:00:00"), videoRoom: null, hasPrescription: false, hasReceipt: true },
-  { id: "appt-005", providerName: "Dr. Arun Prasad", speciality: "Orthopedics", patientName: "Priya Sharma", status: "NO_SHOW" as const, slotTime: new Date("2026-03-20T16:00:00"), videoRoom: null, hasPrescription: false, hasReceipt: false },
-];
 
 const statusClasses: Record<string, string> = {
   CONFIRMED: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400",
@@ -56,17 +48,30 @@ const PatientPortal = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("appointments");
   const [activeFilter, setActiveFilter] = useState<FilterKey>("ALL");
+  const { data: rawAppointments = [], isLoading } = useMyAppointments();
 
-  const filtered = mockAppointments.filter((appt) => {
+  const appointments = rawAppointments.map((a: any) => ({
+    id: a.id,
+    providerName: a.doctors?.name || "Unknown Doctor",
+    speciality: a.doctors?.specialty || "",
+    patientName: a.patient_name,
+    status: a.status,
+    slotTime: new Date(a.slot_time),
+    videoRoom: a.video_room_url,
+    hasPrescription: false,
+    hasReceipt: false,
+  }));
+
+  const filtered = appointments.filter((appt: any) => {
     if (activeFilter === "ALL") return true;
     if (activeFilter === "UPCOMING") return appt.status === "CONFIRMED" || appt.status === "PENDING";
     return appt.status === activeFilter;
   });
 
   const summary = [
-    { label: "All appointments", value: mockAppointments.length },
-    { label: "Confirmed", value: mockAppointments.filter((a) => a.status === "CONFIRMED").length },
-    { label: "Pending", value: mockAppointments.filter((a) => a.status === "PENDING").length },
+    { label: "All appointments", value: appointments.length },
+    { label: "Confirmed", value: appointments.filter((a: any) => a.status === "CONFIRMED").length },
+    { label: "Pending", value: appointments.filter((a: any) => a.status === "PENDING").length },
   ];
 
   return (
