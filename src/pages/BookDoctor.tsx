@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Video, Phone, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, Video, Phone, ChevronLeft, ChevronRight, AlertTriangle } from "lucide-react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -92,6 +92,14 @@ const BookDoctor = () => {
               <p className="text-muted-foreground mt-1 text-sm">
                 Select a slot, enter patient details, and accept the telemedicine consent to continue.
               </p>
+              {/* Emergency CTA */}
+              <Link
+                to="/emergency-booking"
+                className="mt-3 inline-flex items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-2.5 text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors"
+              >
+                <AlertTriangle className="w-4 h-4" />
+                Need urgent help? Book an emergency visit
+              </Link>
             </div>
 
             {/* Two-column layout */}
