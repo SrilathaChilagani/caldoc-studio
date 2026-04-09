@@ -111,14 +111,14 @@ const Providers = () => {
   const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
   const [selectedAvailability, setSelectedAvailability] = useState("any");
   const [selectedConsultation, setSelectedConsultation] = useState<string[]>([]);
+  const { data: allDoctors = [], isLoading } = useDoctors();
 
   const filteredDoctors = useMemo(() => {
     return allDoctors.filter((doc) => {
       const matchesSearch =
         !searchQuery ||
         doc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        doc.specialty.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        doc.languages.some((l) => l.toLowerCase().includes(searchQuery.toLowerCase()));
+        doc.specialty.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesSpecialty =
         selectedSpecialties.length === 0 ||
@@ -126,11 +126,13 @@ const Providers = () => {
 
       const matchesConsultation =
         selectedConsultation.length === 0 ||
-        selectedConsultation.some((c) => doc.consultationType.includes(c));
+        selectedConsultation.some((c) =>
+          (c === "video" && doc.video_consult) || (c === "audio" && doc.audio_consult)
+        );
 
       return matchesSearch && matchesSpecialty && matchesConsultation;
     });
-  }, [searchQuery, selectedSpecialties, selectedConsultation]);
+  }, [allDoctors, searchQuery, selectedSpecialties, selectedConsultation]);
 
   const toggleSpecialty = (s: string) => {
     setSelectedSpecialties((prev) =>
@@ -260,7 +262,13 @@ const Providers = () => {
 
             {/* Doctor Cards */}
             <div className="flex-1 space-y-4">
-              {filteredDoctors.length === 0 && (
+              {isLoading && (
+                <div className="flex justify-center py-16">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                </div>
+              )}
+
+              {!isLoading && filteredDoctors.length === 0 && (
                 <div className="text-center py-16 text-muted-foreground">
                   <p className="text-lg">No doctors found matching your criteria.</p>
                   <button onClick={clearAll} className="text-primary mt-2 hover:underline">
@@ -269,78 +277,65 @@ const Providers = () => {
                 </div>
               )}
 
-              {filteredDoctors.map((doctor, i) => (
-                <motion.div
-                  key={doctor.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: i * 0.05 }}
-                  className="bg-card rounded-2xl border border-border p-6 flex items-center gap-6 hover:shadow-soft transition-all duration-300"
-                >
-                  {/* Avatar */}
-                  <div
-                    className={`w-20 h-20 shrink-0 rounded-2xl bg-gradient-to-br ${doctor.gradient} flex items-center justify-center shadow-soft`}
+              {!isLoading && filteredDoctors.map((doctor, i) => {
+                const initials = doctor.name.replace("Dr. ", "").split(" ").map(w => w[0]).join("");
+                const gradient = gradients[i % gradients.length];
+                return (
+                  <motion.div
+                    key={doctor.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: i * 0.05 }}
+                    className="bg-card rounded-2xl border border-border p-6 flex items-center gap-6 hover:shadow-soft transition-all duration-300"
                   >
-                    <span className="text-2xl font-serif text-white font-medium">
-                      {doctor.initials}
-                    </span>
-                  </div>
-
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-serif text-xl text-foreground">
-                      {doctor.name}
-                    </h3>
-                    <p className="text-primary font-medium text-sm">
-                      {doctor.specialty}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Gender: {doctor.gender} · Experience: {doctor.experience}
-                    </p>
-                    <div className="flex items-center gap-1 mt-1">
-                      <Globe className="w-3 h-3 text-muted-foreground" />
-                      <p className="text-xs text-muted-foreground">
-                        {doctor.languages.join(", ")}
-                      </p>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Consultation fee: <span className="font-medium text-foreground">₹{doctor.fee}.00</span>
-                    </p>
-                    {doctor.available24x7 && (
-                      <span className="inline-flex items-center gap-1 mt-1.5 text-xs font-medium text-primary">
-                        <Clock className="w-3 h-3" />
-                        Available 24×7
-                      </span>
+                    {doctor.image_url ? (
+                      <img src={doctor.image_url} alt={doctor.name} className="w-20 h-20 shrink-0 rounded-2xl object-cover border-2 border-border" />
+                    ) : (
+                      <div className={`w-20 h-20 shrink-0 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center shadow-soft`}>
+                        <span className="text-2xl font-serif text-white font-medium">{initials}</span>
+                      </div>
                     )}
-                  </div>
 
-                  {/* Right side */}
-                  <div className="hidden sm:flex flex-col items-end gap-2 shrink-0">
-                    <div className="text-right">
-                      <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
-                        Next Availability
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-serif text-xl text-foreground">{doctor.name}</h3>
+                      <p className="text-primary font-medium text-sm">{doctor.specialty}</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Experience: {doctor.experience_years}+ years
                       </p>
-                      <p className="text-sm text-muted-foreground mt-0.5">
-                        No slots open
+                      {doctor.location && (
+                        <p className="text-xs text-muted-foreground mt-0.5">{doctor.location}</p>
+                      )}
+                      <div className="flex items-center gap-2 mt-1">
+                        {doctor.video_consult && (
+                          <span className="flex items-center gap-1 text-xs text-muted-foreground"><Video className="w-3 h-3" /> Video</span>
+                        )}
+                        {doctor.audio_consult && (
+                          <span className="flex items-center gap-1 text-xs text-muted-foreground"><Phone className="w-3 h-3" /> Audio</span>
+                        )}
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Consultation fee: <span className="font-medium text-foreground">₹{(doctor.fee_paise / 100).toFixed(0)}.00</span>
                       </p>
                     </div>
-                    <Link to={`/book/${doctor.name.toLowerCase().replace(/[\s.]+/g, '-').replace(/^dr-/, 'dr-')}`}>
-                      <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-6 font-medium">
-                        Book doctor
-                      </Button>
-                    </Link>
-                  </div>
 
-                  {/* Mobile book button */}
-                  <div className="sm:hidden">
-                    <Link to={`/book/${doctor.name.toLowerCase().replace(/[\s.]+/g, '-').replace(/^dr-/, 'dr-')}`}>
-                      <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl">
-                        Book
-                      </Button>
-                    </Link>
-                  </div>
-                </motion.div>
-              ))}
+                    <div className="hidden sm:flex flex-col items-end gap-2 shrink-0">
+                      <Link to={`/book/${doctor.slug}`}>
+                        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-6 font-medium">
+                          Book doctor
+                        </Button>
+                      </Link>
+                    </div>
+
+                    <div className="sm:hidden">
+                      <Link to={`/book/${doctor.slug}`}>
+                        <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl">
+                          Book
+                        </Button>
+                      </Link>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </div>
