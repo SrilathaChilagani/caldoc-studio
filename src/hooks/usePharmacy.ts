@@ -28,3 +28,17 @@ export function usePharmacyInventory() {
     },
   });
 }
+
+export function useMedications() {
+  return useQuery({
+    queryKey: ["medications"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("medications")
+        .select("*")
+        .order("name");
+      if (error) throw error;
+      return data;
+    },
+  });
+}
