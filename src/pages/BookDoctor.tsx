@@ -6,8 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+import { Layout } from "@/components/Layout";
 
 const allDoctors = [
   { slug: "dr-asha-menon", name: "Dr. Asha Menon", specialty: "Pediatrics", fee: 499 },
@@ -64,8 +63,7 @@ const BookDoctor = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
+    <Layout>
 
       <section className="pt-20 pb-10">
         <div className="container mx-auto px-6 lg:px-12">
@@ -338,8 +336,7 @@ const BookDoctor = () => {
         </div>
       </section>
 
-      <Footer />
-    </div>
+    </Layout>
   );
 };
 

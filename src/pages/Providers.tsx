@@ -6,8 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Link } from "react-router-dom";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+import { Layout } from "@/components/Layout";
 import heroImage from "@/assets/hero-doctor.jpg";
 
 const allDoctors = [
@@ -270,8 +269,7 @@ const Providers = () => {
   const activeFilterCount = selectedSpecialties.length + selectedConsultation.length + (selectedAvailability !== "any" ? 1 : 0);
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
+    <Layout>
 
       {/* Hero-style header */}
       <section className="relative pt-20 pb-16">
@@ -463,8 +461,7 @@ const Providers = () => {
         </div>
       </section>
 
-      <Footer />
-    </div>
+    </Layout>
   );
 };
 

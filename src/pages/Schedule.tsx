@@ -18,8 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+import { Layout } from "@/components/Layout";
 import { format, addDays } from "date-fns";
 
 // ── Data ──────────────────────────────────────────────
@@ -292,8 +291,7 @@ const Schedule = () => {
   ].filter(Boolean).length;
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
+    <Layout>
 
       {/* Hero Search Bar */}
       <section className="pt-20 pb-4 bg-gradient-to-b from-primary/5 to-background">
@@ -456,8 +454,7 @@ const Schedule = () => {
         </div>
       </section>
 
-      <Footer />
-    </div>
+    </Layout>
   );
 };
 

@@ -1,4 +1,4 @@
-import { Navbar } from "@/components/Navbar";
+import { Layout } from "@/components/Layout";
 import { Hero } from "@/components/Hero";
 import { Features } from "@/components/Features";
 import { Specialties } from "@/components/Specialties";
@@ -7,12 +7,10 @@ import { HowItWorks } from "@/components/HowItWorks";
 import { Testimonials } from "@/components/Testimonials";
 import { Services } from "@/components/Services";
 import { Contact } from "@/components/Contact";
-import { Footer } from "@/components/Footer";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
-      <Navbar />
+    <Layout>
       <Hero />
       <Features />
       <Specialties />
@@ -21,8 +19,7 @@ const Index = () => {
       <Testimonials />
       <Services />
       <Contact />
-      <Footer />
-    </div>
+    </Layout>
   );
 };
 

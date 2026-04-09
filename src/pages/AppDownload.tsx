@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+import { Layout } from "@/components/Layout";
 import {
   Video,
   Shield,
@@ -80,8 +79,7 @@ const itemVariants = {
 export default function AppDownload() {
   const navigate = useNavigate();
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
-      <Navbar />
+    <Layout>
 
       {/* Hero Section */}
       <section className="relative pt-28 pb-20 lg:pt-36 lg:pb-28 bg-background">
@@ -404,7 +402,6 @@ export default function AppDownload() {
         </div>
       </section>
 
-      <Footer />
-    </div>
+    </Layout>
   );
 }
