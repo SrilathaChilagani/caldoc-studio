@@ -18,45 +18,42 @@ const services = [
 
 export function Services() {
   return (
-    <section className="py-24 lg:py-32 bg-primary text-primary-foreground">
-      <div className="container mx-auto px-6 lg:px-12">
+    <section className="py-20 lg:py-28 bg-primary">
+      <div className="container mx-auto px-6 lg:px-16">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          transition={{ duration: 0.5 }}
+          className="text-center mb-10"
         >
-          <h2 className="font-serif text-3xl lg:text-4xl mb-4">
+          <h2 className="text-3xl lg:text-4xl font-semibold text-primary-foreground tracking-tight mb-2">
             Beyond Consultations
           </h2>
-          <p className="text-primary-foreground/70 max-w-xl mx-auto">
+          <p className="text-primary-foreground/60 text-sm max-w-md mx-auto">
             Complete healthcare services at your fingertips
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-          {services.map((service, index) => (
+        <div className="grid md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+          {services.map((service, i) => (
             <motion.a
               key={service.title}
               href={service.href}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              whileHover={{ y: -5 }}
-              className="group flex items-center gap-6 bg-white/10 backdrop-blur-sm rounded-2xl p-6 hover:bg-white/20 transition-all duration-300"
+              transition={{ duration: 0.4, delay: i * 0.1 }}
+              className="group flex items-center gap-4 bg-primary-foreground/10 rounded-xl p-5 hover:bg-primary-foreground/15 transition-colors"
             >
-              <div className="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center">
-                <service.icon className="w-7 h-7" />
+              <div className="w-10 h-10 rounded-lg bg-primary-foreground/20 flex items-center justify-center flex-shrink-0">
+                <service.icon className="w-5 h-5 text-primary-foreground" />
               </div>
-              <div className="flex-1">
-                <h3 className="font-serif text-xl mb-1">{service.title}</h3>
-                <p className="text-sm text-primary-foreground/70">
-                  {service.description}
-                </p>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-base font-semibold text-primary-foreground mb-0.5">{service.title}</h3>
+                <p className="text-xs text-primary-foreground/60">{service.description}</p>
               </div>
-              <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+              <ArrowRight className="w-4 h-4 text-primary-foreground/40 group-hover:text-primary-foreground group-hover:translate-x-0.5 transition-all flex-shrink-0" />
             </motion.a>
           ))}
         </div>

@@ -19,68 +19,47 @@ const features = [
   },
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.2 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-};
-
 export function Features() {
   return (
-    <section id="why" className="py-24 lg:py-32 bg-card">
-      <div className="container mx-auto px-6 lg:px-12">
+    <section id="why" className="py-20 lg:py-28">
+      <div className="container mx-auto px-6 lg:px-16">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-20"
+          transition={{ duration: 0.5 }}
+          className="text-center mb-14"
         >
-          <span className="inline-block text-sm font-medium tracking-widest uppercase text-primary mb-4">
+          <p className="text-sm font-medium text-primary mb-2 tracking-wide uppercase">
             Why Choose Us
-          </span>
-          <h2 className="font-serif text-3xl lg:text-5xl text-foreground mb-5">
-            Healthcare where comfort
-            <br className="hidden sm:block" />
-            meets care.
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto text-lg leading-relaxed">
-            Experience medical consultations designed around your lifestyle
           </p>
+          <h2 className="text-3xl lg:text-4xl font-semibold text-foreground tracking-tight">
+            Healthcare where comfort meets care
+          </h2>
         </motion.div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid md:grid-cols-3 gap-6 lg:gap-10"
-        >
-          {features.map((feature) => (
+        <div className="grid md:grid-cols-3 gap-6">
+          {features.map((feature, i) => (
             <motion.div
               key={feature.title}
-              variants={itemVariants}
-              className="group relative text-center p-10 rounded-3xl bg-background shadow-soft hover:shadow-elevated transition-all duration-500"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              className="p-8 rounded-2xl border border-border bg-card hover:border-primary/20 transition-colors"
             >
-              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-500">
-                <feature.icon className="w-8 h-8 text-primary group-hover:text-primary-foreground transition-colors duration-500" />
+              <div className="w-10 h-10 mb-5 rounded-lg bg-primary/10 flex items-center justify-center">
+                <feature.icon className="w-5 h-5 text-primary" />
               </div>
-              <h3 className="font-serif text-xl text-foreground mb-3">
+              <h3 className="text-lg font-semibold text-foreground mb-2">
                 {feature.title}
               </h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-sm text-muted-foreground leading-relaxed">
                 {feature.description}
               </p>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

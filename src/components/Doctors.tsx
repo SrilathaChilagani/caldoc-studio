@@ -12,7 +12,7 @@ const doctors = [
     reviews: 128,
     languages: ["English", "Hindi", "Malayalam"],
     initials: "AM",
-    gradient: "from-primary to-blue-400",
+    color: "bg-primary/10 text-primary",
   },
   {
     name: "Dr. RamaDevi",
@@ -22,7 +22,7 @@ const doctors = [
     reviews: 256,
     languages: ["English", "Telugu"],
     initials: "RD",
-    gradient: "from-accent to-orange-400",
+    color: "bg-orange-100 text-orange-600",
   },
   {
     name: "Dr. Rohan Iyer",
@@ -32,7 +32,7 @@ const doctors = [
     reviews: 189,
     languages: ["English", "Marathi"],
     initials: "RI",
-    gradient: "from-violet-500 to-purple-400",
+    color: "bg-violet-100 text-violet-600",
   },
   {
     name: "Dr. Priya Sharma",
@@ -42,114 +42,88 @@ const doctors = [
     reviews: 312,
     languages: ["English", "Hindi"],
     initials: "PS",
-    gradient: "from-rose-500 to-pink-400",
+    color: "bg-rose-100 text-rose-600",
   },
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.15 },
-  },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-};
-
 export function Doctors() {
   return (
-    <section id="doctors" className="py-24 lg:py-32 bg-background">
-      <div className="container mx-auto px-6 lg:px-12">
+    <section id="doctors" className="py-20 lg:py-28">
+      <div className="container mx-auto px-6 lg:px-16">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          transition={{ duration: 0.5 }}
+          className="text-center mb-12"
         >
-          <h2 className="font-serif text-3xl lg:text-5xl text-foreground mb-4">
+          <h2 className="text-3xl lg:text-4xl font-semibold text-foreground tracking-tight mb-2">
             Meet Our Doctors
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-sm max-w-md mx-auto">
             Expert healthcare professionals dedicated to your wellbeing
           </p>
         </motion.div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
-        >
-          {doctors.map((doctor) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {doctors.map((doctor, i) => (
             <motion.div
               key={doctor.name}
-              variants={cardVariants}
-              whileHover={{ y: -10 }}
-              className="group bg-card rounded-3xl p-6 shadow-soft hover:shadow-elevated transition-all duration-500"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.08 }}
+              className="bg-card rounded-xl border border-border p-5 hover:border-primary/20 transition-colors"
             >
-              {/* Avatar */}
-              <div className={`w-24 h-24 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${doctor.gradient} flex items-center justify-center shadow-soft`}>
-                <span className="text-3xl font-serif text-white font-medium">
-                  {doctor.initials}
-                </span>
+              <div className={`w-14 h-14 mx-auto mb-4 rounded-xl ${doctor.color} flex items-center justify-center`}>
+                <span className="text-lg font-semibold">{doctor.initials}</span>
               </div>
 
-              {/* Info */}
               <div className="text-center">
-                <h3 className="font-serif text-xl text-foreground mb-1">
+                <h3 className="text-base font-semibold text-foreground mb-0.5">
                   {doctor.name}
                 </h3>
-                <p className="text-primary font-medium text-sm mb-1">
+                <p className="text-primary text-xs font-medium mb-0.5">
                   {doctor.specialty}
                 </p>
-                <p className="text-xs text-muted-foreground mb-4">
-                  {doctor.experience} experience
+                <p className="text-xs text-muted-foreground mb-3">
+                  {doctor.experience}
                 </p>
 
-                {/* Rating */}
-                <div className="flex items-center justify-center gap-1 mb-3">
-                  <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                  <span className="text-sm font-medium text-foreground">
-                    {doctor.rating}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    ({doctor.reviews})
-                  </span>
+                <div className="flex items-center justify-center gap-1 mb-2">
+                  <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                  <span className="text-xs font-medium text-foreground">{doctor.rating}</span>
+                  <span className="text-xs text-muted-foreground">({doctor.reviews})</span>
                 </div>
 
-                {/* Languages */}
-                <p className="text-xs text-muted-foreground mb-6">
-                  Speaks: {doctor.languages.join(", ")}
+                <p className="text-xs text-muted-foreground mb-4">
+                  {doctor.languages.join(", ")}
                 </p>
 
                 <Button
                   size="sm"
-                  className="w-full bg-primary/10 hover:bg-primary text-primary hover:text-primary-foreground rounded-xl transition-all duration-300"
+                  variant="outline"
+                  className="w-full rounded-lg text-xs h-8 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors"
                 >
                   Book Now
                 </Button>
               </div>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
 
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="text-center mt-12"
+          className="text-center mt-8"
         >
           <Link
             to="/providers"
-            className="inline-flex items-center gap-2 text-primary font-medium hover:gap-3 transition-all"
+            className="inline-flex items-center gap-1.5 text-sm text-primary font-medium hover:gap-2.5 transition-all"
           >
             View all doctors
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </motion.div>
       </div>

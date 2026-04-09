@@ -21,86 +21,73 @@ export function Navbar() {
   }, []);
 
   return (
-    <motion.nav
-      initial={{ y: -20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled ? "bg-background/90 backdrop-blur-lg shadow-soft" : "bg-transparent"
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled ? "bg-background/95 backdrop-blur-md border-b border-border" : "bg-transparent"
       }`}
     >
-      <div className="container mx-auto px-6 lg:px-12">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <a href="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-serif text-xl">C</span>
+      <div className="container mx-auto px-6 lg:px-16">
+        <div className="flex items-center justify-between h-16">
+          <a href="/" className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+              <span className="text-primary-foreground font-semibold text-sm">C</span>
             </div>
-            <div className="flex flex-col">
-              <span className="font-serif text-xl tracking-wide text-foreground">
-                CalDoc
-              </span>
-              <span className="text-[10px] text-muted-foreground tracking-widest uppercase">
-                Telemedicine
-              </span>
-            </div>
+            <span className="text-lg font-semibold text-foreground tracking-tight">
+              CalDoc
+            </span>
           </a>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-10">
+          <div className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
-                className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-300"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 {link.name}
               </a>
             ))}
           </div>
 
-          {/* CTA Button */}
           <div className="hidden lg:block">
             <a
               href="#book"
-              className="px-6 py-3 bg-primary text-primary-foreground text-sm font-medium rounded-full hover:bg-primary/90 transition-all duration-300 shadow-soft"
+              className="px-5 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
             >
               Book Consultation
             </a>
           </div>
 
-          {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="lg:hidden p-2 text-foreground"
           >
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
 
-        {/* Mobile Menu */}
         <AnimatePresence>
           {isOpen && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="lg:hidden overflow-hidden bg-background/95 backdrop-blur-lg rounded-2xl mb-4"
+              className="lg:hidden overflow-hidden border-t border-border"
             >
-              <div className="py-6 px-4 space-y-4">
+              <div className="py-4 space-y-1">
                 {navLinks.map((link) => (
                   <a
                     key={link.name}
                     href={link.href}
                     onClick={() => setIsOpen(false)}
-                    className="block text-lg font-medium text-foreground hover:text-primary transition-colors"
+                    className="block py-2 text-sm text-foreground hover:text-primary transition-colors"
                   >
                     {link.name}
                   </a>
                 ))}
                 <a
                   href="#book"
-                  className="block w-full text-center py-3 bg-primary text-primary-foreground rounded-full font-medium mt-4"
+                  className="block w-full text-center py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium mt-3"
                 >
                   Book Consultation
                 </a>
@@ -109,6 +96,6 @@ export function Navbar() {
           )}
         </AnimatePresence>
       </div>
-    </motion.nav>
+    </nav>
   );
 }
