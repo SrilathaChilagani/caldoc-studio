@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Video, ExternalLink, LayoutDashboard, Calendar, IndianRupee, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -55,18 +54,10 @@ const mockEarnings = [
 ];
 
 const ProviderPortal = () => {
-  const { user, loading, signOut, profile } = useAppAuth();
-  const navigate = useNavigate();
+  const { signOut, profile } = useAppAuth();
   const [activeTab, setActiveTab] = useState("appointments");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("ALLTIME");
-
-  useEffect(() => {
-    if (!loading && !user) navigate("/login?portal=provider");
-  }, [loading, user, navigate]);
-
-  if (loading) return <Layout><div className="pt-24 text-center text-muted-foreground">Loading…</div></Layout>;
-  if (!user) return null;
 
   const now = new Date();
   const filtered = mockAppointments.filter((appt) => {

@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -57,16 +57,8 @@ function formatIST(date: Date) {
 }
 
 const AdminPortal = () => {
-  const { user, loading, signOut } = useAppAuth();
-  const navigate = useNavigate();
+  const { signOut } = useAppAuth();
   const [activeTab, setActiveTab] = useState("dashboard");
-
-  useEffect(() => {
-    if (!loading && !user) navigate("/login?portal=admin");
-  }, [loading, user, navigate]);
-
-  if (loading) return <Layout><div className="pt-24 text-center text-muted-foreground">Loading…</div></Layout>;
-  if (!user) return null;
 
   return (
     <Layout>

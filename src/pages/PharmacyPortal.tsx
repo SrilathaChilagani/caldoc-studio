@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -72,16 +71,8 @@ const mockInventory = [
 ];
 
 const PharmacyPortal = () => {
-  const { user, loading, signOut } = useAppAuth();
-  const navigate = useNavigate();
+  const { signOut } = useAppAuth();
   const [activeTab, setActiveTab] = useState("queue");
-
-  useEffect(() => {
-    if (!loading && !user) navigate("/login?portal=pharmacy");
-  }, [loading, user, navigate]);
-
-  if (loading) return <Layout><div className="pt-24 text-center text-muted-foreground">Loading…</div></Layout>;
-  if (!user) return null;
 
   return (
     <Layout>
