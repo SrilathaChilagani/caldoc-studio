@@ -45,6 +45,7 @@ const popularMeds = [
 ];
 
 export default function Pharmacy() {
+  const heroPharmacy = getDailyImage(pharmacyImages);
   return (
     <Layout>
 

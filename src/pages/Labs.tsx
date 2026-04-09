@@ -45,6 +45,7 @@ const popularTests = [
 ];
 
 export default function Labs() {
+  const heroLabs = getDailyImage(labImages);
   return (
     <Layout>
 
