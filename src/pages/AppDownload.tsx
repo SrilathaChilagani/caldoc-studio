@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+import { Layout } from "@/components/Layout";
 import {
   Video,
   Shield,

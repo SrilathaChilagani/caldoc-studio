@@ -2,8 +2,7 @@ import { motion } from "framer-motion";
 import { Search, Pill, Truck, Clock, ShieldCheck, ChevronDown, Upload } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+import { Layout } from "@/components/Layout";
 import heroPharmacy from "@/assets/hero-pharmacy.jpg";
 
 const categories = [

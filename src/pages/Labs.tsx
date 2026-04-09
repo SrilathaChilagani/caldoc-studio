@@ -2,8 +2,7 @@ import { motion } from "framer-motion";
 import { Search, Beaker, Truck, Clock, ShieldCheck, ChevronDown, Upload } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+import { Layout } from "@/components/Layout";
 import heroLabs from "@/assets/hero-labs.jpg";
 
 const categories = [

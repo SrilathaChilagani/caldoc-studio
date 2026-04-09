@@ -2,8 +2,7 @@ import { motion } from "framer-motion";
 import { CheckCircle, Calendar, Clock, Video, Phone, User, ArrowLeft, Home, Copy } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+import { Layout } from "@/components/Layout";
 import { toast } from "@/hooks/use-toast";
 
 interface BookingState {
