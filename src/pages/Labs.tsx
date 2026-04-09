@@ -3,7 +3,19 @@ import { Search, Beaker, Truck, Clock, ShieldCheck, ChevronDown, Upload } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/Layout";
-import heroLabs from "@/assets/hero-labs.jpg";
+import heroLabs1 from "@/assets/hero-labs.jpg";
+import heroLabs2 from "@/assets/hero-labs-2.jpg";
+import heroLabs3 from "@/assets/hero-labs-3.jpg";
+import heroLabs4 from "@/assets/hero-labs-4.jpg";
+
+const labImages = [heroLabs1, heroLabs2, heroLabs3, heroLabs4];
+
+function getDailyImage(images: string[]) {
+  const dayOfYear = Math.floor(
+    (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000
+  );
+  return images[dayOfYear % images.length];
+}
 
 const categories = [
   { name: "Blood Tests", icon: "🩸" },

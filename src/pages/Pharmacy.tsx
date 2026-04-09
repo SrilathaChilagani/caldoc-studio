@@ -3,7 +3,19 @@ import { Search, Pill, Truck, Clock, ShieldCheck, ChevronDown, Upload } from "lu
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/Layout";
-import heroPharmacy from "@/assets/hero-pharmacy.jpg";
+import heroPharmacy1 from "@/assets/hero-pharmacy.jpg";
+import heroPharmacy2 from "@/assets/hero-pharmacy-2.jpg";
+import heroPharmacy3 from "@/assets/hero-pharmacy-3.jpg";
+import heroPharmacy4 from "@/assets/hero-pharmacy-4.jpg";
+
+const pharmacyImages = [heroPharmacy1, heroPharmacy2, heroPharmacy3, heroPharmacy4];
+
+function getDailyImage(images: string[]) {
+  const dayOfYear = Math.floor(
+    (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000
+  );
+  return images[dayOfYear % images.length];
+}
 
 const categories = [
   { name: "Pain Relief", icon: "💊" },
