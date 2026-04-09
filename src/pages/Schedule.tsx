@@ -366,7 +366,12 @@ const Schedule = () => {
 
           {/* Doctor cards */}
           <div className="space-y-4 max-w-5xl mx-auto">
-            {filteredDoctors.map((doctor) => (
+            {isLoading && (
+              <div className="flex justify-center py-16">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              </div>
+            )}
+            {!isLoading && filteredDoctors.map((doctor) => (
               <DoctorCard key={doctor.id} doctor={doctor} dateTabs={dateTabs} />
             ))}
           </div>
