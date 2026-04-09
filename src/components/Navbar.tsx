@@ -50,9 +50,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           <button onClick={() => navigate("/")} className="flex items-center gap-2.5">
             <img src="/logo-mark.png" alt="CalDoc logo" className="w-8 h-8 rounded-lg object-cover" />
-            <span className="text-lg font-semibold text-foreground tracking-tight">
-              CalDoc
-            </span>
+            <img src="/company-name.jpg" alt="CalDoc" className="h-6 object-contain" />
           </button>
 
           <div className="hidden lg:flex items-center gap-6">

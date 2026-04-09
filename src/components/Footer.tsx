@@ -28,7 +28,7 @@ export function Footer() {
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2.5 mb-3">
               <img src="/logo-mark.png" alt="CalDoc logo" className="w-8 h-8 rounded-lg object-cover" />
-              <span className="text-lg font-semibold">CalDoc</span>
+              <img src="/company-name.jpg" alt="CalDoc" className="h-6 object-contain brightness-0 invert" />
             </div>
             <p className="text-background/50 text-sm mb-5 max-w-xs leading-relaxed">
               Making quality healthcare accessible to everyone, anywhere. Telemedicine made simple.
