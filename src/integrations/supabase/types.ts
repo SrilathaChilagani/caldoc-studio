@@ -14,6 +14,65 @@ export type Database = {
   }
   public: {
     Tables: {
+      appointments: {
+        Row: {
+          consultation_type: string
+          created_at: string
+          doctor_id: string
+          fee_paise: number
+          id: string
+          notes: string | null
+          patient_id: string
+          patient_name: string
+          patient_phone: string | null
+          slot_time: string
+          status: string
+          symptoms: string[]
+          updated_at: string
+          video_room_url: string | null
+        }
+        Insert: {
+          consultation_type?: string
+          created_at?: string
+          doctor_id: string
+          fee_paise?: number
+          id?: string
+          notes?: string | null
+          patient_id: string
+          patient_name: string
+          patient_phone?: string | null
+          slot_time: string
+          status?: string
+          symptoms?: string[]
+          updated_at?: string
+          video_room_url?: string | null
+        }
+        Update: {
+          consultation_type?: string
+          created_at?: string
+          doctor_id?: string
+          fee_paise?: number
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          patient_name?: string
+          patient_phone?: string | null
+          slot_time?: string
+          status?: string
+          symptoms?: string[]
+          updated_at?: string
+          video_room_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       campaigns: {
         Row: {
           beneficiaries_served: number
@@ -66,6 +125,66 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      doctors: {
+        Row: {
+          audio_consult: boolean
+          bio: string | null
+          created_at: string
+          experience_years: number
+          fee_paise: number
+          id: string
+          image_url: string | null
+          is_active: boolean
+          location: string | null
+          name: string
+          rating: number
+          review_count: number
+          slug: string
+          specialty: string
+          tags: string[]
+          updated_at: string
+          video_consult: boolean
+        }
+        Insert: {
+          audio_consult?: boolean
+          bio?: string | null
+          created_at?: string
+          experience_years?: number
+          fee_paise?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          location?: string | null
+          name: string
+          rating?: number
+          review_count?: number
+          slug: string
+          specialty: string
+          tags?: string[]
+          updated_at?: string
+          video_consult?: boolean
+        }
+        Update: {
+          audio_consult?: boolean
+          bio?: string | null
+          created_at?: string
+          experience_years?: number
+          fee_paise?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          location?: string | null
+          name?: string
+          rating?: number
+          review_count?: number
+          slug?: string
+          specialty?: string
+          tags?: string[]
+          updated_at?: string
+          video_consult?: boolean
+        }
+        Relationships: []
       }
       email_send_log: {
         Row: {
@@ -202,6 +321,99 @@ export type Database = {
         }
         Relationships: []
       }
+      lab_agents: {
+        Row: {
+          active_orders: number
+          coverage_area: string | null
+          created_at: string
+          id: string
+          name: string
+          phone: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          active_orders?: number
+          coverage_area?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          phone?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          active_orders?: number
+          coverage_area?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          phone?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      lab_orders: {
+        Row: {
+          amount_paise: number
+          collection_agent_name: string | null
+          collection_agent_phone: string | null
+          created_at: string
+          delivery_address: string | null
+          delivery_mode: string
+          id: string
+          notes: string | null
+          patient_email: string | null
+          patient_id: string
+          patient_name: string
+          patient_phone: string | null
+          provider_name: string | null
+          provider_speciality: string | null
+          status: string
+          tests: Json
+          updated_at: string
+        }
+        Insert: {
+          amount_paise?: number
+          collection_agent_name?: string | null
+          collection_agent_phone?: string | null
+          created_at?: string
+          delivery_address?: string | null
+          delivery_mode?: string
+          id?: string
+          notes?: string | null
+          patient_email?: string | null
+          patient_id: string
+          patient_name: string
+          patient_phone?: string | null
+          provider_name?: string | null
+          provider_speciality?: string | null
+          status?: string
+          tests?: Json
+          updated_at?: string
+        }
+        Update: {
+          amount_paise?: number
+          collection_agent_name?: string | null
+          collection_agent_phone?: string | null
+          created_at?: string
+          delivery_address?: string | null
+          delivery_mode?: string
+          id?: string
+          notes?: string | null
+          patient_email?: string | null
+          patient_id?: string
+          patient_name?: string
+          patient_phone?: string | null
+          provider_name?: string | null
+          provider_speciality?: string | null
+          status?: string
+          tests?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ngo_members: {
         Row: {
           created_at: string
@@ -328,6 +540,151 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      patient_documents: {
+        Row: {
+          appointment_id: string | null
+          created_at: string
+          document_type: string
+          file_url: string | null
+          id: string
+          name: string
+          patient_id: string
+          provider_name: string | null
+        }
+        Insert: {
+          appointment_id?: string | null
+          created_at?: string
+          document_type?: string
+          file_url?: string | null
+          id?: string
+          name: string
+          patient_id: string
+          provider_name?: string | null
+        }
+        Update: {
+          appointment_id?: string | null
+          created_at?: string
+          document_type?: string
+          file_url?: string | null
+          id?: string
+          name?: string
+          patient_id?: string
+          provider_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_documents_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pharmacy_inventory: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          reorder_level: number
+          status: string
+          stock: number
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          reorder_level?: number
+          status?: string
+          stock?: number
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          reorder_level?: number
+          status?: string
+          stock?: number
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      pharmacy_orders: {
+        Row: {
+          amount_paise: number
+          appointment_id: string | null
+          courier_name: string | null
+          created_at: string
+          delivery_address: string | null
+          delivery_mode: string
+          fulfillment_label: string | null
+          has_prescription: boolean
+          id: string
+          items: Json
+          patient_id: string
+          patient_name: string
+          patient_phone: string | null
+          provider_name: string | null
+          provider_speciality: string | null
+          status: string
+          tracking_number: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount_paise?: number
+          appointment_id?: string | null
+          courier_name?: string | null
+          created_at?: string
+          delivery_address?: string | null
+          delivery_mode?: string
+          fulfillment_label?: string | null
+          has_prescription?: boolean
+          id?: string
+          items?: Json
+          patient_id: string
+          patient_name: string
+          patient_phone?: string | null
+          provider_name?: string | null
+          provider_speciality?: string | null
+          status?: string
+          tracking_number?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount_paise?: number
+          appointment_id?: string | null
+          courier_name?: string | null
+          created_at?: string
+          delivery_address?: string | null
+          delivery_mode?: string
+          fulfillment_label?: string | null
+          has_prescription?: boolean
+          id?: string
+          items?: Json
+          patient_id?: string
+          patient_name?: string
+          patient_phone?: string | null
+          provider_name?: string | null
+          provider_speciality?: string | null
+          status?: string
+          tracking_number?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pharmacy_orders_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
