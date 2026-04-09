@@ -49,6 +49,7 @@ const BookDoctor = () => {
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
   const [notes, setNotes] = useState("");
   const [consent, setConsent] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const slotsRef = useRef<HTMLDivElement>(null);
   const [slotPage, setSlotPage] = useState(0);
