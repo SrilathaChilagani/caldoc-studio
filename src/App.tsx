@@ -11,6 +11,12 @@ import Pharmacy from "./pages/Pharmacy";
 import Labs from "./pages/Labs";
 import AppDownload from "./pages/AppDownload";
 import Schedule from "./pages/Schedule";
+import PatientPortal from "./pages/PatientPortal";
+import ProviderPortal from "./pages/ProviderPortal";
+import AdminPortal from "./pages/AdminPortal";
+import NGOPortal from "./pages/NGOPortal";
+import PharmacyPortal from "./pages/PharmacyPortal";
+import LabsPortal from "./pages/LabsPortal";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +36,12 @@ const App = () => (
           <Route path="/labs" element={<Labs />} />
           <Route path="/app" element={<AppDownload />} />
           <Route path="/schedule" element={<Schedule />} />
+          <Route path="/patient-portal" element={<PatientPortal />} />
+          <Route path="/provider-portal" element={<ProviderPortal />} />
+          <Route path="/admin-portal" element={<AdminPortal />} />
+          <Route path="/ngo-portal" element={<NGOPortal />} />
+          <Route path="/pharmacy-portal" element={<PharmacyPortal />} />
+          <Route path="/labs-portal" element={<LabsPortal />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

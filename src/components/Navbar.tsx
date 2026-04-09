@@ -1,24 +1,44 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const navLinks = [
-  { name: "Why CalDoc", href: "#why" },
-  { name: "Specialties", href: "#specialties" },
-  { name: "Doctors", href: "#doctors" },
-  { name: "Testimonials", href: "#testimonials" },
-  { name: "Contact", href: "#contact" },
+  { name: "Find Doctors", href: "/providers" },
+  { name: "Schedule", href: "/schedule" },
+  { name: "Pharmacy", href: "/pharmacy" },
+  { name: "Labs", href: "/labs" },
+];
+
+const portalLinks = [
+  { name: "Patient Portal", href: "/patient-portal" },
+  { name: "Provider Portal", href: "/provider-portal" },
+  { name: "Admin Portal", href: "/admin-portal" },
+  { name: "NGO Portal", href: "/ngo-portal" },
+  { name: "Pharmacy Portal", href: "/pharmacy-portal" },
+  { name: "Labs Portal", href: "/labs-portal" },
 ];
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [portalsOpen, setPortalsOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsOpen(false);
+    setPortalsOpen(false);
+  }, [location.pathname]);
+
+  const isActive = (href: string) => location.pathname === href;
 
   return (
     <nav
@@ -28,34 +48,74 @@ export function Navbar() {
     >
       <div className="container mx-auto px-6 lg:px-16">
         <div className="flex items-center justify-between h-16">
-          <a href="/" className="flex items-center gap-2.5">
+          <button onClick={() => navigate("/")} className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               <span className="text-primary-foreground font-semibold text-sm">C</span>
             </div>
             <span className="text-lg font-semibold text-foreground tracking-tight">
               CalDoc
             </span>
-          </a>
+          </button>
 
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-6">
             {navLinks.map((link) => (
-              <a
+              <button
                 key={link.name}
-                href={link.href}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                onClick={() => navigate(link.href)}
+                className={`text-sm transition-colors ${
+                  isActive(link.href) ? "text-primary font-medium" : "text-muted-foreground hover:text-foreground"
+                }`}
               >
                 {link.name}
-              </a>
+              </button>
             ))}
+
+            {/* Portals dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setPortalsOpen(!portalsOpen)}
+                className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Portals
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${portalsOpen ? "rotate-180" : ""}`} />
+              </button>
+
+              <AnimatePresence>
+                {portalsOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setPortalsOpen(false)} />
+                    <motion.div
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 8 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute top-full right-0 mt-2 w-48 bg-card border border-border rounded-xl shadow-lg py-1.5 z-50"
+                    >
+                      {portalLinks.map((link) => (
+                        <button
+                          key={link.name}
+                          onClick={() => { navigate(link.href); setPortalsOpen(false); }}
+                          className={`block w-full text-left px-4 py-2 text-sm transition-colors ${
+                            isActive(link.href) ? "text-primary bg-primary/5" : "text-foreground hover:bg-muted"
+                          }`}
+                        >
+                          {link.name}
+                        </button>
+                      ))}
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
           <div className="hidden lg:block">
-            <a
-              href="#book"
+            <button
+              onClick={() => navigate("/schedule")}
               className="px-5 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
             >
               Book Consultation
-            </a>
+            </button>
           </div>
 
           <button
@@ -76,21 +136,38 @@ export function Navbar() {
             >
               <div className="py-4 space-y-1">
                 {navLinks.map((link) => (
-                  <a
+                  <button
                     key={link.name}
-                    href={link.href}
-                    onClick={() => setIsOpen(false)}
-                    className="block py-2 text-sm text-foreground hover:text-primary transition-colors"
+                    onClick={() => navigate(link.href)}
+                    className={`block w-full text-left py-2 text-sm transition-colors ${
+                      isActive(link.href) ? "text-primary font-medium" : "text-foreground hover:text-primary"
+                    }`}
                   >
                     {link.name}
-                  </a>
+                  </button>
                 ))}
-                <a
-                  href="#book"
+
+                <div className="pt-2 pb-1">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-0 mb-1">Portals</p>
+                  {portalLinks.map((link) => (
+                    <button
+                      key={link.name}
+                      onClick={() => navigate(link.href)}
+                      className={`block w-full text-left py-2 text-sm transition-colors ${
+                        isActive(link.href) ? "text-primary font-medium" : "text-foreground hover:text-primary"
+                      }`}
+                    >
+                      {link.name}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => navigate("/schedule")}
                   className="block w-full text-center py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium mt-3"
                 >
                   Book Consultation
-                </a>
+                </button>
               </div>
             </motion.div>
           )}
