@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Layout } from "@/components/Layout";
 import { LayoutDashboard, Package, Pill, Settings } from "lucide-react";
+import { useAppAuth } from "@/contexts/AppAuthContext";
 
 const portalTabs = [
   { id: "queue", label: "Fulfilment Queue", icon: LayoutDashboard },
@@ -70,7 +72,16 @@ const mockInventory = [
 ];
 
 const PharmacyPortal = () => {
+  const { user, loading, signOut } = useAppAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("queue");
+
+  useEffect(() => {
+    if (!loading && !user) navigate("/login?portal=pharmacy");
+  }, [loading, user, navigate]);
+
+  if (loading) return <Layout><div className="pt-24 text-center text-muted-foreground">Loading…</div></Layout>;
+  if (!user) return null;
 
   return (
     <Layout>
@@ -84,7 +95,7 @@ const PharmacyPortal = () => {
                 <h1 className="text-2xl sm:text-3xl font-semibold text-foreground">Pharmacy queue</h1>
                 <p className="mt-1 text-sm text-muted-foreground">Track every appointment to pack and dispatch prescriptions.</p>
               </div>
-              <Button variant="outline" className="rounded-full">Log out</Button>
+              <Button variant="outline" className="rounded-full" onClick={() => signOut().then(() => navigate("/login?portal=pharmacy"))}>Log out</Button>
             </div>
 
             {/* Tab navigation */}
