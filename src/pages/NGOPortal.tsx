@@ -83,6 +83,7 @@ const NGOPortal = () => {
     { icon: MapPin, label: "Districts Covered", value: "18", growth: "+3" },
   ];
 
+  const [startDate, setStartDate] = useState("2026-04-09");
   const [endDate, setEndDate] = useState("2026-04-16");
 
   const rangeLabel = formatRangeLabel(startDate, endDate);
