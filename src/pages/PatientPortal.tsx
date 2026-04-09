@@ -52,7 +52,8 @@ const mockDocuments = [
 ];
 
 const PatientPortal = () => {
-  const { signOut, profile } = useAppAuth();
+  const { user, signOut, profile } = useAppAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("appointments");
   const [activeFilter, setActiveFilter] = useState<FilterKey>("ALL");
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -58,6 +58,7 @@ function formatIST(date: Date) {
 
 const AdminPortal = () => {
   const { signOut } = useAppAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("dashboard");
 
   return (

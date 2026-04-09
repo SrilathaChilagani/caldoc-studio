@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -72,6 +73,7 @@ const mockInventory = [
 
 const PharmacyPortal = () => {
   const { signOut } = useAppAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("queue");
 
   return (
