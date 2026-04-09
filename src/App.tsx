@@ -24,6 +24,7 @@ import ResetPassword from "./pages/ResetPassword";
 import PharmacyPortal from "./pages/PharmacyPortal";
 import LabsPortal from "./pages/LabsPortal";
 import NotFound from "./pages/NotFound";
+import { RoleGuard } from "./components/RoleGuard";
 
 const queryClient = new QueryClient();
 
@@ -47,13 +48,13 @@ const App = () => (
               <Route path="/login" element={<PortalLogin />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/patient-portal" element={<PatientPortal />} />
-              <Route path="/provider-portal" element={<ProviderPortal />} />
-              <Route path="/admin-portal" element={<AdminPortal />} />
+              <Route path="/patient-portal" element={<RoleGuard requiredRole="patient" portalKey="patient"><PatientPortal /></RoleGuard>} />
+              <Route path="/provider-portal" element={<RoleGuard requiredRole="provider" portalKey="provider"><ProviderPortal /></RoleGuard>} />
+              <Route path="/admin-portal" element={<RoleGuard requiredRole="admin" portalKey="admin"><AdminPortal /></RoleGuard>} />
               <Route path="/ngo-login" element={<NgoLogin />} />
               <Route path="/ngo-portal" element={<NGOPortal />} />
-              <Route path="/pharmacy-portal" element={<PharmacyPortal />} />
-              <Route path="/labs-portal" element={<LabsPortal />} />
+              <Route path="/pharmacy-portal" element={<RoleGuard requiredRole="pharmacy" portalKey="pharmacy"><PharmacyPortal /></RoleGuard>} />
+              <Route path="/labs-portal" element={<RoleGuard requiredRole="labs" portalKey="labs"><LabsPortal /></RoleGuard>} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

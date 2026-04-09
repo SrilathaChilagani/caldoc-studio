@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -63,16 +63,9 @@ const mockAgents = [
 ];
 
 const LabsPortal = () => {
-  const { user, loading, signOut } = useAppAuth();
+  const { signOut } = useAppAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("orders");
-
-  useEffect(() => {
-    if (!loading && !user) navigate("/login?portal=labs");
-  }, [loading, user, navigate]);
-
-  if (loading) return <Layout><div className="pt-24 text-center text-muted-foreground">Loading…</div></Layout>;
-  if (!user) return null;
 
   return (
     <Layout>
