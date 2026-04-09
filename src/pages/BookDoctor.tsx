@@ -53,6 +53,28 @@ const BookDoctor = () => {
     setSelectedSymptoms((prev) => (prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]));
   };
 
+  const fee = doctor ? doctor.fee_paise / 100 : 499;
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-screen">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!doctor) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-screen">
+          <p className="text-muted-foreground">Doctor not found.</p>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
 
@@ -118,7 +140,7 @@ const BookDoctor = () => {
                             {slot.time}
                           </p>
                           <p className={`text-xs mt-0.5 ${selectedSlot === slot.id ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
-                            ₹{doctor.fee.toFixed(2)}
+                            ₹{fee.toFixed(2)}
                           </p>
                         </button>
                       ))}
@@ -317,7 +339,7 @@ const BookDoctor = () => {
                         specialty: doctor.specialty,
                         date: slot?.date || "",
                         time: slot?.time || "",
-                        fee: doctor.fee,
+                        fee: fee,
                         patientName,
                         mobile,
                         connectionPref,
