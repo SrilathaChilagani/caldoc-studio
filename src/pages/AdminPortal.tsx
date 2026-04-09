@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/Layout";
 import { LayoutDashboard, Grid3X3, HeartHandshake, Phone, Settings } from "lucide-react";
+import { useAppAuth } from "@/contexts/AppAuthContext";
 
 const portalTabs = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -56,7 +57,16 @@ function formatIST(date: Date) {
 }
 
 const AdminPortal = () => {
+  const { user, loading, signOut } = useAppAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("dashboard");
+
+  useEffect(() => {
+    if (!loading && !user) navigate("/login?portal=admin");
+  }, [loading, user, navigate]);
+
+  if (loading) return <Layout><div className="pt-24 text-center text-muted-foreground">Loading…</div></Layout>;
+  if (!user) return null;
 
   return (
     <Layout>
@@ -70,7 +80,7 @@ const AdminPortal = () => {
                 <h1 className="text-2xl sm:text-3xl font-semibold text-foreground">Dashboard</h1>
                 <p className="mt-1 text-sm text-muted-foreground">Unified operations view — teleconsultations, pharmacy, labs, NGO, and providers.</p>
               </div>
-              <Button variant="outline" className="rounded-full">Sign out</Button>
+              <Button variant="outline" className="rounded-full" onClick={() => signOut().then(() => navigate("/login?portal=admin"))}>Sign out</Button>
             </div>
 
             {/* Tab navigation */}
