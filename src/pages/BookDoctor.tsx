@@ -1,25 +1,15 @@
 import { useState, useMemo, useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Video, Phone, ChevronLeft, ChevronRight, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Video, Phone, ChevronLeft, ChevronRight, AlertTriangle, Loader2 } from "lucide-react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Layout } from "@/components/Layout";
-
-const allDoctors = [
-  { slug: "dr-asha-menon", name: "Dr. Asha Menon", specialty: "Pediatrics", fee: 499 },
-  { slug: "dr-farhan-siddiqui", name: "Dr. Farhan Siddiqui", specialty: "Gastroenterology", fee: 499 },
-  { slug: "dr-geeta-balakrishnan", name: "Dr. Geeta Balakrishnan", specialty: "Neurology", fee: 499 },
-  { slug: "dr-kavya-rao", name: "Dr. Kavya Rao", specialty: "Cardiology", fee: 499 },
-  { slug: "dr-lidiya-thomas", name: "Dr. Lidiya Thomas", specialty: "Endocrinology", fee: 499 },
-  { slug: "dr-ramadevi", name: "Dr. RamaDevi", specialty: "General Medicine", fee: 499 },
-  { slug: "dr-rohan-iyer", name: "Dr. Rohan Iyer", specialty: "Dermatology", fee: 499 },
-  { slug: "dr-priya-sharma", name: "Dr. Priya Sharma", specialty: "Psychiatry", fee: 599 },
-  { slug: "dr-suresh-nair", name: "Dr. Suresh Nair", specialty: "Orthopedics", fee: 599 },
-  { slug: "dr-meena-krishnan", name: "Dr. Meena Krishnan", specialty: "ENT", fee: 499 },
-];
+import { useDoctorBySlug } from "@/hooks/useDoctors";
+import { useCreateAppointment } from "@/hooks/useAppointments";
+import { toast } from "@/hooks/use-toast";
 
 const generateSlots = () => {
   const slots = [];
@@ -40,7 +30,8 @@ const symptoms = ["Fever", "Headache", "Dizziness", "Chest pain", "Sore throat",
 const BookDoctor = () => {
   const { doctorSlug } = useParams();
   const navigate = useNavigate();
-  const doctor = allDoctors.find((d) => d.slug === doctorSlug) || allDoctors[0];
+  const { data: doctor, isLoading } = useDoctorBySlug(doctorSlug);
+  const createAppointment = useCreateAppointment();
   const slots = useMemo(() => generateSlots(), []);
 
   const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
@@ -61,6 +52,28 @@ const BookDoctor = () => {
   const toggleSymptom = (s: string) => {
     setSelectedSymptoms((prev) => (prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]));
   };
+
+  const fee = doctor ? doctor.fee_paise / 100 : 499;
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-screen">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!doctor) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-screen">
+          <p className="text-muted-foreground">Doctor not found.</p>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -127,7 +140,7 @@ const BookDoctor = () => {
                             {slot.time}
                           </p>
                           <p className={`text-xs mt-0.5 ${selectedSlot === slot.id ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
-                            ₹{doctor.fee.toFixed(2)}
+                            ₹{fee.toFixed(2)}
                           </p>
                         </button>
                       ))}
@@ -326,7 +339,7 @@ const BookDoctor = () => {
                         specialty: doctor.specialty,
                         date: slot?.date || "",
                         time: slot?.time || "",
-                        fee: doctor.fee,
+                        fee: fee,
                         patientName,
                         mobile,
                         connectionPref,

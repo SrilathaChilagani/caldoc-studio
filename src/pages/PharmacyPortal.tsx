@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Layout } from "@/components/Layout";
-import { LayoutDashboard, Package, Pill, Settings } from "lucide-react";
+import { LayoutDashboard, Package, Pill, Settings, Loader2 } from "lucide-react";
 import { useAppAuth } from "@/contexts/AppAuthContext";
+import { usePharmacyOrders, usePharmacyInventory } from "@/hooks/usePharmacy";
 
 const portalTabs = [
   { id: "queue", label: "Fulfilment Queue", icon: LayoutDashboard },
@@ -75,6 +76,8 @@ const PharmacyPortal = () => {
   const { signOut } = useAppAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("queue");
+  const { data: dbOrders = [] } = usePharmacyOrders();
+  const { data: dbInventory = [] } = usePharmacyInventory();
 
   return (
     <Layout>

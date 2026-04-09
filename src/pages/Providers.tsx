@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Search, ArrowLeft, Clock, Globe, SlidersHorizontal } from "lucide-react";
+import { Search, ArrowLeft, Clock, Globe, SlidersHorizontal, Loader2, Video, Phone } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -8,128 +8,13 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Link } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import heroImage from "@/assets/hero-doctor.jpg";
+import { useDoctors } from "@/hooks/useDoctors";
 
-const allDoctors = [
-  {
-    name: "Dr. Asha Menon",
-    specialty: "Pediatrics",
-    gender: "Female",
-    experience: "12+ years",
-    languages: ["English", "Hindi", "Malayalam"],
-    fee: 499,
-    available24x7: true,
-    consultationType: ["video"],
-    initials: "AM",
-    gradient: "from-primary to-blue-400",
-  },
-  {
-    name: "Dr. Farhan Siddiqui",
-    specialty: "Gastroenterology",
-    gender: "Male",
-    experience: "10+ years",
-    languages: ["English", "Hindi", "Urdu"],
-    fee: 499,
-    available24x7: false,
-    consultationType: ["video", "audio"],
-    initials: "FS",
-    gradient: "from-emerald-500 to-teal-400",
-  },
-  {
-    name: "Dr. Geeta Balakrishnan",
-    specialty: "Neurology",
-    gender: "Female",
-    experience: "15+ years",
-    languages: ["English", "Malayalam"],
-    fee: 499,
-    available24x7: false,
-    consultationType: ["video"],
-    initials: "GB",
-    gradient: "from-violet-500 to-purple-400",
-  },
-  {
-    name: "Dr. Kavya Rao",
-    specialty: "Cardiology",
-    gender: "Female",
-    experience: "18+ years",
-    languages: ["English", "Hindi", "Telugu"],
-    fee: 499,
-    available24x7: true,
-    consultationType: ["video", "audio"],
-    initials: "KR",
-    gradient: "from-rose-500 to-pink-400",
-  },
-  {
-    name: "Dr. Lidiya Thomas",
-    specialty: "Endocrinology",
-    gender: "Female",
-    experience: "8+ years",
-    languages: ["English", "Malayalam", "Tamil"],
-    fee: 499,
-    available24x7: true,
-    consultationType: ["video"],
-    initials: "LT",
-    gradient: "from-amber-500 to-orange-400",
-  },
-  {
-    name: "Dr. RamaDevi",
-    specialty: "General Medicine",
-    gender: "Female",
-    experience: "20+ years",
-    languages: ["English", "Telugu"],
-    fee: 499,
-    available24x7: false,
-    consultationType: ["video", "audio"],
-    initials: "RD",
-    gradient: "from-accent to-orange-400",
-  },
-  {
-    name: "Dr. Rohan Iyer",
-    specialty: "Dermatology",
-    gender: "Male",
-    experience: "12+ years",
-    languages: ["English", "Marathi"],
-    fee: 499,
-    available24x7: false,
-    consultationType: ["video"],
-    initials: "RI",
-    gradient: "from-sky-500 to-cyan-400",
-  },
-  {
-    name: "Dr. Priya Sharma",
-    specialty: "Psychiatry",
-    gender: "Female",
-    experience: "14+ years",
-    languages: ["English", "Hindi"],
-    fee: 599,
-    available24x7: true,
-    consultationType: ["video", "audio"],
-    initials: "PS",
-    gradient: "from-indigo-500 to-blue-400",
-  },
-  {
-    name: "Dr. Suresh Nair",
-    specialty: "Orthopedics",
-    gender: "Male",
-    experience: "22+ years",
-    languages: ["English", "Hindi", "Malayalam"],
-    fee: 599,
-    available24x7: false,
-    consultationType: ["video"],
-    initials: "SN",
-    gradient: "from-lime-600 to-green-400",
-  },
-  {
-    name: "Dr. Meena Krishnan",
-    specialty: "ENT",
-    gender: "Female",
-    experience: "16+ years",
-    languages: ["English", "Tamil"],
-    fee: 499,
-    available24x7: false,
-    consultationType: ["audio"],
-    initials: "MK",
-    gradient: "from-fuchsia-500 to-pink-400",
-  },
+const gradients = [
+  "from-primary to-blue-400", "from-emerald-500 to-teal-400", "from-violet-500 to-purple-400",
+  "from-rose-500 to-pink-400", "from-amber-500 to-orange-400", "from-accent to-orange-400",
+  "from-sky-500 to-cyan-400", "from-indigo-500 to-blue-400", "from-lime-600 to-green-400",
+  "from-fuchsia-500 to-pink-400",
 ];
 
 const specialties = [
@@ -226,14 +111,14 @@ const Providers = () => {
   const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
   const [selectedAvailability, setSelectedAvailability] = useState("any");
   const [selectedConsultation, setSelectedConsultation] = useState<string[]>([]);
+  const { data: allDoctors = [], isLoading } = useDoctors();
 
   const filteredDoctors = useMemo(() => {
     return allDoctors.filter((doc) => {
       const matchesSearch =
         !searchQuery ||
         doc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        doc.specialty.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        doc.languages.some((l) => l.toLowerCase().includes(searchQuery.toLowerCase()));
+        doc.specialty.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesSpecialty =
         selectedSpecialties.length === 0 ||
@@ -241,11 +126,13 @@ const Providers = () => {
 
       const matchesConsultation =
         selectedConsultation.length === 0 ||
-        selectedConsultation.some((c) => doc.consultationType.includes(c));
+        selectedConsultation.some((c) =>
+          (c === "video" && doc.video_consult) || (c === "audio" && doc.audio_consult)
+        );
 
       return matchesSearch && matchesSpecialty && matchesConsultation;
     });
-  }, [searchQuery, selectedSpecialties, selectedConsultation]);
+  }, [allDoctors, searchQuery, selectedSpecialties, selectedConsultation]);
 
   const toggleSpecialty = (s: string) => {
     setSelectedSpecialties((prev) =>
@@ -375,7 +262,13 @@ const Providers = () => {
 
             {/* Doctor Cards */}
             <div className="flex-1 space-y-4">
-              {filteredDoctors.length === 0 && (
+              {isLoading && (
+                <div className="flex justify-center py-16">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                </div>
+              )}
+
+              {!isLoading && filteredDoctors.length === 0 && (
                 <div className="text-center py-16 text-muted-foreground">
                   <p className="text-lg">No doctors found matching your criteria.</p>
                   <button onClick={clearAll} className="text-primary mt-2 hover:underline">
@@ -384,78 +277,65 @@ const Providers = () => {
                 </div>
               )}
 
-              {filteredDoctors.map((doctor, i) => (
-                <motion.div
-                  key={doctor.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: i * 0.05 }}
-                  className="bg-card rounded-2xl border border-border p-6 flex items-center gap-6 hover:shadow-soft transition-all duration-300"
-                >
-                  {/* Avatar */}
-                  <div
-                    className={`w-20 h-20 shrink-0 rounded-2xl bg-gradient-to-br ${doctor.gradient} flex items-center justify-center shadow-soft`}
+              {!isLoading && filteredDoctors.map((doctor, i) => {
+                const initials = doctor.name.replace("Dr. ", "").split(" ").map(w => w[0]).join("");
+                const gradient = gradients[i % gradients.length];
+                return (
+                  <motion.div
+                    key={doctor.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: i * 0.05 }}
+                    className="bg-card rounded-2xl border border-border p-6 flex items-center gap-6 hover:shadow-soft transition-all duration-300"
                   >
-                    <span className="text-2xl font-serif text-white font-medium">
-                      {doctor.initials}
-                    </span>
-                  </div>
-
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-serif text-xl text-foreground">
-                      {doctor.name}
-                    </h3>
-                    <p className="text-primary font-medium text-sm">
-                      {doctor.specialty}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Gender: {doctor.gender} · Experience: {doctor.experience}
-                    </p>
-                    <div className="flex items-center gap-1 mt-1">
-                      <Globe className="w-3 h-3 text-muted-foreground" />
-                      <p className="text-xs text-muted-foreground">
-                        {doctor.languages.join(", ")}
-                      </p>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Consultation fee: <span className="font-medium text-foreground">₹{doctor.fee}.00</span>
-                    </p>
-                    {doctor.available24x7 && (
-                      <span className="inline-flex items-center gap-1 mt-1.5 text-xs font-medium text-primary">
-                        <Clock className="w-3 h-3" />
-                        Available 24×7
-                      </span>
+                    {doctor.image_url ? (
+                      <img src={doctor.image_url} alt={doctor.name} className="w-20 h-20 shrink-0 rounded-2xl object-cover border-2 border-border" />
+                    ) : (
+                      <div className={`w-20 h-20 shrink-0 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center shadow-soft`}>
+                        <span className="text-2xl font-serif text-white font-medium">{initials}</span>
+                      </div>
                     )}
-                  </div>
 
-                  {/* Right side */}
-                  <div className="hidden sm:flex flex-col items-end gap-2 shrink-0">
-                    <div className="text-right">
-                      <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
-                        Next Availability
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-serif text-xl text-foreground">{doctor.name}</h3>
+                      <p className="text-primary font-medium text-sm">{doctor.specialty}</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Experience: {doctor.experience_years}+ years
                       </p>
-                      <p className="text-sm text-muted-foreground mt-0.5">
-                        No slots open
+                      {doctor.location && (
+                        <p className="text-xs text-muted-foreground mt-0.5">{doctor.location}</p>
+                      )}
+                      <div className="flex items-center gap-2 mt-1">
+                        {doctor.video_consult && (
+                          <span className="flex items-center gap-1 text-xs text-muted-foreground"><Video className="w-3 h-3" /> Video</span>
+                        )}
+                        {doctor.audio_consult && (
+                          <span className="flex items-center gap-1 text-xs text-muted-foreground"><Phone className="w-3 h-3" /> Audio</span>
+                        )}
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Consultation fee: <span className="font-medium text-foreground">₹{(doctor.fee_paise / 100).toFixed(0)}.00</span>
                       </p>
                     </div>
-                    <Link to={`/book/${doctor.name.toLowerCase().replace(/[\s.]+/g, '-').replace(/^dr-/, 'dr-')}`}>
-                      <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-6 font-medium">
-                        Book doctor
-                      </Button>
-                    </Link>
-                  </div>
 
-                  {/* Mobile book button */}
-                  <div className="sm:hidden">
-                    <Link to={`/book/${doctor.name.toLowerCase().replace(/[\s.]+/g, '-').replace(/^dr-/, 'dr-')}`}>
-                      <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl">
-                        Book
-                      </Button>
-                    </Link>
-                  </div>
-                </motion.div>
-              ))}
+                    <div className="hidden sm:flex flex-col items-end gap-2 shrink-0">
+                      <Link to={`/book/${doctor.slug}`}>
+                        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-6 font-medium">
+                          Book doctor
+                        </Button>
+                      </Link>
+                    </div>
+
+                    <div className="sm:hidden">
+                      <Link to={`/book/${doctor.slug}`}>
+                        <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl">
+                          Book
+                        </Button>
+                      </Link>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </div>

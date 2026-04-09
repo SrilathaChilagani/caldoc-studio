@@ -13,6 +13,7 @@ import {
   X,
   Calendar as CalendarIcon,
   Shield,
+  Loader2,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
@@ -20,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Layout } from "@/components/Layout";
 import { format, addDays } from "date-fns";
+import { useDoctors, type Doctor as DbDoctor } from "@/hooks/useDoctors";
 
 // ── Data ──────────────────────────────────────────────
 const specialties = [
@@ -38,81 +40,8 @@ const specialties = [
 
 const insurances = ["Any Insurance", "Aetna", "BlueCross", "Cigna", "United", "Medicare"];
 
-interface Doctor {
-  id: number;
-  slug: string;
-  name: string;
-  specialty: string;
-  rating: number;
-  reviews: number;
-  experience: string;
-  fee: number;
-  image: string;
-  location: string;
-  nextAvailable: string;
-  videoConsult: boolean;
-  audioConsult: boolean;
-  tags: string[];
-}
-
-const doctors: Doctor[] = [
-  {
-    id: 1, slug: "dr-asha-menon", name: "Dr. Asha Menon", specialty: "Pediatrics",
-    rating: 4.9, reviews: 312, experience: "14 yrs", fee: 499,
-    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=face",
-    location: "Indiranagar, Bangalore", nextAvailable: "Today",
-    videoConsult: true, audioConsult: true, tags: ["Top Rated", "Quick Responder"],
-  },
-  {
-    id: 2, slug: "dr-kavya-rao", name: "Dr. Kavya Rao", specialty: "Cardiology",
-    rating: 4.8, reviews: 247, experience: "18 yrs", fee: 499,
-    image: "https://images.unsplash.com/photo-1594824476967-48c8b964ac31?w=200&h=200&fit=crop&crop=face",
-    location: "Koramangala, Bangalore", nextAvailable: "Today",
-    videoConsult: true, audioConsult: false, tags: ["Highly Experienced"],
-  },
-  {
-    id: 3, slug: "dr-rohan-iyer", name: "Dr. Rohan Iyer", specialty: "Dermatology",
-    rating: 4.7, reviews: 189, experience: "10 yrs", fee: 499,
-    image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=face",
-    location: "HSR Layout, Bangalore", nextAvailable: "Tomorrow",
-    videoConsult: true, audioConsult: true, tags: ["Popular"],
-  },
-  {
-    id: 4, slug: "dr-priya-sharma", name: "Dr. Priya Sharma", specialty: "Psychiatry",
-    rating: 4.9, reviews: 421, experience: "16 yrs", fee: 599,
-    image: "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=200&h=200&fit=crop&crop=face",
-    location: "Whitefield, Bangalore", nextAvailable: "Today",
-    videoConsult: true, audioConsult: true, tags: ["Top Rated", "Most Booked"],
-  },
-  {
-    id: 5, slug: "dr-suresh-nair", name: "Dr. Suresh Nair", specialty: "Orthopedics",
-    rating: 4.6, reviews: 156, experience: "20 yrs", fee: 599,
-    image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&h=200&fit=crop&crop=face",
-    location: "Jayanagar, Bangalore", nextAvailable: "Today",
-    videoConsult: true, audioConsult: false, tags: ["Highly Experienced"],
-  },
-  {
-    id: 6, slug: "dr-ramadevi", name: "Dr. RamaDevi", specialty: "General Medicine",
-    rating: 4.8, reviews: 534, experience: "22 yrs", fee: 499,
-    image: "https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=200&h=200&fit=crop&crop=face",
-    location: "MG Road, Bangalore", nextAvailable: "Today",
-    videoConsult: true, audioConsult: true, tags: ["Most Booked", "Quick Responder"],
-  },
-  {
-    id: 7, slug: "dr-farhan-siddiqui", name: "Dr. Farhan Siddiqui", specialty: "Gastroenterology",
-    rating: 4.7, reviews: 198, experience: "12 yrs", fee: 499,
-    image: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=200&h=200&fit=crop&crop=face",
-    location: "Electronic City, Bangalore", nextAvailable: "Tomorrow",
-    videoConsult: true, audioConsult: true, tags: ["Popular"],
-  },
-  {
-    id: 8, slug: "dr-geeta-balakrishnan", name: "Dr. Geeta Balakrishnan", specialty: "Neurology",
-    rating: 4.9, reviews: 267, experience: "15 yrs", fee: 499,
-    image: "https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?w=200&h=200&fit=crop&crop=face",
-    location: "Malleshwaram, Bangalore", nextAvailable: "Today",
-    videoConsult: true, audioConsult: false, tags: ["Top Rated"],
-  },
-];
+// Doctor type alias for this page
+type Doctor = DbDoctor;
 
 // Generate date tabs (today + next 6 days)
 const generateDateTabs = () => {
@@ -154,13 +83,13 @@ const DoctorCard = ({ doctor, dateTabs }: { doctor: Doctor; dateTabs: ReturnType
         {/* Doctor Info */}
         <div className="flex gap-4 lg:w-[340px] shrink-0">
           <img
-            src={doctor.image}
+            src={doctor.image_url || "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=face"}
             alt={doctor.name}
             className="w-20 h-20 rounded-2xl object-cover border-2 border-border"
           />
           <div className="min-w-0">
             <h3 className="font-serif text-lg text-foreground font-semibold truncate">{doctor.name}</h3>
-            <p className="text-sm text-muted-foreground">{doctor.specialty} · {doctor.experience} exp</p>
+            <p className="text-sm text-muted-foreground">{doctor.specialty} · {doctor.experience_years} yrs exp</p>
             <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
               <MapPin className="w-3 h-3" /> {doctor.location}
             </p>
@@ -169,7 +98,7 @@ const DoctorCard = ({ doctor, dateTabs }: { doctor: Doctor; dateTabs: ReturnType
                 <Star className="w-3.5 h-3.5 fill-primary" />
                 <span className="text-xs font-semibold">{doctor.rating}</span>
               </div>
-              <span className="text-xs text-muted-foreground">({doctor.reviews} reviews)</span>
+              <span className="text-xs text-muted-foreground">({doctor.review_count} reviews)</span>
             </div>
             <div className="flex gap-1.5 mt-2 flex-wrap">
               {doctor.tags.map((tag) => (
@@ -183,17 +112,17 @@ const DoctorCard = ({ doctor, dateTabs }: { doctor: Doctor; dateTabs: ReturnType
               ))}
             </div>
             <div className="flex items-center gap-3 mt-2">
-              {doctor.videoConsult && (
+              {doctor.video_consult && (
                 <span className="flex items-center gap-1 text-xs text-muted-foreground">
                   <Video className="w-3.5 h-3.5" /> Video
                 </span>
               )}
-              {doctor.audioConsult && (
+              {doctor.audio_consult && (
                 <span className="flex items-center gap-1 text-xs text-muted-foreground">
                   <Phone className="w-3.5 h-3.5" /> Audio
                 </span>
               )}
-              <span className="text-xs font-semibold text-foreground">₹{doctor.fee}</span>
+              <span className="text-xs font-semibold text-foreground">₹{(doctor.fee_paise / 100).toFixed(0)}</span>
             </div>
           </div>
         </div>
@@ -267,6 +196,7 @@ const Schedule = () => {
   const [consultType, setConsultType] = useState<"all" | "video" | "audio">("all");
   const [showFilters, setShowFilters] = useState(false);
 
+  const { data: doctors = [], isLoading } = useDoctors();
   const dateTabs = useMemo(() => generateDateTabs(), []);
 
   const filteredDoctors = useMemo(() => {
@@ -278,11 +208,11 @@ const Schedule = () => {
       const matchesSpecialty = selectedSpecialty === "All" || doc.specialty === selectedSpecialty;
       const matchesConsult =
         consultType === "all" ||
-        (consultType === "video" && doc.videoConsult) ||
-        (consultType === "audio" && doc.audioConsult);
+        (consultType === "video" && doc.video_consult) ||
+        (consultType === "audio" && doc.audio_consult);
       return matchesSearch && matchesSpecialty && matchesConsult;
     });
-  }, [searchQuery, selectedSpecialty, consultType]);
+  }, [doctors, searchQuery, selectedSpecialty, consultType]);
 
   const activeFilterCount = [
     selectedSpecialty !== "All",
@@ -436,7 +366,12 @@ const Schedule = () => {
 
           {/* Doctor cards */}
           <div className="space-y-4 max-w-5xl mx-auto">
-            {filteredDoctors.map((doctor) => (
+            {isLoading && (
+              <div className="flex justify-center py-16">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              </div>
+            )}
+            {!isLoading && filteredDoctors.map((doctor) => (
               <DoctorCard key={doctor.id} doctor={doctor} dateTabs={dateTabs} />
             ))}
           </div>
