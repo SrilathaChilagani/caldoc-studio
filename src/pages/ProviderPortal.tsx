@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Video, ExternalLink, LayoutDashboard, Calendar, IndianRupee, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Layout } from "@/components/Layout";
+import { useAppAuth } from "@/contexts/AppAuthContext";
 
 type StatusFilter = "ALL" | "CONFIRMED" | "PENDING" | "CANCELLED" | "NO_SHOW" | "RESCHEDULED";
 type TimeFilter = "ALLTIME" | "LAST24" | "FUTURE";
@@ -53,9 +55,18 @@ const mockEarnings = [
 ];
 
 const ProviderPortal = () => {
+  const { user, loading, signOut, profile } = useAppAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("appointments");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("ALLTIME");
+
+  useEffect(() => {
+    if (!loading && !user) navigate("/login?portal=provider");
+  }, [loading, user, navigate]);
+
+  if (loading) return <Layout><div className="pt-24 text-center text-muted-foreground">Loading…</div></Layout>;
+  if (!user) return null;
 
   const now = new Date();
   const filtered = mockAppointments.filter((appt) => {
@@ -87,15 +98,15 @@ const ProviderPortal = () => {
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div className="flex items-center gap-4">
                 <div className="h-14 w-14 rounded-full bg-primary flex items-center justify-center">
-                  <span className="text-2xl font-semibold text-primary-foreground">R</span>
+                  <span className="text-2xl font-semibold text-primary-foreground">{(profile?.display_name || user.email || "P").charAt(0).toUpperCase()}</span>
                 </div>
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Provider portal</p>
-                  <h1 className="text-2xl sm:text-3xl font-semibold text-foreground">Dr. Rajesh Kumar</h1>
+                  <h1 className="text-2xl sm:text-3xl font-semibold text-foreground">{profile?.display_name || user.email}</h1>
                   <p className="text-sm text-muted-foreground">Manage teleconsultations, confirm bookings, and share prescriptions.</p>
                 </div>
               </div>
-              <Button variant="outline" className="rounded-full">Sign out</Button>
+              <Button variant="outline" className="rounded-full" onClick={() => signOut().then(() => navigate("/login?portal=provider"))}>Sign out</Button>
             </div>
 
             {/* Tab navigation */}
