@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Layout } from "@/components/Layout";
 import { useAppAuth } from "@/contexts/AppAuthContext";
+import { lovable } from "@/integrations/lovable/index";
 
 const portalConfig: Record<string, { label: string; color: string; redirect: string; description: string }> = {
   admin: { label: "Admin Portal", color: "text-primary", redirect: "/admin-portal", description: "Manage platform operations" },
