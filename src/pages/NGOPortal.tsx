@@ -1,227 +1,251 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import {
-  LayoutDashboard, Users, Heart, Calendar,
-  TrendingUp, MapPin, FileText, HandHeart
-} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useToast } from "@/hooks/use-toast";
 import { Layout } from "@/components/Layout";
 
-const campaigns = [
-  { id: 1, name: "Rural Health Camp - Anantapur", date: "2026-04-20", beneficiaries: 350, status: "Upcoming", location: "Anantapur, AP" },
-  { id: 2, name: "Free Eye Checkup Drive", date: "2026-04-12", beneficiaries: 200, status: "Active", location: "Kurnool, AP" },
-  { id: 3, name: "Diabetes Screening Camp", date: "2026-03-25", beneficiaries: 480, status: "Completed", location: "Hyderabad, TS" },
-  { id: 4, name: "Maternal Health Awareness", date: "2026-03-10", beneficiaries: 150, status: "Completed", location: "Warangal, TS" },
+function formatCurrency(paise: number) {
+  return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", minimumFractionDigits: 2 }).format(paise / 100);
+}
+
+function formatSlot(date: Date | null) {
+  if (!date) return "Not scheduled";
+  return new Intl.DateTimeFormat("en-IN", {
+    timeZone: "Asia/Kolkata", weekday: "short", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit",
+  }).format(date);
+}
+
+const mockNgo = { name: "Health For All Foundation" };
+
+const kpiCards = [
+  { label: "Slots held", value: 12, sub: "pending assignment" },
+  { label: "Slots confirmed", value: 28, sub: "patients assigned" },
+  { label: "Estimated charges", value: formatCurrency(8400000), sub: "based on held slots" },
+  { label: "Confirmed charges", value: formatCurrency(5600000), sub: "actual utilized" },
 ];
 
-const volunteers = [
-  { id: 1, name: "Dr. Ramesh Babu", role: "Medical Lead", camps: 12, hours: 96 },
-  { id: 2, name: "Sunitha Reddy", role: "Coordinator", camps: 8, hours: 64 },
-  { id: 3, name: "Venkat Rao", role: "Logistics", camps: 15, hours: 120 },
-  { id: 4, name: "Lakshmi Devi", role: "Nurse", camps: 10, hours: 80 },
+const specialityBreakdown = [
+  { speciality: "General Medicine", count: 15 },
+  { speciality: "Dermatology", count: 8 },
+  { speciality: "Cardiology", count: 6 },
+  { speciality: "Pediatrics", count: 5 },
+  { speciality: "Orthopedics", count: 4 },
 ];
 
-const impactStats = [
-  { label: "Beneficiaries Served", value: "8,420", icon: Users, trend: "+22%" },
-  { label: "Health Camps", value: "56", icon: Heart, trend: "+15%" },
-  { label: "Volunteers", value: "124", icon: HandHeart, trend: "+8%" },
-  { label: "Districts Covered", value: "18", icon: MapPin, trend: "+3" },
+const heldReservations = [
+  { id: "hr1", friendlyId: "NGO-101", providerName: "Dr. Rajesh Kumar", speciality: "General Medicine", slotTime: new Date("2026-04-12T10:00:00"), amountPaise: 50000 },
+  { id: "hr2", friendlyId: "NGO-102", providerName: "Dr. Sunitha Reddy", speciality: "Dermatology", slotTime: new Date("2026-04-12T14:30:00"), amountPaise: 80000 },
+  { id: "hr3", friendlyId: "NGO-103", providerName: "Dr. Venkat Rao", speciality: "Cardiology", slotTime: new Date("2026-04-13T11:00:00"), amountPaise: 100000 },
 ];
+
+const confirmedAppointments = [
+  { id: "ca1", friendlyId: "NGO-051", patientName: "Lakshmi Amma", providerName: "Dr. Rajesh Kumar", speciality: "General Medicine", slotTime: new Date("2026-04-10T10:00:00"), status: "CONFIRMED", feePaise: 50000, hasPrescription: true, hasReceipt: true },
+  { id: "ca2", friendlyId: "NGO-052", patientName: "Ramesh Babu", providerName: "Dr. Sunitha Reddy", speciality: "Dermatology", slotTime: new Date("2026-04-10T14:00:00"), status: "CONFIRMED", feePaise: 80000, hasPrescription: false, hasReceipt: true },
+  { id: "ca3", friendlyId: "NGO-053", patientName: "Sunitha Devi", providerName: "Dr. Venkat Rao", speciality: "Cardiology", slotTime: new Date("2026-04-11T11:30:00"), status: "CANCELLED", feePaise: 100000, hasPrescription: false, hasReceipt: false },
+];
+
+const statusClasses: Record<string, string> = {
+  CONFIRMED: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400",
+  CANCELLED: "bg-destructive/10 text-destructive",
+  PENDING: "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-400",
+};
+
+const thCls = "px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground";
+const tdCls = "px-3 py-3 align-middle";
 
 const NGOPortal = () => {
-  const { toast } = useToast();
+  const [startDate, setStartDate] = useState("2026-04-09");
+  const [endDate, setEndDate] = useState("2026-04-16");
 
   return (
     <Layout>
-      {/* Portal Header */}
-      <section className="pt-24 pb-6 bg-gradient-to-b from-primary/5 to-background">
-        <div className="container mx-auto px-6 lg:px-16">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl lg:text-3xl font-semibold text-foreground tracking-tight">NGO Portal</h1>
-              <p className="text-sm text-muted-foreground mt-1">Community health impact management</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                <HandHeart className="w-5 h-5 text-primary" />
+      <section className="pt-24 pb-10">
+        <div className="container mx-auto max-w-6xl px-4 sm:px-6 space-y-6">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="space-y-6">
+            {/* Header */}
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">NGO dashboard</p>
+                <h1 className="mt-0.5 text-2xl sm:text-3xl font-semibold text-foreground">{mockNgo.name}</h1>
+                <p className="mt-1 text-sm text-muted-foreground">Track every appointment booked under your programmes.</p>
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                <Button variant="outline" className="rounded-full text-primary border-primary/40">+ New booking</Button>
+                <Button variant="outline" className="rounded-full text-primary border-primary/40">Download invoice</Button>
+                <Button variant="outline" className="rounded-full">Change password</Button>
+                <Button className="rounded-full">Sign out</Button>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Content */}
-      <section className="py-8">
-        <div className="container mx-auto px-6 lg:px-16">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <Tabs defaultValue="dashboard" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 h-auto gap-1 bg-muted p-1 rounded-xl">
-                <TabsTrigger value="dashboard" className="flex items-center gap-2 py-2.5 text-xs sm:text-sm rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm">
-                  <LayoutDashboard className="w-4 h-4" />
-                  Dashboard
-                </TabsTrigger>
-                <TabsTrigger value="campaigns" className="flex items-center gap-2 py-2.5 text-xs sm:text-sm rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm">
-                  <Calendar className="w-4 h-4" />
-                  Campaigns
-                </TabsTrigger>
-                <TabsTrigger value="volunteers" className="flex items-center gap-2 py-2.5 text-xs sm:text-sm rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm">
-                  <Users className="w-4 h-4" />
-                  Volunteers
-                </TabsTrigger>
-                <TabsTrigger value="reports" className="flex items-center gap-2 py-2.5 text-xs sm:text-sm rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm">
-                  <FileText className="w-4 h-4" />
-                  Reports
-                </TabsTrigger>
-              </TabsList>
-
-              {/* Dashboard */}
-              <TabsContent value="dashboard" className="space-y-6">
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                  {impactStats.map((stat) => (
-                    <Card key={stat.label} className="rounded-xl">
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <stat.icon className="w-5 h-5 text-primary" />
-                          <span className="text-xs text-primary font-medium">{stat.trend}</span>
-                        </div>
-                        <p className="text-2xl font-semibold text-foreground">{stat.value}</p>
-                        <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-
-                <Card className="rounded-xl">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-lg">Upcoming Campaigns</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    {campaigns.filter(c => c.status !== "Completed").map((c) => (
-                      <div key={c.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
-                        <div>
-                          <p className="font-medium text-foreground text-sm">{c.name}</p>
-                          <p className="text-xs text-muted-foreground flex items-center gap-1">
-                            <MapPin className="w-3 h-3" /> {c.location}
-                          </p>
-                        </div>
-                        <Badge variant={c.status === "Active" ? "default" : "outline"}>{c.status}</Badge>
-                      </div>
-                    ))}
+            {/* KPI cards */}
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {kpiCards.map((card) => (
+                <Card key={card.label} className="rounded-2xl">
+                  <CardContent className="p-5">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-primary">{card.label}</p>
+                    <p className="mt-2 text-2xl font-semibold text-foreground">
+                      {typeof card.value === "number" ? card.value.toLocaleString("en-IN") : card.value}
+                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground">{card.sub}</p>
                   </CardContent>
                 </Card>
-              </TabsContent>
+              ))}
+            </div>
 
-              {/* Campaigns */}
-              <TabsContent value="campaigns" className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-xl font-semibold text-foreground">Health Campaigns</h2>
-                    <p className="text-sm text-muted-foreground mt-1">Manage community health drives</p>
+            {/* Date range filter */}
+            <Card className="rounded-2xl">
+              <CardContent className="p-5">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
+                  <div className="flex-1">
+                    <label className="text-xs font-semibold text-muted-foreground">From</label>
+                    <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)}
+                      className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/30" />
                   </div>
-                  <Button className="rounded-xl gap-2">
-                    <Calendar className="w-4 h-4" /> New Campaign
-                  </Button>
-                </div>
-
-                <div className="grid gap-4">
-                  {campaigns.map((c) => (
-                    <Card key={c.id} className="rounded-xl hover:shadow-sm transition-shadow">
-                      <CardContent className="p-4 sm:p-5">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <h3 className="font-semibold text-foreground">{c.name}</h3>
-                            <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
-                              <MapPin className="w-3.5 h-3.5" /> {c.location}
-                            </p>
-                            <p className="text-sm text-muted-foreground mt-1">
-                              {new Date(c.date).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })} · {c.beneficiaries} beneficiaries
-                            </p>
-                          </div>
-                          <Badge variant={c.status === "Active" ? "default" : c.status === "Upcoming" ? "outline" : "secondary"}>
-                            {c.status}
-                          </Badge>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </TabsContent>
-
-              {/* Volunteers */}
-              <TabsContent value="volunteers" className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-xl font-semibold text-foreground">Volunteers</h2>
-                    <p className="text-sm text-muted-foreground mt-1">Track volunteer contributions</p>
+                  <div className="flex-1">
+                    <label className="text-xs font-semibold text-muted-foreground">To</label>
+                    <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)}
+                      className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/30" />
                   </div>
-                  <Button className="rounded-xl gap-2">
-                    <Users className="w-4 h-4" /> Add Volunteer
-                  </Button>
+                  <Button className="rounded-full">Update range</Button>
                 </div>
+              </CardContent>
+            </Card>
 
-                <Card className="rounded-xl">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Role</TableHead>
-                        <TableHead className="hidden sm:table-cell">Camps</TableHead>
-                        <TableHead className="hidden sm:table-cell">Hours</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {volunteers.map((v) => (
-                        <TableRow key={v.id}>
-                          <TableCell className="font-medium">{v.name}</TableCell>
-                          <TableCell className="text-muted-foreground">{v.role}</TableCell>
-                          <TableCell className="hidden sm:table-cell">{v.camps}</TableCell>
-                          <TableCell className="hidden sm:table-cell">{v.hours}h</TableCell>
-                          <TableCell className="text-right">
-                            <Button size="sm" variant="ghost" onClick={() => toast({ title: "Profile", description: `Viewing ${v.name}` })}>
-                              View
-                            </Button>
-                          </TableCell>
-                        </TableRow>
+            {/* Specialty breakdown */}
+            <Card className="rounded-2xl">
+              <CardContent className="p-5">
+                <h2 className="text-base font-semibold text-foreground">Specialty breakdown</h2>
+                <p className="text-xs text-muted-foreground">Counts of slots held within the selected range.</p>
+                <div className="mt-4 overflow-x-auto">
+                  <table className="min-w-full divide-y divide-border text-sm">
+                    <thead>
+                      <tr>
+                        <th className={thCls}>Specialty</th>
+                        <th className={`${thCls} text-right`}>Reservations</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {specialityBreakdown.map((row) => (
+                        <tr key={row.speciality}>
+                          <td className={tdCls}>{row.speciality}</td>
+                          <td className={`${tdCls} text-right font-semibold`}>{row.count}</td>
+                        </tr>
                       ))}
-                    </TableBody>
-                  </Table>
-                </Card>
-              </TabsContent>
-
-              {/* Reports */}
-              <TabsContent value="reports" className="space-y-6">
-                <div>
-                  <h2 className="text-xl font-semibold text-foreground">Impact Reports</h2>
-                  <p className="text-sm text-muted-foreground mt-1">Generate and download reports</p>
+                    </tbody>
+                  </table>
                 </div>
+              </CardContent>
+            </Card>
 
-                <div className="grid sm:grid-cols-2 gap-4">
-                  {[
-                    { title: "Monthly Impact Report", desc: "Summary of all activities this month", period: "April 2026" },
-                    { title: "Beneficiary Report", desc: "Detailed breakdown by demographics", period: "Q1 2026" },
-                    { title: "Volunteer Hours Report", desc: "Total contributions and distributions", period: "Q1 2026" },
-                    { title: "Financial Summary", desc: "Expenditure and fund utilisation", period: "FY 2025-26" },
-                  ].map((report) => (
-                    <Card key={report.title} className="rounded-xl hover:shadow-sm transition-shadow cursor-pointer" onClick={() => toast({ title: "Download", description: `Generating ${report.title}` })}>
-                      <CardContent className="p-5">
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <h3 className="font-medium text-foreground">{report.title}</h3>
-                            <p className="text-sm text-muted-foreground mt-0.5">{report.desc}</p>
-                          </div>
-                          <Badge variant="secondary">{report.period}</Badge>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+            {/* Held reservations */}
+            <Card className="rounded-2xl">
+              <CardContent className="p-5">
+                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h2 className="text-base font-semibold text-foreground">Held reservations</h2>
+                    <p className="text-xs text-muted-foreground">Slots you're holding — assign a patient when they arrive, or release unused slots.</p>
+                  </div>
+                  <Badge variant="secondary" className="rounded-full bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-400">
+                    {heldReservations.length} pending
+                  </Badge>
                 </div>
-              </TabsContent>
-            </Tabs>
+                <div className="mt-4 overflow-x-auto">
+                  <table className="min-w-full divide-y divide-border text-sm">
+                    <thead>
+                      <tr>
+                        <th className={thCls}>Booking ID</th>
+                        <th className={thCls}>Provider</th>
+                        <th className={thCls}>Specialty</th>
+                        <th className={thCls}>Slot time</th>
+                        <th className={`${thCls} text-right`}>Est. amount</th>
+                        <th className={thCls}>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {heldReservations.map((r) => (
+                        <tr key={r.id}>
+                          <td className={`${tdCls} font-mono text-xs text-muted-foreground`}>{r.friendlyId}</td>
+                          <td className={tdCls}>{r.providerName}</td>
+                          <td className={tdCls}>
+                            <Badge variant="secondary" className="rounded-full bg-primary/10 text-primary">{r.speciality}</Badge>
+                          </td>
+                          <td className={`${tdCls} whitespace-nowrap text-xs`}>{formatSlot(r.slotTime)}</td>
+                          <td className={`${tdCls} text-right font-semibold`}>{formatCurrency(r.amountPaise)}</td>
+                          <td className={`${tdCls} space-y-1.5`}>
+                            <Button size="sm" className="rounded-full text-xs w-full">Assign patient</Button>
+                            <div className="flex gap-1.5">
+                              <Button size="sm" variant="outline" className="rounded-full text-xs flex-1">Edit</Button>
+                              <Button size="sm" variant="outline" className="rounded-full text-xs flex-1 text-destructive border-destructive/30">Release</Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Confirmed appointments */}
+            <Card className="rounded-2xl">
+              <CardContent className="p-5">
+                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h2 className="text-base font-semibold text-foreground">Confirmed appointments</h2>
+                    <p className="text-xs text-muted-foreground">Slots with patients assigned — showing up to 100 bookings.</p>
+                  </div>
+                  <Badge className="rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400">
+                    {confirmedAppointments.filter((a) => a.status === "CONFIRMED").length} confirmed
+                  </Badge>
+                </div>
+                <div className="mt-4 overflow-x-auto">
+                  <table className="min-w-full divide-y divide-border text-sm">
+                    <thead>
+                      <tr>
+                        <th className={thCls}>Booking ID</th>
+                        <th className={thCls}>Patient</th>
+                        <th className={thCls}>Provider</th>
+                        <th className={thCls}>Speciality</th>
+                        <th className={thCls}>Slot</th>
+                        <th className={thCls}>Status</th>
+                        <th className={`${thCls} text-right`}>Amount</th>
+                        <th className={thCls}>Links</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {confirmedAppointments.map((appt) => (
+                        <tr key={appt.id}>
+                          <td className={`${tdCls} font-mono text-xs text-muted-foreground`}>{appt.friendlyId}</td>
+                          <td className={tdCls}>
+                            <span className="font-medium text-foreground">{appt.patientName}</span>
+                          </td>
+                          <td className={tdCls}>{appt.providerName}</td>
+                          <td className={tdCls}>
+                            <Badge variant="secondary" className="rounded-full bg-primary/10 text-primary">{appt.speciality}</Badge>
+                          </td>
+                          <td className={`${tdCls} whitespace-nowrap text-xs`}>{formatSlot(appt.slotTime)}</td>
+                          <td className={tdCls}>
+                            <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${statusClasses[appt.status] || "bg-muted text-muted-foreground"}`}>
+                              {appt.status}
+                            </span>
+                          </td>
+                          <td className={`${tdCls} text-right font-semibold`}>{formatCurrency(appt.feePaise)}</td>
+                          <td className={`${tdCls} space-y-1`}>
+                            {appt.hasPrescription && (
+                              <Button size="sm" variant="outline" className="rounded-full text-xs text-primary border-primary/30 w-full">Prescription</Button>
+                            )}
+                            {appt.hasReceipt && (
+                              <Button size="sm" variant="outline" className="rounded-full text-xs w-full">Receipt</Button>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
           </motion.div>
         </div>
       </section>
