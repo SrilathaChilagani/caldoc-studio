@@ -128,12 +128,14 @@ export function Navbar() {
 
         <AnimatePresence>
           {isOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="lg:hidden overflow-hidden border-t border-border"
-            >
+            <>
+              <div className="fixed inset-0 top-16 bg-background/80 backdrop-blur-sm z-40" onClick={() => setIsOpen(false)} />
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="lg:hidden overflow-hidden border-t border-border bg-background relative z-50"
+              >
               <div className="py-4 space-y-1">
                 {navLinks.map((link) => (
                   <button
@@ -169,7 +171,8 @@ export function Navbar() {
                   Book Consultation
                 </button>
               </div>
-            </motion.div>
+              </motion.div>
+            </>
           )}
         </AnimatePresence>
       </div>
