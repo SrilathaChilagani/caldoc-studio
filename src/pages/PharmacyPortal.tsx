@@ -5,13 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Layout } from "@/components/Layout";
-import { LayoutDashboard, Package, Pill, Settings, Loader2 } from "lucide-react";
+import { LayoutDashboard, Package, Pill, Settings, Loader2, BookOpen, Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { useAppAuth } from "@/contexts/AppAuthContext";
-import { usePharmacyOrders, usePharmacyInventory } from "@/hooks/usePharmacy";
+import { usePharmacyOrders, usePharmacyInventory, useMedications } from "@/hooks/usePharmacy";
 
 const portalTabs = [
   { id: "queue", label: "Fulfilment Queue", icon: LayoutDashboard },
   { id: "rx", label: "Rx Orders", icon: Pill },
+  { id: "catalog", label: "Medications", icon: BookOpen },
   { id: "inventory", label: "Inventory", icon: Package },
   { id: "settings", label: "Settings", icon: Settings },
 ];
@@ -78,6 +80,9 @@ const PharmacyPortal = () => {
   const [activeTab, setActiveTab] = useState("queue");
   const { data: dbOrders = [] } = usePharmacyOrders();
   const { data: dbInventory = [] } = usePharmacyInventory();
+  const { data: medications = [], isLoading: medsLoading } = useMedications();
+  const [medSearch, setMedSearch] = useState("");
+  const [medCategory, setMedCategory] = useState("all");
 
   return (
     <Layout>
@@ -97,7 +102,7 @@ const PharmacyPortal = () => {
             {/* Tab navigation */}
             <Card className="rounded-2xl">
               <CardContent className="p-4">
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                   {portalTabs.map((tab) => (
                     <button
                       key={tab.id}
