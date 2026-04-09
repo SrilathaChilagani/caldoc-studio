@@ -109,7 +109,44 @@ const NGOPortal = () => {
               </div>
             </div>
 
-            {/* KPI cards */}
+            {/* Tab navigation */}
+            <Card className="rounded-2xl">
+              <CardContent className="p-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {tabs.map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
+                        activeTab === tab.id
+                          ? "bg-primary/10 text-primary"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      }`}
+                    >
+                      <tab.icon className="w-4 h-4" />
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Community impact cards */}
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {impactCards.map((card) => (
+                <Card key={card.label} className="rounded-2xl">
+                  <CardContent className="p-5">
+                    <div className="flex items-start justify-between">
+                      <card.icon className="w-5 h-5 text-primary" />
+                      <span className="text-xs font-semibold text-primary">{card.growth}</span>
+                    </div>
+                    <p className="mt-3 text-2xl font-semibold text-foreground">{card.value}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{card.label}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {kpiCards.map((card) => (
                 <Card key={card.label} className="rounded-2xl">
