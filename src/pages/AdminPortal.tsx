@@ -5,16 +5,19 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/Layout";
-import { LayoutDashboard, Grid3X3, HeartHandshake, Phone, Settings, Users } from "lucide-react";
+import { LayoutDashboard, Grid3X3, HeartHandshake, Phone, Settings, Users, AlertTriangle } from "lucide-react";
 import { UserRolesTab } from "@/components/admin/UserRolesTab";
+import { EmergencyBookingsTab } from "@/components/admin/EmergencyBookingsTab";
+import { NgoBookingsTab } from "@/components/admin/NgoBookingsTab";
 import { useAppAuth } from "@/contexts/AppAuthContext";
 
 const portalTabs = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "sections", label: "Sections", icon: Grid3X3 },
   { id: "users", label: "Users", icon: Users },
+  { id: "emergency", label: "Emergency", icon: AlertTriangle },
   { id: "ngo", label: "NGO Bookings", icon: HeartHandshake },
-  { id: "queue", label: "Telephonic Queue", icon: Phone },
+  { id: "queue", label: "Queue", icon: Phone },
   { id: "settings", label: "Settings", icon: Settings },
 ];
 
@@ -41,12 +44,6 @@ const kpis = [
   { label: "Active providers", value: "24", sub: "on marketplace" },
   { label: "Rx orders", value: "89", sub: "52 paid · 18 awaiting" },
   { label: "Lab orders", value: "156", sub: "98 confirmed · 31 pending" },
-];
-
-const ngoReservations = [
-  { id: "NGO-001", friendlyId: "NGO-001", ngoName: "Health For All Foundation", providerName: "Dr. Rajesh Kumar", speciality: "General Medicine", slotTime: new Date("2026-04-12T10:00:00"), status: "HELD" },
-  { id: "NGO-002", friendlyId: "NGO-002", ngoName: "Rural Care Trust", providerName: "Dr. Sunitha Reddy", speciality: "Dermatology", slotTime: new Date("2026-04-13T14:00:00"), status: "CONFIRMED" },
-  { id: "NGO-003", friendlyId: "NGO-003", ngoName: "Health For All Foundation", providerName: "Dr. Venkat Rao", speciality: "Cardiology", slotTime: new Date("2026-04-14T11:30:00"), status: "HELD" },
 ];
 
 const offlineRequests = [
@@ -81,7 +78,7 @@ const AdminPortal = () => {
             {/* Tab navigation */}
             <Card className="rounded-2xl">
               <CardContent className="p-4">
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                <div className="flex flex-wrap gap-2">
                   {portalTabs.map((tab) => (
                     <button
                       key={tab.id}
@@ -156,40 +153,11 @@ const AdminPortal = () => {
             {/* Users tab */}
             {activeTab === "users" && <UserRolesTab />}
 
+            {/* Emergency Bookings tab */}
+            {activeTab === "emergency" && <EmergencyBookingsTab />}
+
             {/* NGO Bookings tab */}
-            {activeTab === "ngo" && (
-              <Card className="rounded-3xl">
-                <CardContent className="p-6">
-                  <div className="mb-4 flex items-center justify-between">
-                    <div>
-                      <h2 className="text-lg font-semibold text-foreground">Recent NGO bookings</h2>
-                      <p className="text-xs text-muted-foreground">Latest 10 · <Link to="/ngo-portal" className="text-primary hover:underline">View all</Link></p>
-                    </div>
-                  </div>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                          {["ID", "NGO", "Doctor", "Slot", "Status", "Actions"].map((h) => <th key={h} className="pb-2 pr-4 font-semibold">{h}</th>)}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {ngoReservations.map((r) => (
-                          <tr key={r.id} className="border-b border-border/50 last:border-0">
-                            <td className="py-2.5 pr-4 font-mono text-xs font-semibold text-muted-foreground">{r.friendlyId}</td>
-                            <td className="py-2.5 pr-4 font-medium text-foreground">{r.ngoName}</td>
-                            <td className="py-2.5 pr-4"><div className="font-medium text-foreground">{r.providerName}</div><div className="text-xs text-muted-foreground">{r.speciality}</div></td>
-                            <td className="py-2.5 pr-4 text-xs text-muted-foreground">{formatIST(r.slotTime)}</td>
-                            <td className="py-2.5 pr-4"><Badge variant={r.status === "CONFIRMED" ? "default" : "secondary"} className="rounded-full text-xs uppercase">{r.status}</Badge></td>
-                            <td className="py-2.5"><Button size="sm" variant="outline" className="rounded-full text-xs">Manage</Button></td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+            {activeTab === "ngo" && <NgoBookingsTab />}
 
             {/* Telephonic Queue tab */}
             {activeTab === "queue" && (
