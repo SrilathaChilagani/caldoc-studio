@@ -32,7 +32,6 @@ export default function PharmacySearch() {
   const page = Math.max(1, Number(searchParams.get("page")) || 1);
 
   const { data: allMeds = [], isLoading, error } = useMedications();
-  if (error) console.error("useMedications error:", error);
 
   const [cart, setCart] = useState<RxCartItem[]>([]);
   const [draftQty, setDraftQty] = useState<Record<string, number>>({});
