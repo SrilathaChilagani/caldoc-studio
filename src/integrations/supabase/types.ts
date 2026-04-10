@@ -316,6 +316,7 @@ export type Database = {
           specialty: string
           tags: string[]
           updated_at: string
+          user_id: string | null
           video_consult: boolean
           visit_modes: string[]
         }
@@ -346,6 +347,7 @@ export type Database = {
           specialty: string
           tags?: string[]
           updated_at?: string
+          user_id?: string | null
           video_consult?: boolean
           visit_modes?: string[]
         }
@@ -376,6 +378,7 @@ export type Database = {
           specialty?: string
           tags?: string[]
           updated_at?: string
+          user_id?: string | null
           video_consult?: boolean
           visit_modes?: string[]
         }
