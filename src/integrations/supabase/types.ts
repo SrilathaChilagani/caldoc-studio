@@ -162,6 +162,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "appointments_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "appointments_slot_id_fkey"
             columns: ["slot_id"]
             isOneToOne: false
@@ -972,6 +979,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "ngo_reservations_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "doctors_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "ngo_reservations_slot_id_fkey"
             columns: ["slot_id"]
             isOneToOne: false
@@ -1704,6 +1718,13 @@ export type Database = {
             referencedRelation: "doctors"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "provider_clinics_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "doctors_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       provider_enrollments: {
@@ -1897,6 +1918,13 @@ export type Database = {
             referencedRelation: "doctors"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "slots_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "doctors_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       suppressed_emails: {
@@ -2028,6 +2056,78 @@ export type Database = {
       }
     }
     Views: {
+      doctors_public: {
+        Row: {
+          audio_consult: boolean | null
+          bio: string | null
+          created_at: string | null
+          experience_years: number | null
+          fee_paise: number | null
+          id: string | null
+          image_url: string | null
+          is_24x7: boolean | null
+          is_active: boolean | null
+          languages: string[] | null
+          location: string | null
+          name: string | null
+          qualification: string | null
+          rating: number | null
+          review_count: number | null
+          slug: string | null
+          specialty: string | null
+          tags: string[] | null
+          updated_at: string | null
+          video_consult: boolean | null
+          visit_modes: string[] | null
+        }
+        Insert: {
+          audio_consult?: boolean | null
+          bio?: string | null
+          created_at?: string | null
+          experience_years?: number | null
+          fee_paise?: number | null
+          id?: string | null
+          image_url?: string | null
+          is_24x7?: boolean | null
+          is_active?: boolean | null
+          languages?: string[] | null
+          location?: string | null
+          name?: string | null
+          qualification?: string | null
+          rating?: number | null
+          review_count?: number | null
+          slug?: string | null
+          specialty?: string | null
+          tags?: string[] | null
+          updated_at?: string | null
+          video_consult?: boolean | null
+          visit_modes?: string[] | null
+        }
+        Update: {
+          audio_consult?: boolean | null
+          bio?: string | null
+          created_at?: string | null
+          experience_years?: number | null
+          fee_paise?: number | null
+          id?: string | null
+          image_url?: string | null
+          is_24x7?: boolean | null
+          is_active?: boolean | null
+          languages?: string[] | null
+          location?: string | null
+          name?: string | null
+          qualification?: string | null
+          rating?: number | null
+          review_count?: number | null
+          slug?: string | null
+          specialty?: string | null
+          tags?: string[] | null
+          updated_at?: string | null
+          video_consult?: boolean | null
+          visit_modes?: string[] | null
+        }
+        Relationships: []
+      }
       ngo_reservations_safe: {
         Row: {
           amount_paise: number | null
