@@ -25,7 +25,7 @@ export function useDoctors() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("doctors")
-        .select("*")
+        .select("id,slug,name,specialty,fee_paise,experience_years,bio,image_url,location,video_consult,audio_consult,rating,review_count,tags,is_active,languages,qualification,is_24x7,visit_modes")
         .eq("is_active", true)
         .order("rating", { ascending: false });
       if (error) throw error;
@@ -41,7 +41,7 @@ export function useDoctorBySlug(slug: string | undefined) {
       if (!slug) return null;
       const { data, error } = await supabase
         .from("doctors")
-        .select("*")
+        .select("id,slug,name,specialty,fee_paise,experience_years,bio,image_url,location,video_consult,audio_consult,rating,review_count,tags,is_active,languages,qualification,is_24x7,visit_modes")
         .eq("slug", slug)
         .single();
       if (error) throw error;
