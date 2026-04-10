@@ -1,8 +1,11 @@
 import { motion } from "framer-motion";
-import { Search, Beaker, Truck, Clock, ShieldCheck, ChevronDown, Upload } from "lucide-react";
+import { Search, Beaker, Truck, Clock, ShieldCheck, ChevronDown, Upload, ShoppingCart } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/Layout";
+import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect, useMemo } from "react";
+import { loadLabCart, saveLabCart, type LabCartItem } from "@/lib/labCart";
 import heroLabs1 from "@/assets/hero-labs.jpg";
 import heroLabs2 from "@/assets/hero-labs-2.jpg";
 import heroLabs3 from "@/assets/hero-labs-3.jpg";
@@ -18,14 +21,14 @@ function getDailyImage(images: string[]) {
 }
 
 const categories = [
-  { name: "Blood Tests", icon: "🩸" },
-  { name: "Imaging", icon: "📸" },
-  { name: "Pathology", icon: "🔬" },
-  { name: "Ultrasound", icon: "📡" },
-  { name: "ECG", icon: "❤️" },
-  { name: "X-Ray", icon: "☢️" },
-  { name: "Allergy Tests", icon: "🌡️" },
-  { name: "COVID-19", icon: "🦠" },
+  { name: "Blood Tests", slug: "blood-tests", icon: "🩸" },
+  { name: "Imaging", slug: "imaging", icon: "📸" },
+  { name: "Pathology", slug: "pathology", icon: "🔬" },
+  { name: "Ultrasound", slug: "ultrasound", icon: "📡" },
+  { name: "ECG", slug: "ecg", icon: "❤️" },
+  { name: "X-Ray", slug: "x-ray", icon: "☢️" },
+  { name: "Allergy Tests", slug: "allergy", icon: "🌡️" },
+  { name: "COVID-19", slug: "covid-19", icon: "🦠" },
 ];
 
 const features = [
@@ -36,18 +39,67 @@ const features = [
 ];
 
 const popularTests = [
-  { name: "Complete Blood Count", category: "Blood Tests", price: "₹299", discount: "20% off" },
-  { name: "Lipid Profile", category: "Blood Tests", price: "₹399", discount: "15% off" },
-  { name: "Thyroid Panel", category: "Blood Tests", price: "₹599", discount: "18% off" },
-  { name: "COVID-19 RT-PCR", category: "COVID-19", price: "₹499", discount: "10% off" },
-  { name: "Liver Function Test", category: "Blood Tests", price: "₹349", discount: "15% off" },
-  { name: "Kidney Function Test", category: "Blood Tests", price: "₹349", discount: "15% off" },
+  { name: "Complete Blood Count", category: "Blood Tests" },
+  { name: "Lipid Profile", category: "Blood Tests" },
+  { name: "Thyroid Panel", category: "Blood Tests" },
+  { name: "COVID-19 RT-PCR", category: "COVID-19" },
+  { name: "Liver Function Test", category: "Blood Tests" },
+  { name: "Kidney Function Test", category: "Blood Tests" },
 ];
 
+function normalizeName(name: string) {
+  return name.trim().toLowerCase();
+}
+
 export default function Labs() {
+  const navigate = useNavigate();
   const heroLabs = getDailyImage(labImages);
+
+  const [cart, setCart] = useState<LabCartItem[]>([]);
+  const [draftQty, setDraftQty] = useState<Record<string, number>>({});
+  const [draftVisible, setDraftVisible] = useState<Record<string, boolean>>({});
+
+  useEffect(() => { setCart(loadLabCart()); }, []);
+  useEffect(() => { saveLabCart(cart); }, [cart]);
+
+  const cartMap = useMemo(() => {
+    const map = new Map<string, LabCartItem>();
+    cart.forEach((item) => map.set(normalizeName(item.name), item));
+    return map;
+  }, [cart]);
+
+  const totalItems = cart.reduce((sum, item) => sum + Math.max(1, item.qty || 0), 0);
+
+  const updateCartItem = (name: string, qty: number) => {
+    const normalized = normalizeName(name);
+    if (qty <= 0) {
+      setCart((prev) => prev.filter((item) => normalizeName(item.name) !== normalized));
+      return;
+    }
+    setCart((prev) => {
+      const next = [...prev];
+      const idx = next.findIndex((item) => normalizeName(item.name) === normalized);
+      if (idx >= 0) {
+        next[idx] = { ...next[idx], qty };
+      } else {
+        next.push({ name, qty });
+      }
+      return next;
+    });
+  };
+
   return (
     <Layout>
+      {/* Floating cart badge */}
+      {totalItems > 0 && (
+        <button
+          onClick={() => navigate("/labs/review")}
+          className="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-lg hover:bg-primary/90 transition-colors"
+        >
+          <ShoppingCart className="w-4 h-4" />
+          {totalItems} test{totalItems !== 1 ? "s" : ""} — Review Order
+        </button>
+      )}
 
       {/* Hero */}
       <section className="relative min-h-screen flex items-center">
@@ -77,18 +129,24 @@ export default function Labs() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              <div className="glass rounded-2xl p-2 shadow-elevated flex flex-col sm:flex-row gap-2 max-w-xl">
+              <form
+                onSubmit={(e) => { e.preventDefault(); navigate("/labs/search"); }}
+                className="glass rounded-2xl p-2 shadow-elevated flex flex-col sm:flex-row gap-2 max-w-xl"
+              >
                 <div className="flex-1 relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
+                    readOnly
+                    onFocus={() => navigate("/labs/search")}
+                    onClick={() => navigate("/labs/search")}
                     placeholder="Search tests, packages..."
-                    className="h-12 pl-10 bg-background/50 border-0 rounded-xl focus-visible:ring-1"
+                    className="h-12 pl-10 bg-background/50 border-0 rounded-xl focus-visible:ring-1 cursor-pointer"
                   />
                 </div>
-                <Button className="h-12 px-6 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium whitespace-nowrap">
+                <Button type="submit" className="h-12 px-6 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium whitespace-nowrap">
                   Search
                 </Button>
-              </div>
+              </form>
 
               <div className="flex flex-wrap items-center gap-4 mt-5 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1.5">
@@ -169,18 +227,22 @@ export default function Labs() {
           </motion.div>
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-4 max-w-3xl mx-auto">
             {categories.map((cat, i) => (
-              <motion.button
+              <motion.div
                 key={cat.name}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.05 }}
                 whileHover={{ y: -4 }}
-                className="glass rounded-2xl p-5 text-center hover:shadow-elevated transition-all duration-300 cursor-pointer"
               >
-                <span className="text-3xl mb-2 block">{cat.icon}</span>
-                <span className="text-sm font-medium text-foreground">{cat.name}</span>
-              </motion.button>
+                <Link
+                  to={`/labs/search?category=${encodeURIComponent(cat.slug)}`}
+                  className="glass rounded-2xl p-5 text-center hover:shadow-elevated transition-all duration-300 cursor-pointer block"
+                >
+                  <span className="text-3xl mb-2 block">{cat.icon}</span>
+                  <span className="text-sm font-medium text-foreground">{cat.name}</span>
+                </Link>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -199,28 +261,57 @@ export default function Labs() {
             <p className="text-muted-foreground max-w-md mx-auto">Most frequently booked by our customers</p>
           </motion.div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
-            {popularTests.map((test, i) => (
-              <motion.div
-                key={test.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.05 }}
-                className="glass rounded-2xl p-5 flex items-center justify-between hover:shadow-elevated transition-all duration-300"
-              >
-                <div>
-                  <h3 className="font-medium text-foreground">{test.name}</h3>
-                  <p className="text-xs text-muted-foreground">{test.category}</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="font-semibold text-foreground">{test.price}</span>
-                    <span className="text-xs text-primary font-medium">{test.discount}</span>
+            {popularTests.map((test, i) => {
+              const cartItem = cartMap.get(normalizeName(test.name));
+              const isDraft = draftVisible[normalizeName(test.name)] && !cartItem;
+              return (
+                <motion.div
+                  key={test.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: i * 0.05 }}
+                  className="glass rounded-2xl p-5 flex flex-col gap-4 justify-between hover:shadow-elevated transition-all duration-300"
+                >
+                  <div>
+                    <h3 className="font-medium text-foreground">{test.name}</h3>
+                    <p className="text-xs text-muted-foreground">{test.category}</p>
+                    <p className="text-sm font-semibold text-foreground mt-1">₹799 / test</p>
                   </div>
-                </div>
-                <Button size="sm" className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground">
-                  Book
-                </Button>
-              </motion.div>
-            ))}
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    {cartItem ? (
+                      <>
+                        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-2 py-1 text-sm text-foreground">
+                          <button type="button" onClick={() => updateCartItem(test.name, Math.max(1, cartItem.qty - 1))} className="h-7 w-7 rounded-full border border-border text-muted-foreground hover:bg-muted">-</button>
+                          <input type="number" min={1} max={99} value={cartItem.qty} onChange={(e) => updateCartItem(test.name, Number(e.target.value) || 1)} className="w-12 bg-transparent text-center text-sm outline-none" />
+                          <button type="button" onClick={() => updateCartItem(test.name, cartItem.qty + 1)} className="h-7 w-7 rounded-full border border-border text-muted-foreground hover:bg-muted">+</button>
+                        </div>
+                        <span className="rounded-full bg-primary/10 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-primary">Added</span>
+                        <button type="button" onClick={() => updateCartItem(test.name, 0)} className="text-xs font-semibold text-destructive hover:text-destructive/80">Remove</button>
+                      </>
+                    ) : isDraft ? (
+                      <>
+                        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-2 py-1 text-sm text-foreground">
+                          <span className="text-xs text-muted-foreground">Qty</span>
+                          <input type="number" min={1} max={99} value={draftQty[normalizeName(test.name)] ?? 1}
+                            onChange={(e) => setDraftQty((prev) => ({ ...prev, [normalizeName(test.name)]: Math.max(1, Number(e.target.value) || 1) }))}
+                            className="w-12 bg-transparent text-center text-sm outline-none" />
+                        </div>
+                        <Button size="sm" className="rounded-xl" onClick={() => {
+                          updateCartItem(test.name, draftQty[normalizeName(test.name)] ?? 1);
+                          setDraftVisible((prev) => ({ ...prev, [normalizeName(test.name)]: false }));
+                        }}>Add to order</Button>
+                      </>
+                    ) : (
+                      <Button size="sm" className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => {
+                        setDraftVisible((prev) => ({ ...prev, [normalizeName(test.name)]: true }));
+                        setDraftQty((prev) => ({ ...prev, [normalizeName(test.name)]: prev[normalizeName(test.name)] ?? 1 }));
+                      }}>Book</Button>
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -247,7 +338,6 @@ export default function Labs() {
           </motion.div>
         </div>
       </section>
-
     </Layout>
   );
 }
