@@ -31,7 +31,8 @@ export default function PharmacySearch() {
   const category = searchParams.get("category") || "";
   const page = Math.max(1, Number(searchParams.get("page")) || 1);
 
-  const { data: allMeds = [], isLoading } = useMedications();
+  const { data: allMeds = [], isLoading, error } = useMedications();
+  if (error) console.error("useMedications error:", error);
 
   const [cart, setCart] = useState<RxCartItem[]>([]);
   const [draftQty, setDraftQty] = useState<Record<string, number>>({});
