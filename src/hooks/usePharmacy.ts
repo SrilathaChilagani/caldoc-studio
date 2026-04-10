@@ -38,7 +38,9 @@ export function useMedications() {
         .select("*")
         .order("name");
       if (error) throw error;
-      return data;
+      return data ?? [];
     },
+    retry: 3,
+    staleTime: 5 * 60 * 1000,
   });
 }
