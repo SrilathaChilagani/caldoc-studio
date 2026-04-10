@@ -12,6 +12,10 @@ import BookingConfirmation from "./pages/BookingConfirmation";
 import EmergencyBooking from "./pages/EmergencyBooking";
 import Pharmacy from "./pages/Pharmacy";
 import Labs from "./pages/Labs";
+import PharmacySearch from "./pages/PharmacySearch";
+import PharmacyReview from "./pages/PharmacyReview";
+import LabsSearch from "./pages/LabsSearch";
+import LabsReview from "./pages/LabsReview";
 import AppDownload from "./pages/AppDownload";
 import Schedule from "./pages/Schedule";
 import PatientPortal from "./pages/PatientPortal";
@@ -47,7 +51,11 @@ const App = () => (
               <Route path="/booking-confirmed" element={<BookingConfirmation />} />
               <Route path="/emergency-booking" element={<EmergencyBooking />} />
               <Route path="/pharmacy" element={<Pharmacy />} />
+              <Route path="/pharmacy/search" element={<PharmacySearch />} />
+              <Route path="/pharmacy/review" element={<PharmacyReview />} />
               <Route path="/labs" element={<Labs />} />
+              <Route path="/labs/search" element={<LabsSearch />} />
+              <Route path="/labs/review" element={<LabsReview />} />
               <Route path="/app" element={<AppDownload />} />
               <Route path="/schedule" element={<Schedule />} />
               <Route path="/enroll/provider" element={<ProviderEnrollment />} />

@@ -1,15 +1,11 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { Search, Beaker, Truck, Clock, ShieldCheck, ChevronDown, Upload, ShoppingCart, X, Minus, Plus, Loader2 } from "lucide-react";
+import { Search, Beaker, Truck, Clock, ShieldCheck, ChevronDown, Upload, ShoppingCart } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/Layout";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { useAppAuth } from "@/contexts/AppAuthContext";
-import { useRazorpay } from "@/hooks/useRazorpay";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect, useMemo } from "react";
+import { loadLabCart, saveLabCart, type LabCartItem } from "@/lib/labCart";
 import heroLabs1 from "@/assets/hero-labs.jpg";
 import heroLabs2 from "@/assets/hero-labs-2.jpg";
 import heroLabs3 from "@/assets/hero-labs-3.jpg";
@@ -25,14 +21,14 @@ function getDailyImage(images: string[]) {
 }
 
 const categories = [
-  { name: "Blood Tests", icon: "🩸" },
-  { name: "Imaging", icon: "📸" },
-  { name: "Pathology", icon: "🔬" },
-  { name: "Ultrasound", icon: "📡" },
-  { name: "ECG", icon: "❤️" },
-  { name: "X-Ray", icon: "☢️" },
-  { name: "Allergy Tests", icon: "🌡️" },
-  { name: "COVID-19", icon: "🦠" },
+  { name: "Blood Tests", slug: "blood-tests", icon: "🩸" },
+  { name: "Imaging", slug: "imaging", icon: "📸" },
+  { name: "Pathology", slug: "pathology", icon: "🔬" },
+  { name: "Ultrasound", slug: "ultrasound", icon: "📡" },
+  { name: "ECG", slug: "ecg", icon: "❤️" },
+  { name: "X-Ray", slug: "x-ray", icon: "☢️" },
+  { name: "Allergy Tests", slug: "allergy", icon: "🌡️" },
+  { name: "COVID-19", slug: "covid-19", icon: "🦠" },
 ];
 
 const features = [
@@ -43,155 +39,67 @@ const features = [
 ];
 
 const popularTests = [
-  { id: "test-1", name: "Complete Blood Count", category: "Blood Tests", pricePaise: 29900, discount: "20% off" },
-  { id: "test-2", name: "Lipid Profile", category: "Blood Tests", pricePaise: 39900, discount: "15% off" },
-  { id: "test-3", name: "Thyroid Panel", category: "Blood Tests", pricePaise: 59900, discount: "18% off" },
-  { id: "test-4", name: "COVID-19 RT-PCR", category: "COVID-19", pricePaise: 49900, discount: "10% off" },
-  { id: "test-5", name: "Liver Function Test", category: "Blood Tests", pricePaise: 34900, discount: "15% off" },
-  { id: "test-6", name: "Kidney Function Test", category: "Blood Tests", pricePaise: 34900, discount: "15% off" },
+  { name: "Complete Blood Count", category: "Blood Tests" },
+  { name: "Lipid Profile", category: "Blood Tests" },
+  { name: "Thyroid Panel", category: "Blood Tests" },
+  { name: "COVID-19 RT-PCR", category: "COVID-19" },
+  { name: "Liver Function Test", category: "Blood Tests" },
+  { name: "Kidney Function Test", category: "Blood Tests" },
 ];
 
-type CartItem = { id: string; name: string; pricePaise: number; qty: number };
-
-function formatINR(paise: number) {
-  return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", minimumFractionDigits: 0 }).format(paise / 100);
+function normalizeName(name: string) {
+  return name.trim().toLowerCase();
 }
 
 export default function Labs() {
-  const heroLabs = getDailyImage(labImages);
   const navigate = useNavigate();
-  const { user } = useAppAuth();
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [cartOpen, setCartOpen] = useState(false);
-  const [checkingOut, setCheckingOut] = useState(false);
+  const heroLabs = getDailyImage(labImages);
 
-  const totalPaise = cart.reduce((sum, i) => sum + i.pricePaise * i.qty, 0);
-  const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
+  const [cart, setCart] = useState<LabCartItem[]>([]);
+  const [draftQty, setDraftQty] = useState<Record<string, number>>({});
+  const [draftVisible, setDraftVisible] = useState<Record<string, boolean>>({});
 
-  const addToCart = (test: typeof popularTests[0]) => {
-    setCart((prev) => {
-      const existing = prev.find((i) => i.id === test.id);
-      if (existing) return prev.map((i) => i.id === test.id ? { ...i, qty: i.qty + 1 } : i);
-      return [...prev, { id: test.id, name: test.name, pricePaise: test.pricePaise, qty: 1 }];
-    });
-    toast.success(`${test.name} added to cart`);
-  };
+  useEffect(() => { setCart(loadLabCart()); }, []);
+  useEffect(() => { saveLabCart(cart); }, [cart]);
 
-  const updateQty = (id: string, delta: number) => {
-    setCart((prev) => prev.map((i) => i.id === id ? { ...i, qty: Math.max(0, i.qty + delta) } : i).filter((i) => i.qty > 0));
-  };
+  const cartMap = useMemo(() => {
+    const map = new Map<string, LabCartItem>();
+    cart.forEach((item) => map.set(normalizeName(item.name), item));
+    return map;
+  }, [cart]);
 
-  const removeItem = (id: string) => setCart((prev) => prev.filter((i) => i.id !== id));
+  const totalItems = cart.reduce((sum, item) => sum + Math.max(1, item.qty || 0), 0);
 
-  const { initiatePayment, loading: paymentLoading } = useRazorpay({
-    description: "CalDoc Lab Order",
-    prefill: { email: user?.email || "" },
-    onSuccess: () => {
-      setCart([]);
-      setCartOpen(false);
-      setCheckingOut(false);
-      toast.success("Lab order placed successfully!");
-    },
-    onError: () => setCheckingOut(false),
-  });
-
-  const handleCheckout = async () => {
-    if (!user) {
-      toast.info("Please log in to place an order");
-      navigate("/login?portal=patient");
+  const updateCartItem = (name: string, qty: number) => {
+    const normalized = normalizeName(name);
+    if (qty <= 0) {
+      setCart((prev) => prev.filter((item) => normalizeName(item.name) !== normalized));
       return;
     }
-    if (cart.length === 0) return;
-
-    setCheckingOut(true);
-    try {
-      const { data: order, error } = await supabase
-        .from("lab_orders")
-        .insert({
-          patient_id: user.id,
-          patient_name: user.email?.split("@")[0] || "Patient",
-          tests: cart.map((i) => ({ name: i.name, qty: i.qty, price_paise: i.pricePaise })),
-          amount_paise: totalPaise,
-          delivery_mode: "HOME",
-          status: "PENDING",
-        })
-        .select("id")
-        .single();
-
-      if (error) throw error;
-
-      await initiatePayment({
-        amount_paise: totalPaise,
-        lab_order_id: order.id,
-      });
-    } catch (err: any) {
-      if (err.message !== "Payment cancelled") {
-        toast.error(err.message || "Checkout failed");
+    setCart((prev) => {
+      const next = [...prev];
+      const idx = next.findIndex((item) => normalizeName(item.name) === normalized);
+      if (idx >= 0) {
+        next[idx] = { ...next[idx], qty };
+      } else {
+        next.push({ name, qty });
       }
-      setCheckingOut(false);
-    }
+      return next;
+    });
   };
 
   return (
     <Layout>
-      {/* Floating cart button */}
-      <Sheet open={cartOpen} onOpenChange={setCartOpen}>
-        <SheetTrigger asChild>
-          <button className="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-primary-foreground shadow-lg hover:bg-primary/90 transition-colors">
-            <ShoppingCart className="w-5 h-5" />
-            <span className="font-semibold">{cartCount}</span>
-            {totalPaise > 0 && <span className="text-sm">• {formatINR(totalPaise)}</span>}
-          </button>
-        </SheetTrigger>
-        <SheetContent className="w-full sm:max-w-md flex flex-col">
-          <SheetHeader>
-            <SheetTitle>Your Cart ({cartCount} items)</SheetTitle>
-          </SheetHeader>
-          <div className="flex-1 overflow-y-auto py-4 space-y-3">
-            {cart.length === 0 ? (
-              <p className="text-center text-muted-foreground py-12">Your cart is empty</p>
-            ) : (
-              cart.map((item) => (
-                <div key={item.id} className="flex items-center gap-3 rounded-xl border border-border p-3">
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-foreground text-sm truncate">{item.name}</p>
-                    <p className="text-xs text-muted-foreground">{formatINR(item.pricePaise)} each</p>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <button onClick={() => updateQty(item.id, -1)} className="w-7 h-7 rounded-lg border border-border flex items-center justify-center hover:bg-muted">
-                      <Minus className="w-3 h-3" />
-                    </button>
-                    <span className="w-6 text-center text-sm font-medium">{item.qty}</span>
-                    <button onClick={() => updateQty(item.id, 1)} className="w-7 h-7 rounded-lg border border-border flex items-center justify-center hover:bg-muted">
-                      <Plus className="w-3 h-3" />
-                    </button>
-                  </div>
-                  <p className="font-semibold text-sm text-foreground w-16 text-right">{formatINR(item.pricePaise * item.qty)}</p>
-                  <button onClick={() => removeItem(item.id)} className="text-muted-foreground hover:text-destructive">
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              ))
-            )}
-          </div>
-          {cart.length > 0 && (
-            <div className="border-t border-border pt-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="font-medium text-foreground">Total</span>
-                <span className="text-lg font-bold text-foreground">{formatINR(totalPaise)}</span>
-              </div>
-              <Button
-                onClick={handleCheckout}
-                disabled={checkingOut || paymentLoading}
-                className="w-full rounded-xl h-12 gap-2"
-              >
-                {(checkingOut || paymentLoading) && <Loader2 className="w-4 h-4 animate-spin" />}
-                {checkingOut ? "Processing…" : `Pay ${formatINR(totalPaise)}`}
-              </Button>
-            </div>
-          )}
-        </SheetContent>
-      </Sheet>
+      {/* Floating cart badge */}
+      {totalItems > 0 && (
+        <button
+          onClick={() => navigate("/labs/review")}
+          className="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-lg hover:bg-primary/90 transition-colors"
+        >
+          <ShoppingCart className="w-4 h-4" />
+          {totalItems} test{totalItems !== 1 ? "s" : ""} — Review Order
+        </button>
+      )}
 
       {/* Hero */}
       <section className="relative min-h-screen flex items-center">
@@ -221,18 +129,24 @@ export default function Labs() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              <div className="glass rounded-2xl p-2 shadow-elevated flex flex-col sm:flex-row gap-2 max-w-xl">
+              <form
+                onSubmit={(e) => { e.preventDefault(); navigate("/labs/search"); }}
+                className="glass rounded-2xl p-2 shadow-elevated flex flex-col sm:flex-row gap-2 max-w-xl"
+              >
                 <div className="flex-1 relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
+                    readOnly
+                    onFocus={() => navigate("/labs/search")}
+                    onClick={() => navigate("/labs/search")}
                     placeholder="Search tests, packages..."
-                    className="h-12 pl-10 bg-background/50 border-0 rounded-xl focus-visible:ring-1"
+                    className="h-12 pl-10 bg-background/50 border-0 rounded-xl focus-visible:ring-1 cursor-pointer"
                   />
                 </div>
-                <Button className="h-12 px-6 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium whitespace-nowrap">
+                <Button type="submit" className="h-12 px-6 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium whitespace-nowrap">
                   Search
                 </Button>
-              </div>
+              </form>
 
               <div className="flex flex-wrap items-center gap-4 mt-5 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1.5">
@@ -313,18 +227,22 @@ export default function Labs() {
           </motion.div>
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-4 max-w-3xl mx-auto">
             {categories.map((cat, i) => (
-              <motion.button
+              <motion.div
                 key={cat.name}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.05 }}
                 whileHover={{ y: -4 }}
-                className="glass rounded-2xl p-5 text-center hover:shadow-elevated transition-all duration-300 cursor-pointer"
               >
-                <span className="text-3xl mb-2 block">{cat.icon}</span>
-                <span className="text-sm font-medium text-foreground">{cat.name}</span>
-              </motion.button>
+                <Link
+                  to={`/labs/search?category=${encodeURIComponent(cat.slug)}`}
+                  className="glass rounded-2xl p-5 text-center hover:shadow-elevated transition-all duration-300 cursor-pointer block"
+                >
+                  <span className="text-3xl mb-2 block">{cat.icon}</span>
+                  <span className="text-sm font-medium text-foreground">{cat.name}</span>
+                </Link>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -344,7 +262,8 @@ export default function Labs() {
           </motion.div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
             {popularTests.map((test, i) => {
-              const inCart = cart.find((c) => c.id === test.id);
+              const cartItem = cartMap.get(normalizeName(test.name));
+              const isDraft = draftVisible[normalizeName(test.name)] && !cartItem;
               return (
                 <motion.div
                   key={test.name}
@@ -352,31 +271,44 @@ export default function Labs() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: i * 0.05 }}
-                  className="glass rounded-2xl p-5 flex items-center justify-between hover:shadow-elevated transition-all duration-300"
+                  className="glass rounded-2xl p-5 flex flex-col gap-4 justify-between hover:shadow-elevated transition-all duration-300"
                 >
                   <div>
                     <h3 className="font-medium text-foreground">{test.name}</h3>
                     <p className="text-xs text-muted-foreground">{test.category}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="font-semibold text-foreground">{formatINR(test.pricePaise)}</span>
-                      <span className="text-xs text-primary font-medium">{test.discount}</span>
-                    </div>
+                    <p className="text-sm font-semibold text-foreground mt-1">₹799 / test</p>
                   </div>
-                  {inCart ? (
-                    <div className="flex items-center gap-1.5">
-                      <button onClick={() => updateQty(test.id, -1)} className="w-8 h-8 rounded-lg border border-border flex items-center justify-center hover:bg-muted">
-                        <Minus className="w-3 h-3" />
-                      </button>
-                      <span className="w-6 text-center text-sm font-semibold">{inCart.qty}</span>
-                      <button onClick={() => updateQty(test.id, 1)} className="w-8 h-8 rounded-lg border border-border flex items-center justify-center hover:bg-muted">
-                        <Plus className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ) : (
-                    <Button size="sm" className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => addToCart(test)}>
-                      Book
-                    </Button>
-                  )}
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    {cartItem ? (
+                      <>
+                        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-2 py-1 text-sm text-foreground">
+                          <button type="button" onClick={() => updateCartItem(test.name, Math.max(1, cartItem.qty - 1))} className="h-7 w-7 rounded-full border border-border text-muted-foreground hover:bg-muted">-</button>
+                          <input type="number" min={1} max={99} value={cartItem.qty} onChange={(e) => updateCartItem(test.name, Number(e.target.value) || 1)} className="w-12 bg-transparent text-center text-sm outline-none" />
+                          <button type="button" onClick={() => updateCartItem(test.name, cartItem.qty + 1)} className="h-7 w-7 rounded-full border border-border text-muted-foreground hover:bg-muted">+</button>
+                        </div>
+                        <span className="rounded-full bg-primary/10 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-primary">Added</span>
+                        <button type="button" onClick={() => updateCartItem(test.name, 0)} className="text-xs font-semibold text-destructive hover:text-destructive/80">Remove</button>
+                      </>
+                    ) : isDraft ? (
+                      <>
+                        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-2 py-1 text-sm text-foreground">
+                          <span className="text-xs text-muted-foreground">Qty</span>
+                          <input type="number" min={1} max={99} value={draftQty[normalizeName(test.name)] ?? 1}
+                            onChange={(e) => setDraftQty((prev) => ({ ...prev, [normalizeName(test.name)]: Math.max(1, Number(e.target.value) || 1) }))}
+                            className="w-12 bg-transparent text-center text-sm outline-none" />
+                        </div>
+                        <Button size="sm" className="rounded-xl" onClick={() => {
+                          updateCartItem(test.name, draftQty[normalizeName(test.name)] ?? 1);
+                          setDraftVisible((prev) => ({ ...prev, [normalizeName(test.name)]: false }));
+                        }}>Add to order</Button>
+                      </>
+                    ) : (
+                      <Button size="sm" className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => {
+                        setDraftVisible((prev) => ({ ...prev, [normalizeName(test.name)]: true }));
+                        setDraftQty((prev) => ({ ...prev, [normalizeName(test.name)]: prev[normalizeName(test.name)] ?? 1 }));
+                      }}>Book</Button>
+                    )}
+                  </div>
                 </motion.div>
               );
             })}
@@ -406,7 +338,6 @@ export default function Labs() {
           </motion.div>
         </div>
       </section>
-
     </Layout>
   );
 }

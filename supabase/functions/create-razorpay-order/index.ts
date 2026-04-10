@@ -34,27 +34,19 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json();
-    const { amount_paise, appointment_id, rx_order_id, lab_order_id } = body;
+    const { appointment_id, amount_paise } = body;
 
-    if (!amount_paise || amount_paise < 100) {
-      return new Response(JSON.stringify({ error: "amount_paise (>=100) required" }), {
+    if (!appointment_id || !amount_paise || amount_paise < 100) {
+      return new Response(JSON.stringify({ error: "Invalid input: appointment_id and amount_paise (>=100) required" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-
-    if (!appointment_id && !rx_order_id && !lab_order_id) {
-      return new Response(JSON.stringify({ error: "One of appointment_id, rx_order_id, or lab_order_id is required" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const receiptId = appointment_id || rx_order_id || lab_order_id;
 
     const keyId = Deno.env.get("RAZORPAY_KEY_ID")!;
     const keySecret = Deno.env.get("RAZORPAY_KEY_SECRET")!;
 
+    // Create Razorpay order
     const rzpRes = await fetch("https://api.razorpay.com/v1/orders", {
       method: "POST",
       headers: {
@@ -64,8 +56,8 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         amount: amount_paise,
         currency: "INR",
-        receipt: receiptId,
-        notes: { appointment_id, rx_order_id, lab_order_id, user_id: user.id },
+        receipt: appointment_id,
+        notes: { appointment_id, user_id: user.id },
       }),
     });
 
@@ -80,15 +72,14 @@ Deno.serve(async (req) => {
 
     const order = await rzpRes.json();
 
+    // Store payment record
     const adminClient = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
     await adminClient.from("payments").insert({
-      appointment_id: appointment_id || null,
-      rx_order_id: rx_order_id || null,
-      lab_order_id: lab_order_id || null,
+      appointment_id,
       order_id: order.id,
       amount: amount_paise,
       gateway: "razorpay",
