@@ -31,7 +31,7 @@ export default function PharmacySearch() {
   const category = searchParams.get("category") || "";
   const page = Math.max(1, Number(searchParams.get("page")) || 1);
 
-  const { data: allMeds = [], isLoading } = useMedications();
+  const { data: allMeds = [], isLoading, error } = useMedications();
 
   const [cart, setCart] = useState<RxCartItem[]>([]);
   const [draftQty, setDraftQty] = useState<Record<string, number>>({});
@@ -186,6 +186,8 @@ export default function PharmacySearch() {
 
             {isLoading ? (
               <div className="py-8 text-sm text-muted-foreground text-center">Loading medicines...</div>
+            ) : error ? (
+              <div className="py-8 text-sm text-destructive text-center">Failed to load medicines. Please refresh the page.</div>
             ) : meds.length === 0 ? (
               <div className="py-8 text-sm text-muted-foreground text-center">No medicines found. Try another name, composition, or strength.</div>
             ) : (
