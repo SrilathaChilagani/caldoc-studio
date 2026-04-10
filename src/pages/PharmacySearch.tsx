@@ -263,6 +263,21 @@ export default function PharmacySearch() {
             </div>
           </aside>
         </div>
+
+        {totalItems > 0 && (
+          <div className="fixed bottom-6 right-6 z-50 animate-in fade-in slide-in-from-bottom-4">
+            <Button
+              size="lg"
+              className="rounded-full shadow-lg gap-2 px-6"
+              onClick={() => navigate("/pharmacy/review")}
+            >
+              🛒 Review Order
+              <span className="inline-flex items-center justify-center h-6 min-w-[1.5rem] rounded-full bg-primary-foreground text-primary text-xs font-bold px-1.5">
+                {totalItems}
+              </span>
+            </Button>
+          </div>
+        )}
       </section>
     </Layout>
   );
